@@ -11,6 +11,7 @@ import random
 import logging
 import logging.handlers
 from matplotlib import pyplot as plt
+import cv2
 
 def get_minsize(dicom_dir):
     k=float('inf')
@@ -79,4 +80,19 @@ def log_config_info(config, logger):
         else:
             log_info = f'{k}: {v},'   #将键值对拼接成 "key: value" 的格式加入log_info，且末尾有个逗号分割
             logger.info(log_info)
+
+
+class myNormalize:
+    def __init__(self, train=True,data_path=""):
+        if train:
+            self.mean,self.std = self.get_mean_std(os.path.join(data_path,"train/images"))
+        else:
+            self.mean, self.std = self.get_mean_std(os.path.join(data_path, "val/images"))
+
+    def __call__(self, data):
+        img, msk = data
+        img_normalized = (img - self.mean) / self.std
+        img_normalized = ((img_normalized - np.min(img_normalized))
+                          / (np.max(img_normalized) - np.min(img_normalized))) * 255.
+        return img_normalized, msk
 

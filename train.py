@@ -8,6 +8,7 @@ import os
 import sys
 from utils import *
 from configs.config_setting import setting_config
+import logging
 
 import warnings
 warnings.filterwarnings("ignore")  ##警告过滤
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     global writer
     writer = SummaryWriter(config.work_dir + 'summary')
     log_config_info(config, logger)  # 配置记录
+    logging.basicConfig(filename=log_dir+"/train.info.log", level=logging.INFO)
 
     print('#----------GPU init----------#')
     os.environ["CUDA_VISIBLE_DEVICES"] = config.gpu_id
@@ -38,13 +40,20 @@ if __name__ == '__main__':
 
     print('#----------Preparing dataset----------#')
     train_dataset = YXZ_datasets(config.data_path,config.label_path, config, train=True)
-    print(train_dataset.real_input_channels)
+    #print(train_dataset.mean,train_dataset.std)
+    logging.info("train--mean-->%s",np.array(train_dataset.mean))
+    logging.info("train--std-->%s",np.array(train_dataset.std))
+
     train_loader = DataLoader(train_dataset,
                               batch_size=config.batch_size,
                               shuffle=True,
                               pin_memory=True,
                               num_workers=config.num_workers)
     val_dataset = YXZ_datasets(config.data_path, config.label_path,config, train=False)
+    #print(val_dataset.mean,val_dataset.std)
+    logging.info("val--mean-->%s",np.array(val_dataset.mean))
+    logging.info("val--std-->%s",np.array(val_dataset.std))
+    logging.info("real_input_channels-->%d",val_dataset.real_input_channels)
     val_loader = DataLoader(val_dataset,
                             batch_size=1,
                             shuffle=False,
@@ -52,3 +61,8 @@ if __name__ == '__main__':
                             num_workers=config.num_workers,
                             drop_last=True)
 
+    for data in train_loader:
+        img,msk=data
+        print(img.shape,msk.shape)
+
+    writer.close()
