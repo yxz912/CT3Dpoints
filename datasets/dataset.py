@@ -30,10 +30,11 @@ class YXZ_datasets(Dataset):
                 self.mean,self.std=self.get_mean_std(path_Data,train)
             else:
                 self.mean,self.std=config.train_mean,config.train_std
-            #self.mean_label,self.std_label=self.get_label_standardization(namelist=images_list)
+            self.mean_label,self.std_label=self.get_label_standardization(namelist=images_list)
             self.transformer = config.train_transformer
         else:
             images_list = sorted(os.listdir(path_Data + 'val/images/'))
+            self.val_size = len(images_list)
             self.data = []
             for i in range(len(images_list)):
                 img_path = path_Data + 'val/images/' + images_list[i]
@@ -43,7 +44,7 @@ class YXZ_datasets(Dataset):
                 self.mean, self.std = self.get_mean_std(path_Data,train)
             else:
                 self.mean, self.std = config.val_mean, config.val_std
-            #self.mean_label, self.std_label = self.get_label_standardization(namelist=images_list)
+            self.mean_label, self.std_label = self.get_label_standardization(namelist=images_list)
             self.transformer = config.test_transformer
 
     def __getitem__(self, indx):
@@ -57,8 +58,7 @@ class YXZ_datasets(Dataset):
         img = ((img- np.min(img)) / (np.max(img) - np.min(img))) * 255.
         #img = ((img - np.min(img)) / (np.max(img) - np.min(img)))
 
-
-        #img,msk = self.transformer((img,msk))
+        img,msk = self.transformer((img,msk))
         return img,msk
 
     def __len__(self):
@@ -127,11 +127,11 @@ class YXZ_datasets(Dataset):
             for k in range(array_2d.shape[0]):
                 x_value = self.data_label.loc[row_index+k, 'x']
                 y_value = self.data_label.loc[row_index+k, 'y']
-                z_value = self.data_label.loc[row_index+k, 'z']
+                z_value = self.data_label.loc[row_index+k, 'z'] + 100
                 array_2d[k]=[x_value,y_value,z_value]
         else:
             print(f"找不到 {name}")
-        array_2d=np.expand_dims(array_2d, axis=2)
+        array_2d=np.expand_dims(array_2d, axis=1)
         return array_2d
 
     def get_mean_std(self,dir,trian=True):

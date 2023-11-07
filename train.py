@@ -9,6 +9,12 @@ import sys
 from utils import *
 from configs.config_setting import setting_config
 import logging
+import torch.optim as optim
+from models.resnet import resnet34, resnet101,resnet50,resnet152
+from models.Pointnet_ed import Pointnet2d
+from models.unet import UNet
+from models.egeunet import EGEUNet
+from models.Pointnet3d import pointnet3d
 
 import warnings
 warnings.filterwarnings("ignore")  ##警告过滤
@@ -40,7 +46,8 @@ if __name__ == '__main__':
 
     print('#----------Preparing dataset----------#')
     train_dataset = YXZ_datasets(config.data_path,config.label_path, config, train=True)
-    #print(train_dataset.mean,train_dataset.std)
+    # print("train_mean=",train_dataset.mean)
+    # print("train_std=", train_dataset.std)
     logging.info("train--mean-->%s",np.array(train_dataset.mean))
     logging.info("train--std-->%s",np.array(train_dataset.std))
 
@@ -50,19 +57,61 @@ if __name__ == '__main__':
                               pin_memory=True,
                               num_workers=config.num_workers)
     val_dataset = YXZ_datasets(config.data_path, config.label_path,config, train=False)
-    #print(val_dataset.mean,val_dataset.std)
+    # print("val_mean=", val_dataset.mean)
+    # print("val_std=", val_dataset.std)
     logging.info("val--mean-->%s",np.array(val_dataset.mean))
     logging.info("val--std-->%s",np.array(val_dataset.std))
     logging.info("real_input_channels-->%d",val_dataset.real_input_channels)
     val_loader = DataLoader(val_dataset,
-                            batch_size=1,
+                            batch_size=config.val_bs,
                             shuffle=False,
                             pin_memory=True,
                             num_workers=config.num_workers,
                             drop_last=True)
 
-    for data in train_loader:
-        img,msk=data
-        print(img.shape,msk.shape)
+    print('#----------Prepareing Model----------#')
+    if config.network == 'Pointnet2d':
+        model = Pointnet2d(num_classes=config.num_classes,
+                        input_channels=train_dataset.real_input_channels,
+                        )
 
-    writer.close()
+    elif config.network == 'resnet50':
+        model = resnet50(input_channels=train_dataset.real_input_channels,
+                     num_classes=config.num_classes,
+                     )
+    elif config.network == 'resnet101':
+        model = resnet50(input_channels=train_dataset.real_input_channels,
+                     num_classes=config.num_classes,
+                     )
+    elif config.network == 'UNet':
+        model = UNet(n_channels=train_dataset.real_input_channels,
+                         n_classes=config.num_classes,
+                         )
+    elif config.network == 'egeunet':
+        model = EGEUNet(num_classes=config.num_classes,
+                        input_channels=train_dataset.real_input_channels,
+                        c_list=[96,128,256,512,1024,2048],
+                         bridge=True,
+                         gt_ds=True,
+                        deep_supervision=config.deep_supervision
+        )
+    elif config.network == 'pointnet3d':
+        model = pointnet3d(n_classes=config.num_classes,
+                           n_channels=train_dataset.real_input_channels
+        )
+
+    else:
+        raise Exception('network in not right!')
+    model = model.cuda()
+
+    print('#----------Prepareing loss, opt, sch and amp----------#')
+    #loss_function = nn.MSELoss()
+    if config.deep_supervision:
+        loss_function = Deepeucloss(config)
+    else:
+        loss_function = EuclideanLoss(config)
+    optimizer = get_optimizer(config, model)
+    scheduler = get_scheduler(config, optimizer)
+
+    simple_train_val(config,model,train_loader,val_loader,optimizer,loss_function,logging,scheduler,val_dataset.val_size)
+

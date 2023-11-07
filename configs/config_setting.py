@@ -1,12 +1,12 @@
 from torchvision import transforms
 from utils import *
-
+import math
 from datetime import datetime
 
 class setting_config:
-    network='Pointnet2d'
-    data_path='/media/yxz/Elements/'
-    label_path='/media/yxz/Elements/三维坐标表格.xlsx'
+    network = 'pointnet3d'  #   'egeunet # 'UNet'   #'resnet101'    #'resnet50'    #'Pointnet2d'
+    data_path='/media/yxz/新加卷/teeth_ct_points/'
+    label_path='/media/yxz/新加卷/teeth_ct_points/三维坐标表格.xlsx'
     pretrained_path = './pre_trained/'
     num_classes = 3
     input_size_h = 512
@@ -20,24 +20,140 @@ class setting_config:
     rank = None
     amp = False
     gpu_id = '0'
-    batch_size = 8
+    batch_size = 2
+    val_bs=1
     epochs = 100
-    deep_supervision = False
-    train_mean=[38.232197, 36.51572, 35.653538, 34.841698, 34.53333, 34.580738, 34.047516, 34.060036, 34.206978, 33.53233, 32.705063, 32.041634, 31.622137, 31.153217, 31.150137, 31.728458, 33.087917, 34.500835, 36.742702, 38.6519, 40.604202, 42.178257, 43.246384, 44.190544, 45.63717, 46.368614, 47.56692, 48.40652, 49.483063, 50.48511, 52.11055, 53.586033, 54.524574, 55.267387, 55.781773, 56.209946, 56.75095, 56.548294, 55.87988, 55.987457, 56.049385, 55.278168, 55.257957, 54.347443, 52.88909, 51.57861, 50.415432, 48.269886, 46.376873]
-    train_std=[52.448204, 51.10866, 50.99893, 50.458603, 50.253628, 50.410458, 49.5592, 49.790417, 49.56057, 48.536423, 46.968967, 45.957573, 45.317444, 44.178703, 43.669712, 43.80612, 44.75504, 45.618256, 47.70623, 48.754204, 50.724133, 51.880234, 52.706825, 53.527897, 54.63882, 54.961304, 55.696304, 56.01947, 56.365795, 56.591743, 57.311337, 57.944008, 58.28007, 58.57969, 58.557964, 58.605045, 58.87404, 59.03475, 58.732353, 59.13055, 59.5588, 59.6814, 60.429745, 60.663795, 60.559544, 60.695335, 61.105843, 60.639233, 60.579075]
-    val_mean=[39.282055, 37.558815, 36.63298, 35.511284, 35.066727, 34.77867, 34.578907, 34.626266, 34.479588, 33.782177, 32.853188, 31.723333, 31.229958, 30.463028, 29.488924, 29.948984, 31.383898, 33.13944, 35.63262, 37.890858, 39.179466, 42.15199, 43.81359, 45.536274, 46.321938, 46.37175, 47.204414, 48.44351, 50.438526, 51.49414, 52.46885, 53.33485, 54.411926, 55.87407, 57.803326, 57.75311, 57.93884, 57.472725, 57.8146, 57.029186, 57.242596, 57.455845, 56.718517, 55.889084, 55.489944, 53.15779, 52.072853, 50.239693, 47.704407]
-    val_std=[52.40314, 51.810974, 51.09661, 50.00466, 49.89212, 49.92913, 49.784485, 49.595673, 49.323437, 48.584366, 47.070076, 45.46188, 44.520992, 43.153122, 40.85117, 41.2668, 42.437458, 43.865276, 45.96552, 48.03161, 48.73375, 51.075314, 52.468834, 54.07488, 54.704285, 54.414112, 54.89527, 55.66804, 56.711452, 57.06557, 57.241577, 57.509354, 57.75074, 58.451996, 59.323315, 59.10447, 59.277054, 58.904915, 59.20544, 58.98054, 59.5147, 60.267155, 60.56009, 60.964615, 61.792522, 61.30433, 61.756905, 61.894527, 61.44778]
+    deep_supervision = True
+    threshold = 5
+    train_mean = [38.167084, 36.47113, 35.658463, 34.7275, 34.397972, 34.392757, 33.96709, 34.126865, 34.28234,
+                  33.729267, 32.7962, 32.064926, 31.681631, 31.124203, 30.844501, 31.361849, 32.73974, 34.215652,
+                  36.648277, 38.611458, 40.539837, 42.120747, 43.28669, 44.45494, 45.614132, 46.21989, 47.45023,
+                  48.500004, 49.44821, 50.419426, 52.140045, 53.649082, 54.722622, 55.427254, 55.996006, 56.55678,
+                  57.03274, 56.78339, 56.16994, 56.052105, 56.084873, 55.73664, 55.51461, 54.455627, 53.19349,
+                  51.708523, 50.496777, 48.39798, 46.618237]
+    train_std = [52.12329, 51.107494, 50.941055, 50.223755, 50.00628, 50.154346, 49.390217, 49.584064, 49.46689,
+                 48.635002, 46.955963, 45.86415, 45.254314, 44.008198, 43.081245, 43.15782, 44.181343, 45.16833,
+                 47.433487, 48.60615, 50.44894, 51.635715, 52.542904, 53.638527, 54.554443, 54.860928, 55.634895,
+                 56.127644, 56.314377, 56.52658, 57.31575, 57.992775, 58.40813, 58.65052, 58.6726, 58.786034, 59.043797,
+                 59.15101, 58.878242, 59.1303, 59.565495, 59.95643, 60.605595, 60.74457, 60.784153, 60.811424, 61.18004,
+                 60.75567, 60.8064]
+    val_mean = [39.743374, 38.122738, 37.19561, 35.71686, 35.202812, 34.790627, 34.621647, 34.678947, 34.44854,
+                33.327152, 32.52173, 31.267305, 30.603254, 30.013475, 29.536041, 30.480452, 31.952286, 33.71057,
+                36.010574, 38.201912, 39.313183, 42.94376, 44.53766, 45.518337, 46.94797, 46.58542, 47.49811, 48.238167,
+                51.026104, 52.292915, 52.69654, 53.169758, 53.87486, 55.697067, 57.654236, 57.586315, 57.758514,
+                57.174618, 57.736595, 57.24419, 57.544117, 57.37176, 56.43062, 55.96641, 55.325653, 53.10815, 52.179287,
+                50.27785, 47.04305]
+    val_std = [53.15056, 52.15993, 51.616505, 50.33102, 50.21509, 50.081203, 50.03935, 49.86299, 49.531567, 48.28274,
+               46.95426, 45.172287, 43.96861, 42.88531, 41.24616, 42.37183, 43.43441, 44.75589, 46.571957, 48.567627,
+               49.173023, 51.97025, 53.31617, 54.147503, 55.217754, 54.256313, 54.82137, 55.228252, 57.024765,
+               57.493202, 57.21687, 57.12449, 57.009945, 58.07164, 58.968643, 58.816093, 58.97068, 58.471672, 58.976105,
+               58.958794, 59.510704, 60.026344, 60.16703, 60.841858, 61.621956, 61.22611, 61.83866, 62.08808, 61.1031]
+
     work_dir = 'results/' + network + '_' + datetime.now().strftime('%A_%d_%B_%Y_%Hh_%Mm_%Ss') + '/'
 
     train_transformer = transforms.Compose([
-        # myToTensor(),
-        # myRandomHorizontalFlip(p=0.5),
-        # myRandomVerticalFlip(p=0.5),
+        myToTensor(),
+        # myRandomHorizontalFlip(p=0.5,input_size_w=input_size_w),
+        # myRandomVerticalFlip(p=0.5,input_size_h=input_size_h),
         # myRandomRotation(p=0.5, degree=[0, 360]),
-        # myResize(input_size_h, input_size_w)
+        myResize(input_size_h, input_size_w)
     ])
     test_transformer = transforms.Compose([
-        # myToTensor(),
-        # myResize(input_size_h, input_size_w)
+        myToTensor(),
+        myResize(input_size_h, input_size_w)
     ])
 
+    opt = 'AdamW'
+    assert opt in ['Adadelta', 'Adagrad', 'Adam', 'AdamW', 'Adamax', 'ASGD', 'RMSprop', 'Rprop',
+                   'SGD'], 'Unsupported optimizer!'
+    if opt == 'Adadelta':
+        lr = 0.01  # default: 1.0 – coefficient that scale delta before it is applied to the parameters
+        rho = 0.9  # default: 0.9 – coefficient used for computing a running average of squared gradients
+        eps = 1e-6  # default: 1e-6 – term added to the denominator to improve numerical stability
+        weight_decay = 0.05  # default: 0 – weight decay (L2 penalty)
+    elif opt == 'Adagrad':
+        lr = 0.01  # default: 0.01 – learning rate
+        lr_decay = 0  # default: 0 – learning rate decay
+        eps = 1e-10  # default: 1e-10 – term added to the denominator to improve numerical stability
+        weight_decay = 0.05  # default: 0 – weight decay (L2 penalty)
+    elif opt == 'Adam':
+        lr = 0.001  # default: 1e-3 – learning rate
+        betas = (0.9,
+                 0.999)  # default: (0.9, 0.999) – coefficients used for computing running averages of gradient and its square
+        eps = 1e-8  # default: 1e-8 – term added to the denominator to improve numerical stability
+        weight_decay = 0.0001  # default: 0 – weight decay (L2 penalty)
+        amsgrad = False  # default: False – whether to use the AMSGrad variant of this algorithm from the paper On the Convergence of Adam and Beyond
+    elif opt == 'AdamW':
+        lr = 0.001  # default: 1e-3 – learning rate
+        betas = (0.9,
+                 0.999)  # default: (0.9, 0.999) – coefficients used for computing running averages of gradient and its square
+        eps = 1e-8  # default: 1e-8 – term added to the denominator to improve numerical stability
+        weight_decay = 1e-2  # default: 1e-2 – weight decay coefficient
+        amsgrad = False  # default: False – whether to use the AMSGrad variant of this algorithm from the paper On the Convergence of Adam and Beyond
+    elif opt == 'Adamax':
+        lr = 2e-3  # default: 2e-3 – learning rate
+        betas = (0.9,
+                 0.999)  # default: (0.9, 0.999) – coefficients used for computing running averages of gradient and its square
+        eps = 1e-8  # default: 1e-8 – term added to the denominator to improve numerical stability
+        weight_decay = 0  # default: 0 – weight decay (L2 penalty)
+    elif opt == 'ASGD':
+        lr = 0.01  # default: 1e-2 – learning rate
+        lambd = 1e-4  # default: 1e-4 – decay term
+        alpha = 0.75  # default: 0.75 – power for eta update
+        t0 = 1e6  # default: 1e6 – point at which to start averaging
+        weight_decay = 0  # default: 0 – weight decay
+    elif opt == 'RMSprop':
+        lr = 1e-2  # default: 1e-2 – learning rate
+        momentum = 0  # default: 0 – momentum factor
+        alpha = 0.99  # default: 0.99 – smoothing constant
+        eps = 1e-8  # default: 1e-8 – term added to the denominator to improve numerical stability
+        centered = False  # default: False – if True, compute the centered RMSProp, the gradient is normalized by an estimation of its variance
+        weight_decay = 0  # default: 0 – weight decay (L2 penalty)
+    elif opt == 'Rprop':
+        lr = 1e-2  # default: 1e-2 – learning rate
+        etas = (0.5,
+                1.2)  # default: (0.5, 1.2) – pair of (etaminus, etaplis), that are multiplicative increase and decrease factors
+        step_sizes = (1e-6, 50)  # default: (1e-6, 50) – a pair of minimal and maximal allowed step sizes
+    elif opt == 'SGD':
+        lr = 0.01  # – learning rate
+        momentum = 0.9  # default: 0 – momentum factor
+        weight_decay = 0.05  # default: 0 – weight decay (L2 penalty)
+        dampening = 0  # default: 0 – dampening for momentum
+        nesterov = False  # default: False – enables Nesterov momentum
+
+    sch = 'CosineAnnealingLR'
+    if sch == 'StepLR':
+        step_size = epochs // 5  # – Period of learning rate decay.
+        gamma = 0.5  # – Multiplicative factor of learning rate decay. Default: 0.1
+        last_epoch = -1  # – The index of last epoch. Default: -1.
+    elif sch == 'MultiStepLR':
+        milestones = [60, 120, 150]  # – List of epoch indices. Must be increasing.
+        gamma = 0.1  # – Multiplicative factor of learning rate decay. Default: 0.1.
+        last_epoch = -1  # – The index of last epoch. Default: -1.
+    elif sch == 'ExponentialLR':
+        gamma = 0.99  # – Multiplicative factor of learning rate decay.
+        last_epoch = -1  # – The index of last epoch. Default: -1.
+    elif sch == 'CosineAnnealingLR':
+        T_max = 50  # – Maximum number of iterations. Cosine function period.
+        eta_min = 0.00001  # – Minimum learning rate. Default: 0.
+        last_epoch = -1  # – The index of last epoch. Default: -1.
+    elif sch == 'ReduceLROnPlateau':
+        mode = 'min'  # – One of min, max. In min mode, lr will be reduced when the quantity monitored has stopped decreasing; in max mode it will be reduced when the quantity monitored has stopped increasing. Default: ‘min’.
+        factor = 0.1  # – Factor by which the learning rate will be reduced. new_lr = lr * factor. Default: 0.1.
+        patience = 10  # – Number of epochs with no improvement after which learning rate will be reduced. For example, if patience = 2, then we will ignore the first 2 epochs with no improvement, and will only decrease the LR after the 3rd epoch if the loss still hasn’t improved then. Default: 10.
+        threshold = 0.0001  # – Threshold for measuring the new optimum, to only focus on significant changes. Default: 1e-4.
+        threshold_mode = 'rel'  # – One of rel, abs. In rel mode, dynamic_threshold = best * ( 1 + threshold ) in ‘max’ mode or best * ( 1 - threshold ) in min mode. In abs mode, dynamic_threshold = best + threshold in max mode or best - threshold in min mode. Default: ‘rel’.
+        cooldown = 0  # – Number of epochs to wait before resuming normal operation after lr has been reduced. Default: 0.
+        min_lr = 0  # – A scalar or a list of scalars. A lower bound on the learning rate of all param groups or each group respectively. Default: 0.
+        eps = 1e-08  # – Minimal decay applied to lr. If the difference between new and old lr is smaller than eps, the update is ignored. Default: 1e-8.
+    elif sch == 'CosineAnnealingWarmRestarts':
+        T_0 = 50  # – Number of iterations for the first restart.
+        T_mult = 2  # – A factor increases T_{i} after a restart. Default: 1.
+        eta_min = 1e-6  # – Minimum learning rate. Default: 0.
+        last_epoch = -1  # – The index of last epoch. Default: -1.
+    elif sch == 'WP_MultiStepLR':
+        warm_up_epochs = 10
+        gamma = 0.1
+        milestones = [125, 225]
+    elif sch == 'WP_CosineLR':
+        warm_up_epochs = 20
