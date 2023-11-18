@@ -1,0 +1,239 @@
+2023-11-15 20:47:00 - #----------Config info----------#
+2023-11-15 20:47:00 - network: Pointneted,
+2023-11-15 20:47:00 - data_path: D:\teeth_ct_points\CT3Dpoints\,
+2023-11-15 20:47:00 - label_path: D:\teeth_ct_points\CT3Dpoints\三维坐标表格.xlsx,
+2023-11-15 20:47:00 - pretrained_path: ./pre_trained/,
+2023-11-15 20:47:00 - num_classes: 3,
+2023-11-15 20:47:00 - input_size_h: 512,
+2023-11-15 20:47:00 - input_size_w: 512,
+2023-11-15 20:47:00 - input_channels: 64,
+2023-11-15 20:47:00 - distributed: False,
+2023-11-15 20:47:00 - local_rank: -1,
+2023-11-15 20:47:00 - num_workers: 4,
+2023-11-15 20:47:00 - seed: 42,
+2023-11-15 20:47:00 - world_size: None,
+2023-11-15 20:47:00 - rank: None,
+2023-11-15 20:47:00 - amp: False,
+2023-11-15 20:47:00 - gpu_id: 0,
+2023-11-15 20:47:00 - batch_size: 2,
+2023-11-15 20:47:00 - val_bs: 1,
+2023-11-15 20:47:00 - epochs: 300,
+2023-11-15 20:47:00 - deep_supervision: False,
+2023-11-15 20:47:00 - threshold: 8.660254037844387,
+2023-11-15 20:47:00 - train_mean: [38.167084, 36.47113, 35.658463, 34.7275, 34.397972, 34.392757, 33.96709, 34.126865, 34.28234, 33.729267, 32.7962, 32.064926, 31.681631, 31.124203, 30.844501, 31.361849, 32.73974, 34.215652, 36.648277, 38.611458, 40.539837, 42.120747, 43.28669, 44.45494, 45.614132, 46.21989, 47.45023, 48.500004, 49.44821, 50.419426, 52.140045, 53.649082, 54.722622, 55.427254, 55.996006, 56.55678, 57.03274, 56.78339, 56.16994, 56.052105, 56.084873, 55.73664, 55.51461, 54.455627, 53.19349, 51.708523, 50.496777, 48.39798, 46.618237],
+2023-11-15 20:47:00 - train_std: [52.12329, 51.107494, 50.941055, 50.223755, 50.00628, 50.154346, 49.390217, 49.584064, 49.46689, 48.635002, 46.955963, 45.86415, 45.254314, 44.008198, 43.081245, 43.15782, 44.181343, 45.16833, 47.433487, 48.60615, 50.44894, 51.635715, 52.542904, 53.638527, 54.554443, 54.860928, 55.634895, 56.127644, 56.314377, 56.52658, 57.31575, 57.992775, 58.40813, 58.65052, 58.6726, 58.786034, 59.043797, 59.15101, 58.878242, 59.1303, 59.565495, 59.95643, 60.605595, 60.74457, 60.784153, 60.811424, 61.18004, 60.75567, 60.8064],
+2023-11-15 20:47:00 - val_mean: [39.743374, 38.122738, 37.19561, 35.71686, 35.202812, 34.790627, 34.621647, 34.678947, 34.44854, 33.327152, 32.52173, 31.267305, 30.603254, 30.013475, 29.536041, 30.480452, 31.952286, 33.71057, 36.010574, 38.201912, 39.313183, 42.94376, 44.53766, 45.518337, 46.94797, 46.58542, 47.49811, 48.238167, 51.026104, 52.292915, 52.69654, 53.169758, 53.87486, 55.697067, 57.654236, 57.586315, 57.758514, 57.174618, 57.736595, 57.24419, 57.544117, 57.37176, 56.43062, 55.96641, 55.325653, 53.10815, 52.179287, 50.27785, 47.04305],
+2023-11-15 20:47:00 - val_std: [53.15056, 52.15993, 51.616505, 50.33102, 50.21509, 50.081203, 50.03935, 49.86299, 49.531567, 48.28274, 46.95426, 45.172287, 43.96861, 42.88531, 41.24616, 42.37183, 43.43441, 44.75589, 46.571957, 48.567627, 49.173023, 51.97025, 53.31617, 54.147503, 55.217754, 54.256313, 54.82137, 55.228252, 57.024765, 57.493202, 57.21687, 57.12449, 57.009945, 58.07164, 58.968643, 58.816093, 58.97068, 58.471672, 58.976105, 58.958794, 59.510704, 60.026344, 60.16703, 60.841858, 61.621956, 61.22611, 61.83866, 62.08808, 61.1031],
+2023-11-15 20:47:00 - work_dir: results/Pointneted_Wednesday_15_November_2023_20h_47m_00s/,
+2023-11-15 20:47:00 - tensor_size: 0,
+2023-11-15 20:47:00 - train_transformer: Compose(
+    <utils.myToTensor object at 0x0000013B7B1696A0>
+    <utils.myResize object at 0x0000013B790DB790>
+),
+2023-11-15 20:47:00 - test_transformer: Compose(
+    <utils.myToTensor object at 0x0000013B23677C40>
+    <utils.myResize object at 0x0000013B23677CD0>
+),
+2023-11-15 20:47:00 - opt: AdamW,
+2023-11-15 20:47:00 - lr: 0.001,
+2023-11-15 20:47:00 - betas: (0.9, 0.999),
+2023-11-15 20:47:00 - eps: 1e-08,
+2023-11-15 20:47:00 - weight_decay: 0.01,
+2023-11-15 20:47:00 - amsgrad: False,
+2023-11-15 20:47:00 - sch: CosineAnnealingLR,
+2023-11-15 20:47:00 - T_max: 50,
+2023-11-15 20:47:00 - eta_min: 1e-05,
+2023-11-15 20:47:00 - last_epoch: -1,
+INFO:root:train--mean-->[38.167084 36.47113  35.658463 34.7275   34.397972 34.392757 33.96709
+ 34.126865 34.28234  33.729267 32.7962   32.064926 31.681631 31.124203
+ 30.844501 31.361849 32.73974  34.215652 36.648277 38.611458 40.539837
+ 42.120747 43.28669  44.45494  45.614132 46.21989  47.45023  48.500004
+ 49.44821  50.419426 52.140045 53.649082 54.722622 55.427254 55.996006
+ 56.55678  57.03274  56.78339  56.16994  56.052105 56.084873 55.73664
+ 55.51461  54.455627 53.19349  51.708523 50.496777 48.39798  46.618237]
+INFO:root:train--std-->[52.12329  51.107494 50.941055 50.223755 50.00628  50.154346 49.390217
+ 49.584064 49.46689  48.635002 46.955963 45.86415  45.254314 44.008198
+ 43.081245 43.15782  44.181343 45.16833  47.433487 48.60615  50.44894
+ 51.635715 52.542904 53.638527 54.554443 54.860928 55.634895 56.127644
+ 56.314377 56.52658  57.31575  57.992775 58.40813  58.65052  58.6726
+ 58.786034 59.043797 59.15101  58.878242 59.1303   59.565495 59.95643
+ 60.605595 60.74457  60.784153 60.811424 61.18004  60.75567  60.8064  ]
+INFO:root:val--mean-->[39.743374 38.122738 37.19561  35.71686  35.202812 34.790627 34.621647
+ 34.678947 34.44854  33.327152 32.52173  31.267305 30.603254 30.013475
+ 29.536041 30.480452 31.952286 33.71057  36.010574 38.201912 39.313183
+ 42.94376  44.53766  45.518337 46.94797  46.58542  47.49811  48.238167
+ 51.026104 52.292915 52.69654  53.169758 53.87486  55.697067 57.654236
+ 57.586315 57.758514 57.174618 57.736595 57.24419  57.544117 57.37176
+ 56.43062  55.96641  55.325653 53.10815  52.179287 50.27785  47.04305 ]
+INFO:root:val--std-->[53.15056  52.15993  51.616505 50.33102  50.21509  50.081203 50.03935
+ 49.86299  49.531567 48.28274  46.95426  45.172287 43.96861  42.88531
+ 41.24616  42.37183  43.43441  44.75589  46.571957 48.567627 49.173023
+ 51.97025  53.31617  54.147503 55.217754 54.256313 54.82137  55.228252
+ 57.024765 57.493202 57.21687  57.12449  57.009945 58.07164  58.968643
+ 58.816093 58.97068  58.471672 58.976105 58.958794 59.510704 60.026344
+ 60.16703  60.841858 61.621956 61.22611  61.83866  62.08808  61.1031  ]
+INFO:root:real_input_channels-->49
+INFO:root:epoch:0 train_eval_loss-->34.244197,test_eval_loss-->14.653956,acc===0.009804
+INFO:root:epoch:1 train_eval_loss-->22.782590,test_eval_loss-->9.082085,acc===0.186275
+INFO:root:epoch:2 train_eval_loss-->19.884186,test_eval_loss-->10.190434,acc===0.137255
+INFO:root:epoch:3 train_eval_loss-->20.362558,test_eval_loss-->10.239829,acc===0.098039
+INFO:root:epoch:4 train_eval_loss-->20.911428,test_eval_loss-->8.989178,acc===0.215686
+INFO:root:epoch:5 train_eval_loss-->20.536700,test_eval_loss-->8.831116,acc===0.196078
+INFO:root:epoch:6 train_eval_loss-->20.546768,test_eval_loss-->8.999918,acc===0.176471
+INFO:root:epoch:7 train_eval_loss-->19.734089,test_eval_loss-->8.742100,acc===0.176471
+INFO:root:epoch:8 train_eval_loss-->20.637858,test_eval_loss-->9.372903,acc===0.127451
+INFO:root:epoch:9 train_eval_loss-->20.159430,test_eval_loss-->9.378970,acc===0.156863
+INFO:root:epoch:10 train_eval_loss-->20.255489,test_eval_loss-->8.735513,acc===0.186275
+INFO:root:epoch:11 train_eval_loss-->19.842164,test_eval_loss-->9.478139,acc===0.147059
+INFO:root:epoch:12 train_eval_loss-->19.723466,test_eval_loss-->8.997857,acc===0.156863
+INFO:root:epoch:13 train_eval_loss-->20.118111,test_eval_loss-->9.072630,acc===0.166667
+INFO:root:epoch:14 train_eval_loss-->19.821426,test_eval_loss-->9.605189,acc===0.107843
+INFO:root:epoch:15 train_eval_loss-->20.176271,test_eval_loss-->9.427943,acc===0.127451
+INFO:root:epoch:16 train_eval_loss-->19.891241,test_eval_loss-->8.891376,acc===0.176471
+INFO:root:epoch:17 train_eval_loss-->19.704230,test_eval_loss-->8.953571,acc===0.147059
+INFO:root:epoch:18 train_eval_loss-->19.641824,test_eval_loss-->8.782517,acc===0.196078
+INFO:root:epoch:19 train_eval_loss-->19.751986,test_eval_loss-->9.105840,acc===0.225490
+INFO:root:epoch:20 train_eval_loss-->19.958285,test_eval_loss-->8.805033,acc===0.215686
+INFO:root:epoch:21 train_eval_loss-->19.697365,test_eval_loss-->9.332442,acc===0.166667
+INFO:root:epoch:22 train_eval_loss-->19.686289,test_eval_loss-->9.679796,acc===0.176471
+INFO:root:epoch:23 train_eval_loss-->19.473263,test_eval_loss-->9.588552,acc===0.147059
+INFO:root:epoch:24 train_eval_loss-->19.462848,test_eval_loss-->8.745024,acc===0.205882
+INFO:root:epoch:25 train_eval_loss-->19.120296,test_eval_loss-->9.334602,acc===0.147059
+INFO:root:epoch:26 train_eval_loss-->19.054745,test_eval_loss-->9.308248,acc===0.147059
+INFO:root:epoch:27 train_eval_loss-->19.446099,test_eval_loss-->8.808681,acc===0.205882
+INFO:root:epoch:28 train_eval_loss-->19.795919,test_eval_loss-->8.687243,acc===0.196078
+INFO:root:epoch:29 train_eval_loss-->19.223664,test_eval_loss-->8.828194,acc===0.225490
+INFO:root:epoch:30 train_eval_loss-->19.276847,test_eval_loss-->8.697939,acc===0.176471
+INFO:root:epoch:31 train_eval_loss-->19.219431,test_eval_loss-->8.719653,acc===0.176471
+INFO:root:epoch:32 train_eval_loss-->19.034139,test_eval_loss-->9.027616,acc===0.166667
+INFO:root:epoch:33 train_eval_loss-->19.198781,test_eval_loss-->8.518504,acc===0.205882
+INFO:root:epoch:34 train_eval_loss-->18.761451,test_eval_loss-->8.583107,acc===0.196078
+INFO:root:epoch:35 train_eval_loss-->18.588398,test_eval_loss-->8.330871,acc===0.196078
+INFO:root:epoch:36 train_eval_loss-->18.390179,test_eval_loss-->8.262414,acc===0.156863
+INFO:root:epoch:37 train_eval_loss-->18.187508,test_eval_loss-->7.993229,acc===0.196078
+INFO:root:epoch:38 train_eval_loss-->17.704202,test_eval_loss-->8.215779,acc===0.235294
+INFO:root:epoch:39 train_eval_loss-->17.707341,test_eval_loss-->7.942754,acc===0.205882
+INFO:root:epoch:40 train_eval_loss-->17.278531,test_eval_loss-->7.732062,acc===0.196078
+INFO:root:epoch:41 train_eval_loss-->16.876616,test_eval_loss-->7.860805,acc===0.196078
+INFO:root:epoch:42 train_eval_loss-->16.760902,test_eval_loss-->7.543536,acc===0.215686
+INFO:root:epoch:43 train_eval_loss-->16.159893,test_eval_loss-->8.004323,acc===0.137255
+INFO:root:epoch:44 train_eval_loss-->15.773656,test_eval_loss-->7.821070,acc===0.196078
+INFO:root:epoch:45 train_eval_loss-->14.861836,test_eval_loss-->7.936436,acc===0.156863
+INFO:root:epoch:46 train_eval_loss-->14.367502,test_eval_loss-->7.927849,acc===0.196078
+INFO:root:epoch:47 train_eval_loss-->13.802072,test_eval_loss-->7.994121,acc===0.196078
+INFO:root:epoch:48 train_eval_loss-->13.373813,test_eval_loss-->7.945291,acc===0.166667
+INFO:root:epoch:49 train_eval_loss-->13.053345,test_eval_loss-->7.991691,acc===0.147059
+INFO:root:epoch:50 train_eval_loss-->12.859829,test_eval_loss-->8.031504,acc===0.166667
+INFO:root:epoch:51 train_eval_loss-->12.639106,test_eval_loss-->8.007057,acc===0.176471
+INFO:root:epoch:52 train_eval_loss-->12.552685,test_eval_loss-->7.923137,acc===0.176471
+INFO:root:epoch:53 train_eval_loss-->12.461778,test_eval_loss-->7.993343,acc===0.137255
+INFO:root:epoch:54 train_eval_loss-->12.358183,test_eval_loss-->8.224168,acc===0.147059
+INFO:root:epoch:55 train_eval_loss-->12.417967,test_eval_loss-->8.131654,acc===0.137255
+INFO:root:epoch:56 train_eval_loss-->12.147725,test_eval_loss-->7.761209,acc===0.186275
+INFO:root:epoch:57 train_eval_loss-->12.309303,test_eval_loss-->7.728901,acc===0.186275
+INFO:root:epoch:58 train_eval_loss-->12.717761,test_eval_loss-->7.393267,acc===0.186275
+INFO:root:epoch:59 train_eval_loss-->12.237707,test_eval_loss-->8.122117,acc===0.147059
+INFO:root:epoch:60 train_eval_loss-->13.388846,test_eval_loss-->7.792378,acc===0.127451
+INFO:root:epoch:61 train_eval_loss-->13.759149,test_eval_loss-->8.085378,acc===0.176471
+INFO:root:epoch:62 train_eval_loss-->12.920607,test_eval_loss-->7.670759,acc===0.166667
+INFO:root:epoch:63 train_eval_loss-->12.592563,test_eval_loss-->7.673320,acc===0.245098
+INFO:root:epoch:64 train_eval_loss-->14.159236,test_eval_loss-->7.693228,acc===0.176471
+INFO:root:epoch:65 train_eval_loss-->13.835609,test_eval_loss-->7.817226,acc===0.245098
+INFO:root:epoch:66 train_eval_loss-->13.303129,test_eval_loss-->7.993609,acc===0.186275
+INFO:root:epoch:67 train_eval_loss-->13.949571,test_eval_loss-->7.948147,acc===0.215686
+INFO:root:epoch:68 train_eval_loss-->13.255354,test_eval_loss-->7.965519,acc===0.156863
+INFO:root:epoch:69 train_eval_loss-->13.298253,test_eval_loss-->12.897920,acc===0.009804
+INFO:root:epoch:70 train_eval_loss-->20.953620,test_eval_loss-->8.992560,acc===0.196078
+INFO:root:epoch:71 train_eval_loss-->18.629267,test_eval_loss-->8.359024,acc===0.166667
+INFO:root:epoch:72 train_eval_loss-->17.664839,test_eval_loss-->7.880822,acc===0.215686
+INFO:root:epoch:73 train_eval_loss-->16.665890,test_eval_loss-->8.061288,acc===0.147059
+INFO:root:epoch:74 train_eval_loss-->16.368977,test_eval_loss-->9.020150,acc===0.215686
+INFO:root:epoch:75 train_eval_loss-->15.619693,test_eval_loss-->8.298638,acc===0.156863
+INFO:root:epoch:76 train_eval_loss-->16.243432,test_eval_loss-->7.569701,acc===0.166667
+INFO:root:epoch:77 train_eval_loss-->14.605209,test_eval_loss-->8.958725,acc===0.078431
+INFO:root:epoch:78 train_eval_loss-->15.545345,test_eval_loss-->6.819862,acc===0.156863
+INFO:root:epoch:79 train_eval_loss-->14.548553,test_eval_loss-->7.395227,acc===0.215686
+INFO:root:epoch:80 train_eval_loss-->14.857789,test_eval_loss-->7.011442,acc===0.176471
+INFO:root:epoch:81 train_eval_loss-->17.480140,test_eval_loss-->9.256417,acc===0.176471
+INFO:root:epoch:82 train_eval_loss-->19.585654,test_eval_loss-->8.972188,acc===0.176471
+INFO:root:epoch:83 train_eval_loss-->19.698747,test_eval_loss-->8.833815,acc===0.186275
+INFO:root:epoch:84 train_eval_loss-->19.769136,test_eval_loss-->8.946373,acc===0.205882
+INFO:root:epoch:85 train_eval_loss-->19.645636,test_eval_loss-->8.911179,acc===0.176471
+INFO:root:epoch:86 train_eval_loss-->18.755929,test_eval_loss-->7.335339,acc===0.215686
+INFO:root:epoch:87 train_eval_loss-->18.763458,test_eval_loss-->7.998898,acc===0.137255
+INFO:root:epoch:88 train_eval_loss-->17.318547,test_eval_loss-->8.385740,acc===0.147059
+INFO:root:epoch:89 train_eval_loss-->20.061362,test_eval_loss-->7.726987,acc===0.215686
+INFO:root:epoch:90 train_eval_loss-->18.680019,test_eval_loss-->7.507230,acc===0.137255
+INFO:root:epoch:91 train_eval_loss-->17.994406,test_eval_loss-->7.545572,acc===0.107843
+INFO:root:epoch:92 train_eval_loss-->16.645503,test_eval_loss-->8.408587,acc===0.127451
+INFO:root:epoch:93 train_eval_loss-->15.497672,test_eval_loss-->8.914366,acc===0.049020
+INFO:root:epoch:94 train_eval_loss-->15.729434,test_eval_loss-->6.970722,acc===0.264706
+INFO:root:epoch:95 train_eval_loss-->16.054652,test_eval_loss-->7.291994,acc===0.166667
+INFO:root:epoch:96 train_eval_loss-->15.664463,test_eval_loss-->7.083312,acc===0.156863
+INFO:root:epoch:97 train_eval_loss-->15.077232,test_eval_loss-->7.802177,acc===0.098039
+INFO:root:epoch:98 train_eval_loss-->14.939761,test_eval_loss-->8.094165,acc===0.147059
+INFO:root:epoch:99 train_eval_loss-->14.276868,test_eval_loss-->7.548428,acc===0.166667
+INFO:root:epoch:100 train_eval_loss-->13.937613,test_eval_loss-->7.417782,acc===0.176471
+INFO:root:epoch:101 train_eval_loss-->13.646559,test_eval_loss-->7.895115,acc===0.137255
+INFO:root:epoch:102 train_eval_loss-->14.143707,test_eval_loss-->9.895452,acc===0.078431
+INFO:root:epoch:103 train_eval_loss-->13.738777,test_eval_loss-->7.112975,acc===0.196078
+INFO:root:epoch:104 train_eval_loss-->12.790157,test_eval_loss-->7.085499,acc===0.186275
+INFO:root:epoch:105 train_eval_loss-->13.385935,test_eval_loss-->7.078464,acc===0.147059
+INFO:root:epoch:106 train_eval_loss-->12.023770,test_eval_loss-->8.218990,acc===0.117647
+INFO:root:epoch:107 train_eval_loss-->12.261810,test_eval_loss-->7.300990,acc===0.176471
+INFO:root:epoch:108 train_eval_loss-->11.133807,test_eval_loss-->8.654099,acc===0.078431
+INFO:root:epoch:109 train_eval_loss-->11.084120,test_eval_loss-->7.331580,acc===0.166667
+INFO:root:epoch:110 train_eval_loss-->10.912982,test_eval_loss-->7.480798,acc===0.166667
+INFO:root:epoch:111 train_eval_loss-->9.777996,test_eval_loss-->7.244994,acc===0.147059
+INFO:root:epoch:112 train_eval_loss-->11.339034,test_eval_loss-->7.225521,acc===0.176471
+INFO:root:epoch:113 train_eval_loss-->10.953901,test_eval_loss-->6.831295,acc===0.254902
+INFO:root:epoch:114 train_eval_loss-->10.441444,test_eval_loss-->7.003963,acc===0.107843
+INFO:root:epoch:115 train_eval_loss-->9.914111,test_eval_loss-->7.268967,acc===0.156863
+INFO:root:epoch:116 train_eval_loss-->9.397243,test_eval_loss-->7.542691,acc===0.098039
+INFO:root:epoch:117 train_eval_loss-->9.913951,test_eval_loss-->6.963536,acc===0.127451
+INFO:root:epoch:118 train_eval_loss-->10.566709,test_eval_loss-->7.078566,acc===0.156863
+INFO:root:epoch:119 train_eval_loss-->9.074112,test_eval_loss-->7.089666,acc===0.147059
+INFO:root:epoch:120 train_eval_loss-->8.652493,test_eval_loss-->7.005270,acc===0.156863
+INFO:root:epoch:121 train_eval_loss-->8.312085,test_eval_loss-->6.876377,acc===0.196078
+INFO:root:epoch:122 train_eval_loss-->7.866186,test_eval_loss-->6.893234,acc===0.215686
+INFO:root:epoch:123 train_eval_loss-->7.711165,test_eval_loss-->6.918578,acc===0.186275
+INFO:root:epoch:124 train_eval_loss-->7.416590,test_eval_loss-->7.132218,acc===0.176471
+INFO:root:epoch:125 train_eval_loss-->7.181387,test_eval_loss-->7.462969,acc===0.176471
+INFO:root:epoch:126 train_eval_loss-->6.886880,test_eval_loss-->7.470876,acc===0.137255
+INFO:root:epoch:127 train_eval_loss-->6.844112,test_eval_loss-->7.194549,acc===0.117647
+INFO:root:epoch:128 train_eval_loss-->6.624370,test_eval_loss-->7.024840,acc===0.186275
+INFO:root:epoch:129 train_eval_loss-->6.256035,test_eval_loss-->6.965493,acc===0.205882
+INFO:root:epoch:130 train_eval_loss-->6.162524,test_eval_loss-->7.062492,acc===0.176471
+INFO:root:epoch:131 train_eval_loss-->5.902286,test_eval_loss-->7.065764,acc===0.186275
+INFO:root:epoch:132 train_eval_loss-->5.674480,test_eval_loss-->7.287831,acc===0.166667
+INFO:root:epoch:133 train_eval_loss-->5.459965,test_eval_loss-->7.053300,acc===0.176471
+INFO:root:epoch:134 train_eval_loss-->5.411400,test_eval_loss-->7.211276,acc===0.196078
+INFO:root:epoch:135 train_eval_loss-->5.153148,test_eval_loss-->7.168879,acc===0.166667
+INFO:root:epoch:136 train_eval_loss-->4.968150,test_eval_loss-->7.146603,acc===0.137255
+INFO:root:epoch:137 train_eval_loss-->4.887108,test_eval_loss-->7.176177,acc===0.156863
+INFO:root:epoch:138 train_eval_loss-->4.751454,test_eval_loss-->7.131858,acc===0.156863
+INFO:root:epoch:139 train_eval_loss-->4.522063,test_eval_loss-->7.213120,acc===0.147059
+INFO:root:epoch:140 train_eval_loss-->4.436814,test_eval_loss-->7.177722,acc===0.147059
+INFO:root:epoch:141 train_eval_loss-->4.339358,test_eval_loss-->7.238942,acc===0.156863
+INFO:root:epoch:142 train_eval_loss-->4.314828,test_eval_loss-->7.158324,acc===0.147059
+INFO:root:epoch:143 train_eval_loss-->4.205682,test_eval_loss-->7.192142,acc===0.147059
+INFO:root:epoch:144 train_eval_loss-->4.151078,test_eval_loss-->7.205984,acc===0.147059
+INFO:root:epoch:145 train_eval_loss-->4.079537,test_eval_loss-->7.209269,acc===0.147059
+INFO:root:epoch:146 train_eval_loss-->4.037429,test_eval_loss-->7.210481,acc===0.156863
+INFO:root:epoch:147 train_eval_loss-->4.009230,test_eval_loss-->7.221445,acc===0.147059
+INFO:root:epoch:148 train_eval_loss-->3.978425,test_eval_loss-->7.213479,acc===0.147059
+INFO:root:epoch:149 train_eval_loss-->3.969649,test_eval_loss-->7.223555,acc===0.147059
+INFO:root:epoch:150 train_eval_loss-->3.963802,test_eval_loss-->7.217967,acc===0.147059
+INFO:root:epoch:151 train_eval_loss-->3.960388,test_eval_loss-->7.220645,acc===0.156863
+INFO:root:epoch:152 train_eval_loss-->3.952315,test_eval_loss-->7.232930,acc===0.147059
+INFO:root:epoch:153 train_eval_loss-->3.961774,test_eval_loss-->7.219117,acc===0.156863
+INFO:root:epoch:154 train_eval_loss-->3.971917,test_eval_loss-->7.223721,acc===0.147059
+INFO:root:epoch:155 train_eval_loss-->3.982598,test_eval_loss-->7.232115,acc===0.156863
+INFO:root:epoch:156 train_eval_loss-->3.983835,test_eval_loss-->7.233184,acc===0.156863
+INFO:root:epoch:157 train_eval_loss-->4.031021,test_eval_loss-->7.253357,acc===0.156863
+INFO:root:epoch:158 train_eval_loss-->4.098402,test_eval_loss-->7.202733,acc===0.186275
+INFO:root:epoch:159 train_eval_loss-->4.164567,test_eval_loss-->7.303112,acc===0.137255
+INFO:root:epoch:160 train_eval_loss-->4.292579,test_eval_loss-->7.316998,acc===0.156863
+INFO:root:epoch:161 train_eval_loss-->4.473327,test_eval_loss-->7.184801,acc===0.147059
+INFO:root:epoch:162 train_eval_loss-->4.500753,test_eval_loss-->7.304463,acc===0.156863
+INFO:root:epoch:163 train_eval_loss-->4.589755,test_eval_loss-->7.254175,acc===0.156863

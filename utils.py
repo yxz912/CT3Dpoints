@@ -90,7 +90,8 @@ class myToTensor:
         image, mask = data
         msk=torch.from_numpy(mask)
         #return torch.from_numpy(image).permute(2, 0, 1), torch.from_numpy(mask).permute(2, 0, 1)
-        return torch.from_numpy(image).permute(2, 0, 1), msk
+        #return torch.from_numpy(image).permute(2, 0, 1), msk
+        return torch.from_numpy(image), msk
 
 class myResize:
     def __init__(self, size_h=512, size_w=512):
@@ -306,6 +307,8 @@ class EuclideanLoss(nn.Module):
         #loss=torch.sqrt(((output - target)**2).sum())
         eg=(output-target)**2
         egd=torch.sqrt(torch.sum(eg,dim=(2,3)))
+        # eg = abs(output - target)
+        # egd=torch.sum(eg,dim=(2,3))
         loss=egd.sum() / (self.setting_config.batch_size*self.setting_config.num_classes)
         return loss
 
@@ -320,6 +323,8 @@ class Deepeucloss(nn.Module):
 
         gt_loss=0.0
         for i in range(len(gt_pre)):
-            gt_loss += 0.1*i* self.euc(gt_pre[i],target)
+            #gt_loss += gt_pre[i][0]* self.euc(gt_pre[i][1],target)
+            gt_loss += 0.2*(i+1)*self.euc(gt_pre[i][1],target)
+            #print(gt_pre[i][0])
         return outloss + gt_loss
 

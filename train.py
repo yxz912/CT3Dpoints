@@ -11,13 +11,14 @@ from configs.config_setting import setting_config
 import logging
 import torch.optim as optim
 from models.resnet import resnet34, resnet101,resnet50,resnet152
-from models.Pointnet_ed import Pointnet2d
+from models.Pointnet_ed import Pointneted
 from models.unet import UNet
 from models.egeunet import EGEUNet
 from models.Pointnet3d import pointnet3d
 
 import warnings
 warnings.filterwarnings("ignore")  ##警告过滤
+
 
 if __name__ == '__main__':
     config = setting_config
@@ -70,9 +71,11 @@ if __name__ == '__main__':
                             drop_last=True)
 
     print('#----------Prepareing Model----------#')
-    if config.network == 'Pointnet2d':
-        model = Pointnet2d(num_classes=config.num_classes,
-                        input_channels=train_dataset.real_input_channels,
+    if config.network == 'Pointneted':
+        model = Pointneted(num_classes=config.num_classes,
+                           input_channels=train_dataset.real_input_channels,
+                           cfg=[96,128,256,512,1024,512,256,128,64,32],
+                           deep_supervision=config.deep_supervision
                         )
 
     elif config.network == 'resnet50':
@@ -90,7 +93,7 @@ if __name__ == '__main__':
     elif config.network == 'egeunet':
         model = EGEUNet(num_classes=config.num_classes,
                         input_channels=train_dataset.real_input_channels,
-                        c_list=[96,128,256,512,1024,2048],
+                        c_list=[128,256,512,1024,512,128],
                          bridge=True,
                          gt_ds=True,
                         deep_supervision=config.deep_supervision
@@ -99,13 +102,18 @@ if __name__ == '__main__':
         model = pointnet3d(n_classes=config.num_classes,
                            n_channels=train_dataset.real_input_channels
         )
-
+    elif config.network == 'Pointneted_plus':
+        model = Pointneted(num_classes=config.num_classes,
+                           input_channels=train_dataset.real_input_channels,
+                           cfg=[96, 128, 256, 512, 1024, 512, 256, 128, 64, 32,16],
+                           deep_supervision=config.deep_supervision
+                           )
     else:
         raise Exception('network in not right!')
     model = model.cuda()
 
     print('#----------Prepareing loss, opt, sch and amp----------#')
-    #loss_function = nn.MSELoss()
+
     if config.deep_supervision:
         loss_function = Deepeucloss(config)
     else:
@@ -113,5 +121,5 @@ if __name__ == '__main__':
     optimizer = get_optimizer(config, model)
     scheduler = get_scheduler(config, optimizer)
 
-    simple_train_val(config,model,train_loader,val_loader,optimizer,loss_function,logging,scheduler,val_dataset.val_size)
+    simple_train_val(config,model,train_loader,val_loader,optimizer,loss_function,logging,scheduler,val_dataset.val_size,train_dataset.train_size)
 

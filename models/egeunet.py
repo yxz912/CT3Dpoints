@@ -25,7 +25,7 @@ class DepthWiseConv2d(nn.Module):
 
 
 class LayerNorm(nn.Module):
-    r""" From ConvNeXt (https://arxiv.org/pdf/2201.03545.pdf)
+    r"""
     实现了层内归一化(Layer Normalization),这个LayerNorm类就提供了一个通用的层内归一化实现,既支持NCHW也支持NHWC两种格式。
     对于输入特征矩阵（如全连接层或卷积层的输出），计算每个样本在特征维度上的均值和标准差。
     对每个样本进行特征维度的归一化。对于每个特征维度的每个样本，通过减去均值并除以标准差，将其映射到均值为0、标准差为1的分布。
@@ -212,6 +212,8 @@ class EGEUNet(nn.Module):
         self.bridge = bridge
         self.gt_ds = gt_ds
         self.deep_supervision = deep_supervision
+        self.w = nn.Parameter(torch.FloatTensor([-2.5, -2, -1.5, -1, -0.5]))
+
 
         self.avgpool=nn.AdaptiveAvgPool2d((1, 3))
 
@@ -380,7 +382,9 @@ class EGEUNet(nn.Module):
 
         #out0 = F.interpolate(self.final(out1), scale_factor=(2, 2), mode='bilinear',align_corners=True)  # b, num_class, H, W
         out0 = self.avgpool(self.final(out1))
+
+        w = torch.sigmoid(self.w)
         if self.gt_ds and self.deep_supervision:
-            return [gt_pre5, gt_pre4,gt_pre3,gt_pre2,gt_pre1], out0
+            return [[w[0],gt_pre5], [w[1],gt_pre4],[w[2],gt_pre3],[w[3],gt_pre2],[w[4],gt_pre1]], out0
         else:
             return out0

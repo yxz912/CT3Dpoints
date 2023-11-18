@@ -4,9 +4,9 @@ import math
 from datetime import datetime
 
 class setting_config:
-    network = 'pointnet3d'  #   'egeunet # 'UNet'   #'resnet101'    #'resnet50'    #'Pointnet2d'
-    data_path='/media/yxz/新加卷/teeth_ct_points/'
-    label_path='/media/yxz/新加卷/teeth_ct_points/三维坐标表格.xlsx'
+    network ='Pointneted_plus' #'pointnet3d' #'Pointneted' #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
+    data_path='D:\\teeth_ct_points\\CT3Dpoints\\'
+    label_path="D:\\teeth_ct_points\\CT3Dpoints\\三维坐标表格.xlsx"
     pretrained_path = './pre_trained/'
     num_classes = 3
     input_size_h = 512
@@ -20,11 +20,11 @@ class setting_config:
     rank = None
     amp = False
     gpu_id = '0'
-    batch_size = 2
+    batch_size = 4
     val_bs=1
-    epochs = 100
+    epochs = 300
     deep_supervision = True
-    threshold = 5
+    threshold = math.sqrt(75)
     train_mean = [38.167084, 36.47113, 35.658463, 34.7275, 34.397972, 34.392757, 33.96709, 34.126865, 34.28234,
                   33.729267, 32.7962, 32.064926, 31.681631, 31.124203, 30.844501, 31.361849, 32.73974, 34.215652,
                   36.648277, 38.611458, 40.539837, 42.120747, 43.28669, 44.45494, 45.614132, 46.21989, 47.45023,
@@ -50,6 +50,11 @@ class setting_config:
                58.958794, 59.510704, 60.026344, 60.16703, 60.841858, 61.621956, 61.22611, 61.83866, 62.08808, 61.1031]
 
     work_dir = 'results/' + network + '_' + datetime.now().strftime('%A_%d_%B_%Y_%Hh_%Mm_%Ss') + '/'
+
+    if network=='pointnet3d':
+        tensor_size=1
+    else:
+        tensor_size=0
 
     train_transformer = transforms.Compose([
         myToTensor(),
@@ -119,7 +124,7 @@ class setting_config:
         momentum = 0.9  # default: 0 – momentum factor
         weight_decay = 0.05  # default: 0 – weight decay (L2 penalty)
         dampening = 0  # default: 0 – dampening for momentum
-        nesterov = False  # default: False – enables Nesterov momentum
+        nesterov = True  # default: False – enables Nesterov momentum
 
     sch = 'CosineAnnealingLR'
     if sch == 'StepLR':

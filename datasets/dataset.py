@@ -15,15 +15,17 @@ class YXZ_datasets(Dataset):
         self.num_cls = config.num_classes
         self.in_h=config.input_size_h
         self.in_w=config.input_size_w
-        self.real_input_channels,self.commons_train,self.commons_test = self.get_min_input_channels(path_Data+'train/images/',path_Data + 'val/images/')
+        self.real_input_channels,self.commons_train,self.commons_test = self.get_min_input_channels(path_Data+'train\\images\\',path_Data + 'val\\images\\')
         # 读取excel 文件
         self.data_label = pd.read_excel(label_path)
+        self.tensize = config.tensor_size
 
         if train:
-            images_list = sorted(os.listdir(path_Data+'train/images/'))
+            images_list = sorted(os.listdir(path_Data+'train\\images\\'))
             self.data=[]
+            self.train_size = len(images_list)
             for i in range(len(images_list)):
-                img_path = path_Data + 'train/images/'+images_list[i]
+                img_path = path_Data + 'train\\images\\'+images_list[i]
                 mask_name = images_list[i]
                 self.data.append([img_path,mask_name])
             if len(config.train_mean)!=self.real_input_channels or len(config.train_std)!=self.real_input_channels:
@@ -33,11 +35,11 @@ class YXZ_datasets(Dataset):
             self.mean_label,self.std_label=self.get_label_standardization(namelist=images_list)
             self.transformer = config.train_transformer
         else:
-            images_list = sorted(os.listdir(path_Data + 'val/images/'))
+            images_list = sorted(os.listdir(path_Data + 'val\\images\\'))
             self.val_size = len(images_list)
             self.data = []
             for i in range(len(images_list)):
-                img_path = path_Data + 'val/images/' + images_list[i]
+                img_path = path_Data + 'val\\images\\' + images_list[i]
                 mask_name = images_list[i]
                 self.data.append([img_path, mask_name])
             if len(config.val_mean) != self.real_input_channels or len(config.val_std) != self.real_input_channels:
@@ -58,6 +60,12 @@ class YXZ_datasets(Dataset):
         img = ((img- np.min(img)) / (np.max(img) - np.min(img))) * 255.
         #img = ((img - np.min(img)) / (np.max(img) - np.min(img)))
 
+        if self.tensize:
+            img = cv2.resize(img,(self.in_w, self.in_h))
+            img = img.reshape((self.real_input_channels, self.in_w, self.in_h, 1))
+        else:
+            img = np.transpose(img, (2, 0, 1))
+
         img,msk = self.transformer((img,msk))
         return img,msk
 
@@ -67,7 +75,9 @@ class YXZ_datasets(Dataset):
     def concat_cv(self,folder,common=1):
         img_paths = [os.path.join(folder, f) for f in sorted(os.listdir(folder)) if f.endswith('.png')]
         # 获取图像的宽度和高度
-        height, width = cv2.imread(img_paths[0]).shape[:2]
+
+        height, width = cv2.imdecode(np.fromfile(img_paths[0] ,dtype=np.uint8), cv2.IMREAD_COLOR).shape[:2]
+
         # 创建一个与图像尺寸相同的数组（初始化为零）
         r_concat = np.zeros((height, width,1), dtype=np.uint8)
         #print(r_concat.shape)
@@ -76,12 +86,12 @@ class YXZ_datasets(Dataset):
             if i%common==0 and jj<self.real_input_channels:
                 jj=jj+1
                 if i==0:
-                    img = cv2.imread(img_path)
+                    img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
                     r = img[:, :, 2]
                     r = np.stack((r,) * 1, axis=-1)
                     r_concat=r.copy()
                     continue
-                img = cv2.imread(img_path)
+                img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
                 r = img[:, :, 2]
                 r = np.stack((r,) * 1, axis=-1)
                 r_concat=np.concatenate((r_concat, r), axis=2)
@@ -97,14 +107,14 @@ class YXZ_datasets(Dataset):
         for j in sorted(os.listdir(dicom_dir)):
             r_path = os.path.join(dicom_dir, j)
             size = len(sorted(os.listdir(r_path)))
-           # common1 = math.ceil(size / self.input_channels)
-            # common2 = int(size / self.input_channels)
+           # common1 = math.ceil(size \\ self.input_channels)
+            # common2 = int(size \\ self.input_channels)
             # if common2!=1:
-            #     channel1 = math.ceil(size/common1)
-            #     channel2 = math.ceil(size/common2)
+            #     channel1 = math.ceil(size\\common1)
+            #     channel2 = math.ceil(size\\common2)
             #     channel = channel1 if channel1>channel2 else channel2
             # else:
-            #     channel = math.ceil(size / common1)
+            #     channel = math.ceil(size \\ common1)
             common = math.ceil(size / self.input_channels)
             channel = math.ceil(size / common)
             channels.append(channel)
@@ -138,28 +148,28 @@ class YXZ_datasets(Dataset):
         imgs_path_list=[]
         if trian:
             print(f"#------Calculate train mean and std ing...------#")
-            fold= os.path.join(dir, 'train/images/')
+            fold= os.path.join(dir, 'train\\images\\')
             for k,i in enumerate(sorted(os.listdir(fold))):
                 fg=os.path.join(fold,i)
                 img_paths = [os.path.join(fg, f) for f in sorted(os.listdir(fg)) if f.endswith('.png')]
                 imgst=[]
                 for kk,timg in enumerate(img_paths):
                     if  kk % self.commons_train[k] == 0 and len(imgst)<self.real_input_channels:
-                        img=cv2.imread(timg)
+                        img=cv2.imdecode(np.fromfile(timg, dtype=np.uint8), cv2.IMREAD_COLOR)
                         img=img[:,:,0,np.newaxis]
                         imgst.append(img)
                 imgd=np.concatenate(imgst,axis=2)
                 imgs_path_list.append(imgd)
         else:
             print(f"#------Calculate val mean and std ing...------#")
-            fold= os.path.join(dir, 'val/images/')
+            fold= os.path.join(dir, 'val\\images\\')
             for k,i in enumerate(sorted(os.listdir(fold))):
                 fg=os.path.join(fold,i)
                 img_paths = [os.path.join(fg, f) for f in sorted(os.listdir(fg)) if f.endswith('.png')]
                 imgst=[]
                 for kk,timg in enumerate(img_paths):
                     if  kk % self.commons_test[k] == 0 and len(imgst)<self.real_input_channels:
-                        img=cv2.imread(timg)
+                        img=cv2.imdecode(np.fromfile(timg, dtype=np.uint8), cv2.IMREAD_COLOR)
                         img=img[:,:,0,np.newaxis]
                         imgst.append(img)
                 imgd=np.concatenate(imgst,axis=2)

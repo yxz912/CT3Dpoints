@@ -155,32 +155,32 @@ import random
 # mask[...,0] = mask[...,0]*(50/30)
 # # mask[...,1] = mask[...,1]*(40/image.shape[2])
 # # print(mask)
-output = torch.tensor([[[[ -3,  3,  1]],
-
-         [[  2, 0,   4]],
-         [[ 5,  6,  2]]
-         ],
-
-
-        [[[ 5,  6,  2]],
-
-         [[ 3, 4,  3]],
-        [[  2, 0,   4]]]],
-)
-
-target=torch.tensor([[[[ 5,  6,  2]],
-
-         [[ 3, 4,  3]],
-
-         [[ -1,   5,  1]]],
-
-    [[[ -3,  3,  1]],
-
-         [[  2, 0,   4]],
-
-         [[1,  3,   3]]]]
-
-)
+# output = torch.tensor([[[[ -3,  3,  1]],
+#
+#          [[  2, 0,   4]],
+#          [[ 5,  6,  2]]
+#          ],
+#
+#
+#         [[[ 5,  6,  2]],
+#
+#          [[ 3, 4,  3]],
+#         [[  2, 0,   4]]]],
+# )
+#
+# target=torch.tensor([[[[ 5,  6,  2]],
+#
+#          [[ 3, 4,  3]],
+#
+#          [[ -1,   5,  1]]],
+#
+#     [[[ -3,  3,  1]],
+#
+#          [[  2, 0,   4]],
+#
+#          [[1,  3,   3]]]]
+#
+# )
 
 #
 # loss=torch.sqrt((output - target)**2)
@@ -196,9 +196,91 @@ target=torch.tensor([[[[ 5,  6,  2]],
 # print(pred_)
 # target_ = target.view(size, -1)
 # print(target_)
+#
+# import torch.nn as nn
+#
+# w=nn.Parameter(torch.ones(4))
+# print(w[0])
 
+import torch
 import torch.nn as nn
 
-w=nn.Parameter(torch.ones(4))
-print(w[0])
+# class Conv4DLayerNorm(nn.Module):
+#     def __init__(self, normalized_shape, eps=1e-6, data_format="channels_last"):
+#         super().__init__()
+#         self.normalized_shape = normalized_shape
+#         self.eps = eps
+#         self.data_format = data_format
+#         if self.data_format not in ["channels_last", "channels_first"]:
+#             raise NotImplementedError
+#         # 初始化可学习参数
+#         if self.data_format == "channels_last":
+#             self.weight = nn.Parameter(torch.ones(normalized_shape))
+#             self.bias = nn.Parameter(torch.zeros(normalized_shape))
+#         elif self.data_format == "channels_first":
+#             self.weight = nn.Parameter(torch.ones(1, normalized_shape, 1, 1, 1))
+#             self.bias = nn.Parameter(torch.zeros(1, normalized_shape, 1, 1, 1))
+#
+#     def forward(self, x):
+#         if self.data_format == "channels_last":
+#             return F.layer_norm(x, x.size()[1:], self.weight, self.bias, self.eps)
+#         elif self.data_format == "channels_first":
+#             u = x.mean(dim=(2, 3, 4), keepdim=True)
+#             s = (x - u).pow(2).mean(dim=(2, 3, 4), keepdim=True)
+#             x = (x - u) / torch.sqrt(s + self.eps)
+#             x = self.weight * x + self.bias
+#             return x
+#
+conv_layer = nn.Conv2d(in_channels=16, out_channels=64, kernel_size=3,stride=4,padding=1,groups=16)
+input_tensor = torch.randn(4, 16, 128, 128)
+output_tensor = conv_layer(input_tensor)
+maxpool_layer = nn.MaxPool2d(kernel_size=4)
+output_tensor = maxpool_layer(output_tensor)
+# # #layer_norm=nn.LayerNorm((64 ,128, 128, 4))
+# # #out = layer_norm(output_tensor)
+# # # ln = Conv4DLayerNorm(64,eps=1e-6, data_format="channels_first")
+# # # output_tensor = ln(output_tensor)
+# groupnorm3d = nn.GroupNorm(4,64)
+# # # out=groupnorm3d(output_tensor)
+# # # avg_pool = nn.AvgPool3d(kernel_size=2, stride=2)
+# # # output_tensor = avg_pool(output_tensor)
+# # out=F.gelu(output_tensor)
+# # ap = nn.AdaptiveAvgPool3d((1, 1,3))
+# # out = ap(output_tensor)
+print(output_tensor.shape)
+
+# conv_layer = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3,padding=2,dilation=2)
+# input_tensor = torch.randn(4, 16, 128, 128)
+# output_tensor = conv_layer(input_tensor)
+#
+# print(output_tensor.shape)
+
+
+# x=torch.tensor([[2,4],[1,3]])
+# y=torch.tensor([[2,4],[43,3]])
+# x1=torch.tensor([[2,4],[1,3]])
+# z=torch.add(x,y,x1)
+# print(z)
+
+# import torch
+#
+# # 创建一个形状为(4, 64, 128, 128)的示例张量
+# tensor = torch.randn(4, 64, 128, 128)
+#
+# # 将张量重新调整形状为(4, 16, 128, 128, 4)
+# reshaped_tensor = tensor.view(tensor.shape[0],16,tensor.shape[2],tensor.shape[3],-1)
+#
+#
+# print(reshaped_tensor.shape)  # 输出为 torch.Size([4, 16, 128, 128, 4])
+#
+# rs = reshaped_tensor.view(reshaped_tensor.shape[0],reshaped_tensor.shape[1]*reshaped_tensor.shape[4],reshaped_tensor.shape[2],reshaped_tensor.shape[3])
+# print(rs.shape)
+
+# weight = nn.Parameter(torch.ones(5))
+# print(weight)
+
+# input_tensor = torch.randn(4, 3, 1, 3)
+# out = input_tensor.view(4,3,1,1,-1)
+# print(out.shape)
+
 
