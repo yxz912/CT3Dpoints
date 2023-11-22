@@ -2,10 +2,14 @@ import numpy as np
 from tqdm import tqdm
 import torch
 from torch.cuda.amp import autocast as autocast
+import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 def simple_train_val(config=None,model=None,train_loader=None,validate_loader=None,
                      optimizer=None,loss_function=None,logging=None,scheduler=None,val_size=49,train_size=113):
+    best_test_acc=0.0
+    tv=[]
+    vv=[]
     for epoch in range(config.epochs):
         # train
         model.train()
@@ -68,10 +72,25 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
 
             train_accurate = countt / (train_size*3)
             val_accurate = count/(val_size*3)
-
+            tv.append(train_accurate)
+            vv.append(val_accurate)
+            if val_accurate>best_test_acc:
+                best_test_acc = val_accurate
             print('[epoch %d] train_eval_loss: %.4f train_accuracy: %.4f test_eval_loss: %.4f  test_accuracy: %.4f' %
                   (epoch , running_loss/(train_size*config.num_classes),train_accurate,loss/(val_size*config.num_classes), val_accurate))
             logging.info("epoch:%d train_eval_loss-->%f,train_acc-->%f,test_eval_loss-->%f,test_acc===%f", epoch,running_loss/(train_size*config.num_classes),train_accurate,loss/(val_size*config.num_classes),val_accurate)
 
+    print("the best test acc==",best_test_acc)
+    # 创建 x 值的列表，可以是迭代的次数或任何你希望作为 x 轴的变量
 
+    # 使用 matplotlib 绘制迭代图
+    plt.plot(range(len(vv)), vv, 'o-')
+
+    # 添加标题和标签
+    plt.title(f"Test Accuracy over Iterations---{config.network}")
+    plt.xlabel('Iterations')
+    plt.ylabel('Accuracy')
+
+    # 显示图形
+    plt.show()
 

@@ -5,8 +5,8 @@ from datetime import datetime
 
 class setting_config:
     network ='Pointneted_plus' #'pointnet3d' #'Pointneted' #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
-    data_path='D:\\teeth_ct_points\\CT3Dpoints\\'
-    label_path="D:\\teeth_ct_points\\CT3Dpoints\\三维坐标表格.xlsx"
+    data_path='/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/'
+    label_path="/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
     pretrained_path = './pre_trained/'
     num_classes = 3
     input_size_h = 512
@@ -20,10 +20,11 @@ class setting_config:
     rank = None
     amp = False
     gpu_id = '0'
-    batch_size = 4
+    batch_size = 2
     val_bs=1
-    epochs = 300
+    epochs = 500
     deep_supervision = True
+    tailadd = False
     threshold = math.sqrt(75)
     train_mean = [38.167084, 36.47113, 35.658463, 34.7275, 34.397972, 34.392757, 33.96709, 34.126865, 34.28234,
                   33.729267, 32.7962, 32.064926, 31.681631, 31.124203, 30.844501, 31.361849, 32.73974, 34.215652,

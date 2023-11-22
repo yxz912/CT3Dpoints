@@ -68,14 +68,15 @@ class Deepwisenn(nn.Module):
             nn.GELU(),
             nn.Conv2d(dim_in, dim_out, kernel_size=1),
             nn.GroupNorm(4, dim_out),
-            # nn.Dropout(p=0.5)
+            #nn.Dropout(p=0.5)
         )
 
         self.dwn4d=nn.Sequential(
             nn.Conv3d(dim_in, dim_out, kernel_size=3, padding=2,dilation=2),  ##dilation: 膨胀或空洞系数,默认是1;  groups: 分组卷积,设置为dim_in即为depthwise卷积
             nn.GELU(),
+            # nn.Conv3d(dim_in, dim_out, kernel_size=3,stride=1,padding=1),
             nn.GroupNorm(4, dim_out),
-            # nn.Dropout(p=0.5)
+            #nn.Dropout(p=0.5)
         )
 
     def forward(self,x):
@@ -91,6 +92,9 @@ class Self_Attention_3D(nn.Module):
         x=y=8
         k_size = 3  # 设置卷积核的大小为3。
         pad = (k_size - 1) // 2  # 计算卷积操作的padding大小，以保持输入输出的尺寸一致。
+
+        # self.params_c = nn.Parameter(torch.Tensor(1,dim_in,x,y),
+        #                               requires_grad=True)
 
         self.params_xy = nn.Parameter(torch.Tensor(1, dim_in, x, y),
                                       requires_grad=True)  # p：定义一个可学习的参数 params_xy，它是一个具有大小为 (1, dim_in, x, y) 的四维张量。
@@ -457,10 +461,11 @@ class Pointneted(nn.Module):
 
 
 class Pointneted_plus(nn.Module):
-    def __init__(self,num_classes=3,input_channels=64,cfg=[96,128,256,512,1024,512,256,128,64,32,16],deep_supervision=True):
+    def __init__(self,num_classes=3,input_channels=64,cfg=[96,128,256,512,1024,512,256,128,64,32,16],deep_supervision=True,tailadd=True):
         super().__init__()
 
         self.deepsuper = deep_supervision
+        self.tail_add = tailadd
         self.num_classes = num_classes
         #self.weight = nn.Parameter(torch.ones(4))
 
@@ -515,12 +520,12 @@ class Pointneted_plus(nn.Module):
         )
 
         self.A3D3 = nn.Sequential(Self_Attention_3D(cfg[8]+cfg[7], cfg[7]),
-                                  nn.Conv2d(2 * cfg[7], cfg[8], kernel_size=3, stride=1, padding=1),
-                                  LayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  nn.Conv2d(cfg[8]+2*cfg[7], cfg[7], kernel_size=3, stride=1, padding=1),
+                                  LayerNorm(cfg[7], eps=1e-6, data_format='channels_first')
                                   )
 
-        self.A4D1 = nn.Sequential(Self_Attention_4D(cfg[9], cfg[9]),
-                                  nn.Conv3d(2 * cfg[9], cfg[8], kernel_size=3, stride=1, padding=1),
+        self.A4D1 = nn.Sequential(Self_Attention_4D(cfg[8], cfg[9]),
+                                  nn.Conv3d(cfg[8]+cfg[9], cfg[8], kernel_size=3, stride=1, padding=1),
                                   Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
                                   )
 
@@ -534,7 +539,7 @@ class Pointneted_plus(nn.Module):
                                   Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
                                   )
 
-        self._3t4_1 = Ascension_3t4D(cfg[8],cfg[9])
+        self._3t4_1 = Ascension_3t4D(cfg[7],cfg[8])
 
         self._3t4_2 = Ascension_3t4D(cfg[8],cfg[10])
 
@@ -548,12 +553,6 @@ class Pointneted_plus(nn.Module):
 
         self._4t3_3 = lower_4t3D(cfg[8],cfg[7],8)
 
-        self.deep1 = nn.Sequential(
-        )
-
-        self.deep2 = nn.Sequential(
-
-        )
 
         self.head_l1 = nn.Conv2d(cfg[0], cfg[1], kernel_size=1)
 
@@ -567,9 +566,9 @@ class Pointneted_plus(nn.Module):
 
         self.bridge2 = nn.Conv2d(cfg[8],cfg[7],kernel_size=1)
 
-        self.up_sample1 = nn.Conv2d(cfg[9],cfg[10],kernel_size=1)
+        self.up_sample1 = nn.Conv3d(cfg[9],cfg[10],kernel_size=1)
 
-        self.up_sample2 = nn.Conv2d(cfg[8],cfg[10],kernel_size=1)
+        self.up_sample2 = nn.Conv3d(cfg[8],cfg[10],kernel_size=1)
 
         self.tail1 = nn.Sequential(nn.GroupNorm(4, cfg[9]),
                                    nn.Conv2d(cfg[9], num_classes, kernel_size=3, stride=2, padding=1),
@@ -589,6 +588,10 @@ class Pointneted_plus(nn.Module):
                                    nn.Conv2d(cfg[10], num_classes, kernel_size=3, stride=2, padding=1),
                                    nn.AdaptiveAvgPool2d((1,3))
         )
+
+        self.tailadd1 = nn.Conv2d(cfg[7], cfg[8], kernel_size=3, stride=2, padding=1)
+
+        self.tailadd2 = nn.Conv2d(cfg[8], cfg[9], kernel_size=1)
 
         self.apply(self._init_weights)
 
@@ -621,7 +624,7 @@ class Pointneted_plus(nn.Module):
         x4 = self.layer2(x3)        ## 512,256,256
         x2d = self.l1_l2(x2)        ##512,256,256
         x5 = torch.add(x4,x2d)      ##512,256,256
-        x6 = torch.layer3(x5)      ##256,128,128
+        x6 = self.layer3(x5)      ##256,128,128
         x3d = self.l2_l3(x4)       ## 256,128,128
         x7 = torch.add(x6,x3d)    ## 256,128,128
         x4d = self.head_l3(x1)     ## 96,128,128
@@ -629,17 +632,17 @@ class Pointneted_plus(nn.Module):
         x9 = self.layer4(x8)    ## 256,128,128
         x10 = self.A3D1(x9)    ##128,128,128
         x11 = self.A3D2(x10)   ##64,64,64
-        x12 = self.A3D3(torch.cat((x11,F.max_pool2d(x10,2,2)),dim=1))   ## 64,64,64
-        x13 = self._3t4_1(x12)  ##32,64,64,2
+        x12 = self.A3D3(torch.cat((x11,F.max_pool2d(x10,2,2)),dim=1))   ## 128,64,64
+        x13 = self._3t4_1(x12)  ##64,64,64,2
         x14 = self.A4D1(x13)    ##64,64,64,2
         x15 = self._4t3_1(x14)  ##32,64,64
-        x16 = self.tail1(x15)   ##nc,1,3
+        #x16 = self.tail1(x15)   ##nc,1,3
 
         x17 = torch.add(x11,self.bridge1(x15)) ##64,64,64
         x18 = self._3t4_2(x17) ## 16,64,64,4
-        x19 = self.A4D2(torch.add(self.up_sample1(x14.view(-1,x18.shape[1],x18.shape[2],x18.shape[3])),x18)) ##64,64,64,4
+        x19 = self.A4D2(torch.add(self.up_sample1(x14.view(x18.shape[0],-1,x18.shape[2],x18.shape[3],x18.shape[4])),x18)) ##64,64,64,4
         x20 = self._4t3_2(x19) ##64,64,64
-        x21 = self.tail2(x20)  ##nc,1,3
+        #x21 = self.tail2(x20)  ##nc,1,3
 
         x22 = torch.add(x10,self.bridge2(F.interpolate(x20, size=x10.shape[2:4], mode='bilinear',align_corners=True)))  ##128,128,128
         x23 = self._3t4_3(x22) ##16,128,128,8
@@ -647,10 +650,18 @@ class Pointneted_plus(nn.Module):
         x25 = self._4t3_3(x24)   ##128,128,128
         x26 = self.tail3(x25)  ##nc,1,3
 
+        if self.tail_add :
+            x21 = self.tail2(torch.add(self.tailadd1(x25),x20))
+            x16 = self.tail1(torch.add(self.tailadd2(x20),x15))
+        else:
+            x16 = self.tail1(x15)  ##nc,1,3
+            x21 = self.tail2(x20)  ##nc,1,3
+
         if self.deepsuper:
             return [[0.2, x16], [0.4, x21]], x26
         else:
             return x26
+
 
 
 

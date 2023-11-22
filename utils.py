@@ -324,7 +324,7 @@ class Deepeucloss(nn.Module):
         gt_loss=0.0
         for i in range(len(gt_pre)):
             #gt_loss += gt_pre[i][0]* self.euc(gt_pre[i][1],target)
-            gt_loss += 0.2*(i+1)*self.euc(gt_pre[i][1],target)
+            gt_loss += 0.1*(i+1)*self.euc(gt_pre[i][1],target)
             #print(gt_pre[i][0])
         return outloss + gt_loss
 

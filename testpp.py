@@ -3,6 +3,7 @@ import numpy as np
 import os
 import cv2
 import torch
+import matplotlib.pyplot as plt
 
 # # 读取 Excel 文件
 # data = pd.read_excel('/media/yxz/Elements/三维坐标表格.xlsx')
@@ -231,11 +232,11 @@ import torch.nn as nn
 #             x = self.weight * x + self.bias
 #             return x
 #
-conv_layer = nn.Conv2d(in_channels=16, out_channels=64, kernel_size=3,stride=4,padding=1,groups=16)
-input_tensor = torch.randn(4, 16, 128, 128)
-output_tensor = conv_layer(input_tensor)
-maxpool_layer = nn.MaxPool2d(kernel_size=4)
-output_tensor = maxpool_layer(output_tensor)
+# conv_layer = nn.Conv2d(in_channels=16, out_channels=64, kernel_size=3,stride=4,padding=1,groups=16)
+# input_tensor = torch.randn(4, 16, 128, 128)
+# output_tensor = conv_layer(input_tensor)
+# maxpool_layer = nn.MaxPool2d(kernel_size=4)
+# output_tensor = maxpool_layer(output_tensor)
 # # #layer_norm=nn.LayerNorm((64 ,128, 128, 4))
 # # #out = layer_norm(output_tensor)
 # # # ln = Conv4DLayerNorm(64,eps=1e-6, data_format="channels_first")
@@ -247,7 +248,7 @@ output_tensor = maxpool_layer(output_tensor)
 # # out=F.gelu(output_tensor)
 # # ap = nn.AdaptiveAvgPool3d((1, 1,3))
 # # out = ap(output_tensor)
-print(output_tensor.shape)
+# print(output_tensor.shape)
 
 # conv_layer = nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3,padding=2,dilation=2)
 # input_tensor = torch.randn(4, 16, 128, 128)
@@ -283,4 +284,42 @@ print(output_tensor.shape)
 # out = input_tensor.view(4,3,1,1,-1)
 # print(out.shape)
 
+#
+# input_tensor = torch.randn(4, 16, 128, 128)
+# out = torch.chunk(input_tensor,4,dim=1)
+# print(np.array(out).shape)
+# out1 = [torch.chunk(chunk,4,dim=2) for chunk in out]
+#
+# out11 = []
+# for chunk in out1:
+#     outt = []
+#     for c in chunk:
+#         outt.append(torch.chunk(c, 4, dim=3))
+#     out11.append(outt)
+#
+#
+# print(np.array(out1).shape)
+# print(np.array(out11).shape)
+#
+# out111=[]
+# for cat in out11:
+#     outt = []
+#     for c in cat:
+#         outt.append(torch.cat(c,dim=3))
+#     out111.append(outt)
+# print(np.array(out1).shape)
+# out2 = [torch.cat(cat,dim=2) for cat in out111]
+# out3 = torch.cat(out2,dim=1)
+#
+# if torch.equal(out3,input_tensor):
+#     print(out3.shape)
+#
+# first_name= "y"
+# last_name ="xZ"
+#
+# full_name = f"{first_name} {last_name}"
+# print(full_name)
+#
+# print(f"Hello ,{full_name.title()}!")
 
+print(bin(333))

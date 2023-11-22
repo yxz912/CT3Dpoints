@@ -15,17 +15,17 @@ class YXZ_datasets(Dataset):
         self.num_cls = config.num_classes
         self.in_h=config.input_size_h
         self.in_w=config.input_size_w
-        self.real_input_channels,self.commons_train,self.commons_test = self.get_min_input_channels(path_Data+'train\\images\\',path_Data + 'val\\images\\')
+        self.real_input_channels,self.commons_train,self.commons_test = self.get_min_input_channels(path_Data+'train/images/',path_Data + 'val/images/')
         # 读取excel 文件
         self.data_label = pd.read_excel(label_path)
         self.tensize = config.tensor_size
 
         if train:
-            images_list = sorted(os.listdir(path_Data+'train\\images\\'))
+            images_list = sorted(os.listdir(path_Data+'train/images/'))
             self.data=[]
             self.train_size = len(images_list)
             for i in range(len(images_list)):
-                img_path = path_Data + 'train\\images\\'+images_list[i]
+                img_path = path_Data + 'train/images/'+images_list[i]
                 mask_name = images_list[i]
                 self.data.append([img_path,mask_name])
             if len(config.train_mean)!=self.real_input_channels or len(config.train_std)!=self.real_input_channels:
@@ -35,11 +35,11 @@ class YXZ_datasets(Dataset):
             self.mean_label,self.std_label=self.get_label_standardization(namelist=images_list)
             self.transformer = config.train_transformer
         else:
-            images_list = sorted(os.listdir(path_Data + 'val\\images\\'))
+            images_list = sorted(os.listdir(path_Data + 'val/images/'))
             self.val_size = len(images_list)
             self.data = []
             for i in range(len(images_list)):
-                img_path = path_Data + 'val\\images\\' + images_list[i]
+                img_path = path_Data + 'val/images/' + images_list[i]
                 mask_name = images_list[i]
                 self.data.append([img_path, mask_name])
             if len(config.val_mean) != self.real_input_channels or len(config.val_std) != self.real_input_channels:
@@ -107,14 +107,14 @@ class YXZ_datasets(Dataset):
         for j in sorted(os.listdir(dicom_dir)):
             r_path = os.path.join(dicom_dir, j)
             size = len(sorted(os.listdir(r_path)))
-           # common1 = math.ceil(size \\ self.input_channels)
-            # common2 = int(size \\ self.input_channels)
+           # common1 = math.ceil(size / self.input_channels)
+            # common2 = int(size / self.input_channels)
             # if common2!=1:
-            #     channel1 = math.ceil(size\\common1)
-            #     channel2 = math.ceil(size\\common2)
+            #     channel1 = math.ceil(size/common1)
+            #     channel2 = math.ceil(size/common2)
             #     channel = channel1 if channel1>channel2 else channel2
             # else:
-            #     channel = math.ceil(size \\ common1)
+            #     channel = math.ceil(size / common1)
             common = math.ceil(size / self.input_channels)
             channel = math.ceil(size / common)
             channels.append(channel)
@@ -148,7 +148,7 @@ class YXZ_datasets(Dataset):
         imgs_path_list=[]
         if trian:
             print(f"#------Calculate train mean and std ing...------#")
-            fold= os.path.join(dir, 'train\\images\\')
+            fold= os.path.join(dir, 'train/images/')
             for k,i in enumerate(sorted(os.listdir(fold))):
                 fg=os.path.join(fold,i)
                 img_paths = [os.path.join(fg, f) for f in sorted(os.listdir(fg)) if f.endswith('.png')]
@@ -162,7 +162,7 @@ class YXZ_datasets(Dataset):
                 imgs_path_list.append(imgd)
         else:
             print(f"#------Calculate val mean and std ing...------#")
-            fold= os.path.join(dir, 'val\\images\\')
+            fold= os.path.join(dir, 'val/images/')
             for k,i in enumerate(sorted(os.listdir(fold))):
                 fg=os.path.join(fold,i)
                 img_paths = [os.path.join(fg, f) for f in sorted(os.listdir(fg)) if f.endswith('.png')]
