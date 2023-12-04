@@ -19,7 +19,6 @@ from models.Pointnet3d import pointnet3d
 import warnings
 warnings.filterwarnings("ignore")  ##警告过滤
 
-
 if __name__ == '__main__':
     config = setting_config
     print('#----------Creating logger----------#')
@@ -47,8 +46,6 @@ if __name__ == '__main__':
 
     print('#----------Preparing dataset----------#')
     train_dataset = YXZ_datasets(config.data_path,config.label_path, config, train=True)
-    # print("train_mean=",train_dataset.mean)
-    # print("train_std=", train_dataset.std)
     logging.info("train--mean-->%s",np.array(train_dataset.mean))
     logging.info("train--std-->%s",np.array(train_dataset.std))
 
@@ -58,8 +55,6 @@ if __name__ == '__main__':
                               pin_memory=True,
                               num_workers=config.num_workers)
     val_dataset = YXZ_datasets(config.data_path, config.label_path,config, train=False)
-    # print("val_mean=", val_dataset.mean)
-    # print("val_std=", val_dataset.std)
     logging.info("val--mean-->%s",np.array(val_dataset.mean))
     logging.info("val--std-->%s",np.array(val_dataset.std))
     logging.info("real_input_channels-->%d",val_dataset.real_input_channels)
@@ -105,16 +100,15 @@ if __name__ == '__main__':
     elif config.network == 'Pointneted_plus':
         model = Pointneted_plus(num_classes=config.num_classes,
                            input_channels=train_dataset.real_input_channels,
-                           cfg=[96, 128, 256, 512, 1024, 512, 256, 128, 64, 32,16],
+                           cfg=config.cfg,
                            deep_supervision=config.deep_supervision,
-                           tailadd = config.tailadd
+                           tailadd = config.tailadd,
                            )
     else:
         raise Exception('network in not right!')
     model = model.cuda()
 
     print('#----------Prepareing loss, opt, sch and amp----------#')
-
     if config.deep_supervision:
         loss_function = Deepeucloss(config)
     else:
@@ -122,5 +116,6 @@ if __name__ == '__main__':
     optimizer = get_optimizer(config, model)
     scheduler = get_scheduler(config, optimizer)
 
+    print('#----------train and test start...----------#')
     simple_train_val(config,model,train_loader,val_loader,optimizer,loss_function,logging,scheduler,val_dataset.val_size,train_dataset.train_size)
 

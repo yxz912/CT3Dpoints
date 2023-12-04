@@ -311,3 +311,59 @@ def pic_check_move(dicom_dir):
                     if filepath.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
                         shutil.copy2(filepath, os.path.join(despath,i))
                 break
+
+def get_label(name,data_label):
+    result = data_label[data_label['姓名'] == name].index.tolist()
+    cc = []
+    x=[]
+    y=[]
+    z=[]
+    if len(result) == 1:
+        row_index = result[0]
+        for k in range(23):
+            x_value = data_label.loc[row_index+k, 'x']
+            y_value = data_label.loc[row_index+k, 'y']
+            z_value = data_label.loc[row_index+k, 'z']
+            if pd.isnull(x_value) or pd.isnull(y_value) or pd.isnull(z_value):
+                cc.append(name)
+            else:
+                x.append(x_value)
+                y.append(y_value)
+                z.append(abs(z_value))
+    else:
+        print(f"找不到 {name}")
+    return max(x),max(y),max(z)
+
+data_label = pd.read_excel("/home/yxz/progress/CT3Dpoints/data/三维坐标表格.xlsx")
+folder_train = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/train/images/"
+folder_test = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/val/images/"
+
+train_list = sorted(os.listdir(folder_train))
+test_list = sorted(os.listdir(folder_test))
+cc=[]
+# for i in train_list:
+#     cc += get_label(i,data_label)
+# for j in test_list:
+#     cc += get_label(j,data_label)
+
+# cf = set(cc)
+# print(sorted(cf))
+# print(len(cf))
+mx=0
+my=0
+mz=0
+for i in train_list:
+    x,y,z = get_label(i,data_label)
+    mx = x if x>mx else mx
+    my = y if y>my else my
+    mz = abs(z) if abs(z)>mz else mz
+
+for j in test_list:
+    x,y,z = get_label(j,data_label)
+    mx = x if x > mx else mx
+    my = y if y > my else my
+    mz = abs(z) if abs(z) > mz else mz
+
+print(mx,my,mz)
+
+

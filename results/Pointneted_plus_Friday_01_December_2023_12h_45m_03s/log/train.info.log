@@ -1,0 +1,580 @@
+2023-12-01 12:45:03 - #----------Config info----------#
+2023-12-01 12:45:03 - network: Pointneted_plus,
+2023-12-01 12:45:03 - data_path: /media/yxz/新加卷/teeth_ct_points/CT3Dpoints/,
+2023-12-01 12:45:03 - label_path: /media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx,
+2023-12-01 12:45:03 - pretrained_path: ./pre_trained/,
+2023-12-01 12:45:03 - cfg: [96, 128, 256, 512, 1024, 512, 256, 128, 64, 32, 16],
+2023-12-01 12:45:03 - num_classes: 4,
+2023-12-01 12:45:03 - input_size_h: 512,
+2023-12-01 12:45:03 - input_size_w: 512,
+2023-12-01 12:45:03 - input_channels: 64,
+2023-12-01 12:45:03 - distributed: False,
+2023-12-01 12:45:03 - local_rank: -1,
+2023-12-01 12:45:03 - num_workers: 4,
+2023-12-01 12:45:03 - seed: 42,
+2023-12-01 12:45:03 - world_size: None,
+2023-12-01 12:45:03 - rank: None,
+2023-12-01 12:45:03 - amp: False,
+2023-12-01 12:45:03 - l2_lambda: 0.0,
+2023-12-01 12:45:03 - gpu_id: 0,
+2023-12-01 12:45:03 - batch_size: 2,
+2023-12-01 12:45:03 - val_bs: 1,
+2023-12-01 12:45:03 - epochs: 500,
+2023-12-01 12:45:03 - deep_supervision: False,
+2023-12-01 12:45:03 - tailadd: True,
+2023-12-01 12:45:03 - threshold: 8.660254037844387,
+2023-12-01 12:45:03 - rand_data: False,
+2023-12-01 12:45:03 - mean_common: False,
+2023-12-01 12:45:03 - train_mean: [38.167084, 36.47113, 35.658463, 34.7275, 34.397972, 34.392757, 33.96709, 34.126865, 34.28234, 33.729267, 32.7962, 32.064926, 31.681631, 31.124203, 30.844501, 31.361849, 32.73974, 34.215652, 36.648277, 38.611458, 40.539837, 42.120747, 43.28669, 44.45494, 45.614132, 46.21989, 47.45023, 48.500004, 49.44821, 50.419426, 52.140045, 53.649082, 54.722622, 55.427254, 55.996006, 56.55678, 57.03274, 56.78339, 56.16994, 56.052105, 56.084873, 55.73664, 55.51461, 54.455627, 53.19349, 51.708523, 50.496777, 48.39798, 46.618237],
+2023-12-01 12:45:03 - train_std: [52.12329, 51.107494, 50.941055, 50.223755, 50.00628, 50.154346, 49.390217, 49.584064, 49.46689, 48.635002, 46.955963, 45.86415, 45.254314, 44.008198, 43.081245, 43.15782, 44.181343, 45.16833, 47.433487, 48.60615, 50.44894, 51.635715, 52.542904, 53.638527, 54.554443, 54.860928, 55.634895, 56.127644, 56.314377, 56.52658, 57.31575, 57.992775, 58.40813, 58.65052, 58.6726, 58.786034, 59.043797, 59.15101, 58.878242, 59.1303, 59.565495, 59.95643, 60.605595, 60.74457, 60.784153, 60.811424, 61.18004, 60.75567, 60.8064],
+2023-12-01 12:45:03 - val_mean: [39.743374, 38.122738, 37.19561, 35.71686, 35.202812, 34.790627, 34.621647, 34.678947, 34.44854, 33.327152, 32.52173, 31.267305, 30.603254, 30.013475, 29.536041, 30.480452, 31.952286, 33.71057, 36.010574, 38.201912, 39.313183, 42.94376, 44.53766, 45.518337, 46.94797, 46.58542, 47.49811, 48.238167, 51.026104, 52.292915, 52.69654, 53.169758, 53.87486, 55.697067, 57.654236, 57.586315, 57.758514, 57.174618, 57.736595, 57.24419, 57.544117, 57.37176, 56.43062, 55.96641, 55.325653, 53.10815, 52.179287, 50.27785, 47.04305],
+2023-12-01 12:45:03 - val_std: [53.15056, 52.15993, 51.616505, 50.33102, 50.21509, 50.081203, 50.03935, 49.86299, 49.531567, 48.28274, 46.95426, 45.172287, 43.96861, 42.88531, 41.24616, 42.37183, 43.43441, 44.75589, 46.571957, 48.567627, 49.173023, 51.97025, 53.31617, 54.147503, 55.217754, 54.256313, 54.82137, 55.228252, 57.024765, 57.493202, 57.21687, 57.12449, 57.009945, 58.07164, 58.968643, 58.816093, 58.97068, 58.471672, 58.976105, 58.958794, 59.510704, 60.026344, 60.16703, 60.841858, 61.621956, 61.22611, 61.83866, 62.08808, 61.1031],
+2023-12-01 12:45:03 - work_dir: results/Pointneted_plus_Friday_01_December_2023_12h_45m_03s/,
+2023-12-01 12:45:03 - tensor_size: 0,
+2023-12-01 12:45:03 - train_transformer: Compose(
+    <utils.myToTensor object at 0x7fcb91927490>
+    <utils.myResize object at 0x7fcaabf62ca0>
+),
+2023-12-01 12:45:03 - test_transformer: Compose(
+    <utils.myToTensor object at 0x7fcb918b8910>
+    <utils.myResize object at 0x7fcb918b8940>
+),
+2023-12-01 12:45:03 - opt: AdamW,
+2023-12-01 12:45:03 - lr: 0.001,
+2023-12-01 12:45:03 - betas: (0.9, 0.999),
+2023-12-01 12:45:03 - eps: 1e-08,
+2023-12-01 12:45:03 - weight_decay: 0.01,
+2023-12-01 12:45:03 - amsgrad: False,
+2023-12-01 12:45:03 - sch: CosineAnnealingLR,
+2023-12-01 12:45:03 - T_max: 50,
+2023-12-01 12:45:03 - eta_min: 1e-05,
+2023-12-01 12:45:03 - last_epoch: -1,
+INFO:root:train--mean-->[38.167084 36.47113  35.658463 34.7275   34.397972 34.392757 33.96709
+ 34.126865 34.28234  33.729267 32.7962   32.064926 31.681631 31.124203
+ 30.844501 31.361849 32.73974  34.215652 36.648277 38.611458 40.539837
+ 42.120747 43.28669  44.45494  45.614132 46.21989  47.45023  48.500004
+ 49.44821  50.419426 52.140045 53.649082 54.722622 55.427254 55.996006
+ 56.55678  57.03274  56.78339  56.16994  56.052105 56.084873 55.73664
+ 55.51461  54.455627 53.19349  51.708523 50.496777 48.39798  46.618237]
+INFO:root:train--std-->[52.12329  51.107494 50.941055 50.223755 50.00628  50.154346 49.390217
+ 49.584064 49.46689  48.635002 46.955963 45.86415  45.254314 44.008198
+ 43.081245 43.15782  44.181343 45.16833  47.433487 48.60615  50.44894
+ 51.635715 52.542904 53.638527 54.554443 54.860928 55.634895 56.127644
+ 56.314377 56.52658  57.31575  57.992775 58.40813  58.65052  58.6726
+ 58.786034 59.043797 59.15101  58.878242 59.1303   59.565495 59.95643
+ 60.605595 60.74457  60.784153 60.811424 61.18004  60.75567  60.8064  ]
+INFO:root:val--mean-->[39.743374 38.122738 37.19561  35.71686  35.202812 34.790627 34.621647
+ 34.678947 34.44854  33.327152 32.52173  31.267305 30.603254 30.013475
+ 29.536041 30.480452 31.952286 33.71057  36.010574 38.201912 39.313183
+ 42.94376  44.53766  45.518337 46.94797  46.58542  47.49811  48.238167
+ 51.026104 52.292915 52.69654  53.169758 53.87486  55.697067 57.654236
+ 57.586315 57.758514 57.174618 57.736595 57.24419  57.544117 57.37176
+ 56.43062  55.96641  55.325653 53.10815  52.179287 50.27785  47.04305 ]
+INFO:root:val--std-->[53.15056  52.15993  51.616505 50.33102  50.21509  50.081203 50.03935
+ 49.86299  49.531567 48.28274  46.95426  45.172287 43.96861  42.88531
+ 41.24616  42.37183  43.43441  44.75589  46.571957 48.567627 49.173023
+ 51.97025  53.31617  54.147503 55.217754 54.256313 54.82137  55.228252
+ 57.024765 57.493202 57.21687  57.12449  57.009945 58.07164  58.968643
+ 58.816093 58.97068  58.471672 58.976105 58.958794 59.510704 60.026344
+ 60.16703  60.841858 61.621956 61.22611  61.83866  62.08808  61.1031  ]
+INFO:root:real_input_channels-->49
+INFO:root:epoch:0 train_eval_loss-->3.770675,train_acc-->0.073009,test_eval_loss-->2.403012,test_acc===0.161765
+INFO:root:epoch:1 train_eval_loss-->2.607296,train_acc-->0.112832,test_eval_loss-->2.691072,test_acc===0.073529
+INFO:root:epoch:2 train_eval_loss-->2.405888,train_acc-->0.101770,test_eval_loss-->2.078693,test_acc===0.147059
+INFO:root:epoch:3 train_eval_loss-->2.404086,train_acc-->0.134956,test_eval_loss-->1.975011,test_acc===0.220588
+INFO:root:epoch:4 train_eval_loss-->2.213435,train_acc-->0.163717,test_eval_loss-->1.764519,test_acc===0.272059
+INFO:root:epoch:5 train_eval_loss-->2.096044,train_acc-->0.212389,test_eval_loss-->1.967308,test_acc===0.205882
+INFO:root:epoch:6 train_eval_loss-->2.124665,train_acc-->0.190265,test_eval_loss-->1.683688,test_acc===0.308824
+INFO:root:epoch:7 train_eval_loss-->1.983573,train_acc-->0.190265,test_eval_loss-->1.951167,test_acc===0.147059
+INFO:root:epoch:8 train_eval_loss-->1.932203,train_acc-->0.252212,test_eval_loss-->1.687030,test_acc===0.242647
+INFO:root:epoch:9 train_eval_loss-->1.871015,train_acc-->0.225664,test_eval_loss-->1.767975,test_acc===0.367647
+INFO:root:epoch:10 train_eval_loss-->2.009044,train_acc-->0.221239,test_eval_loss-->1.335414,test_acc===0.470588
+INFO:root:epoch:11 train_eval_loss-->1.804302,train_acc-->0.247788,test_eval_loss-->1.689674,test_acc===0.191176
+INFO:root:epoch:12 train_eval_loss-->1.882407,train_acc-->0.210177,test_eval_loss-->1.361109,test_acc===0.448529
+INFO:root:epoch:13 train_eval_loss-->1.834318,train_acc-->0.223451,test_eval_loss-->1.716253,test_acc===0.301471
+INFO:root:epoch:14 train_eval_loss-->1.721123,train_acc-->0.274336,test_eval_loss-->1.408394,test_acc===0.360294
+INFO:root:epoch:15 train_eval_loss-->1.653163,train_acc-->0.294248,test_eval_loss-->1.525076,test_acc===0.323529
+INFO:root:epoch:16 train_eval_loss-->1.571113,train_acc-->0.316372,test_eval_loss-->1.306821,test_acc===0.448529
+INFO:root:epoch:17 train_eval_loss-->1.535879,train_acc-->0.404867,test_eval_loss-->1.441775,test_acc===0.264706
+INFO:root:epoch:18 train_eval_loss-->1.576309,train_acc-->0.323009,test_eval_loss-->1.541862,test_acc===0.272059
+INFO:root:epoch:19 train_eval_loss-->1.395679,train_acc-->0.433628,test_eval_loss-->1.190876,test_acc===0.536765
+INFO:root:epoch:20 train_eval_loss-->1.338058,train_acc-->0.446903,test_eval_loss-->1.910530,test_acc===0.117647
+INFO:root:epoch:21 train_eval_loss-->1.382848,train_acc-->0.442478,test_eval_loss-->1.516451,test_acc===0.257353
+INFO:root:epoch:22 train_eval_loss-->1.233626,train_acc-->0.544248,test_eval_loss-->1.219617,test_acc===0.529412
+INFO:root:epoch:23 train_eval_loss-->1.171388,train_acc-->0.592920,test_eval_loss-->1.149786,test_acc===0.551471
+INFO:root:epoch:24 train_eval_loss-->1.125658,train_acc-->0.603982,test_eval_loss-->1.244047,test_acc===0.477941
+INFO:root:epoch:25 train_eval_loss-->1.084073,train_acc-->0.643805,test_eval_loss-->1.179238,test_acc===0.544118
+INFO:root:epoch:26 train_eval_loss-->1.025959,train_acc-->0.674779,test_eval_loss-->1.303203,test_acc===0.382353
+INFO:root:epoch:27 train_eval_loss-->1.074338,train_acc-->0.668142,test_eval_loss-->1.266745,test_acc===0.477941
+INFO:root:epoch:28 train_eval_loss-->1.003304,train_acc-->0.712389,test_eval_loss-->1.296227,test_acc===0.411765
+INFO:root:epoch:29 train_eval_loss-->0.914246,train_acc-->0.763274,test_eval_loss-->1.135114,test_acc===0.544118
+INFO:root:epoch:30 train_eval_loss-->0.973830,train_acc-->0.719027,test_eval_loss-->1.026949,test_acc===0.676471
+INFO:root:epoch:31 train_eval_loss-->0.933509,train_acc-->0.763274,test_eval_loss-->1.142852,test_acc===0.492647
+INFO:root:epoch:32 train_eval_loss-->0.825123,train_acc-->0.836283,test_eval_loss-->1.254503,test_acc===0.441176
+INFO:root:epoch:33 train_eval_loss-->0.782277,train_acc-->0.847345,test_eval_loss-->1.142770,test_acc===0.573529
+INFO:root:epoch:34 train_eval_loss-->0.753608,train_acc-->0.867257,test_eval_loss-->1.110776,test_acc===0.558824
+INFO:root:epoch:35 train_eval_loss-->0.703916,train_acc-->0.884956,test_eval_loss-->1.027952,test_acc===0.676471
+INFO:root:epoch:36 train_eval_loss-->0.710689,train_acc-->0.907080,test_eval_loss-->1.133642,test_acc===0.551471
+INFO:root:epoch:37 train_eval_loss-->0.645492,train_acc-->0.931416,test_eval_loss-->1.037606,test_acc===0.610294
+INFO:root:epoch:38 train_eval_loss-->0.613472,train_acc-->0.922566,test_eval_loss-->1.006734,test_acc===0.602941
+INFO:root:epoch:39 train_eval_loss-->0.585386,train_acc-->0.940265,test_eval_loss-->1.026906,test_acc===0.639706
+INFO:root:epoch:40 train_eval_loss-->0.557263,train_acc-->0.938053,test_eval_loss-->0.986975,test_acc===0.654412
+INFO:root:epoch:41 train_eval_loss-->0.534624,train_acc-->0.942478,test_eval_loss-->0.989048,test_acc===0.683824
+INFO:root:epoch:42 train_eval_loss-->0.506041,train_acc-->0.951327,test_eval_loss-->1.014524,test_acc===0.632353
+INFO:root:epoch:43 train_eval_loss-->0.489079,train_acc-->0.960177,test_eval_loss-->1.005308,test_acc===0.669118
+INFO:root:epoch:44 train_eval_loss-->0.464794,train_acc-->0.960177,test_eval_loss-->0.991137,test_acc===0.632353
+INFO:root:epoch:45 train_eval_loss-->0.456289,train_acc-->0.953540,test_eval_loss-->0.989625,test_acc===0.661765
+INFO:root:epoch:46 train_eval_loss-->0.445736,train_acc-->0.966814,test_eval_loss-->0.997947,test_acc===0.669118
+INFO:root:epoch:47 train_eval_loss-->0.434398,train_acc-->0.964602,test_eval_loss-->0.993467,test_acc===0.661765
+INFO:root:epoch:48 train_eval_loss-->0.429576,train_acc-->0.964602,test_eval_loss-->0.987732,test_acc===0.669118
+INFO:root:epoch:49 train_eval_loss-->0.423867,train_acc-->0.964602,test_eval_loss-->0.989195,test_acc===0.683824
+INFO:root:epoch:50 train_eval_loss-->0.421578,train_acc-->0.964602,test_eval_loss-->0.984726,test_acc===0.683824
+INFO:root:epoch:51 train_eval_loss-->0.418844,train_acc-->0.964602,test_eval_loss-->0.989946,test_acc===0.676471
+INFO:root:epoch:52 train_eval_loss-->0.419502,train_acc-->0.966814,test_eval_loss-->0.987753,test_acc===0.669118
+INFO:root:epoch:53 train_eval_loss-->0.420482,train_acc-->0.964602,test_eval_loss-->0.990592,test_acc===0.676471
+INFO:root:epoch:54 train_eval_loss-->0.419528,train_acc-->0.966814,test_eval_loss-->0.988466,test_acc===0.683824
+INFO:root:epoch:55 train_eval_loss-->0.423212,train_acc-->0.964602,test_eval_loss-->0.987705,test_acc===0.669118
+INFO:root:epoch:56 train_eval_loss-->0.427754,train_acc-->0.969027,test_eval_loss-->0.988565,test_acc===0.683824
+INFO:root:epoch:57 train_eval_loss-->0.431754,train_acc-->0.966814,test_eval_loss-->1.014114,test_acc===0.595588
+INFO:root:epoch:58 train_eval_loss-->0.450498,train_acc-->0.966814,test_eval_loss-->1.027710,test_acc===0.588235
+INFO:root:epoch:59 train_eval_loss-->0.452476,train_acc-->0.962389,test_eval_loss-->1.006077,test_acc===0.602941
+INFO:root:epoch:60 train_eval_loss-->0.483078,train_acc-->0.962389,test_eval_loss-->0.976535,test_acc===0.654412
+INFO:root:epoch:61 train_eval_loss-->0.496284,train_acc-->0.969027,test_eval_loss-->1.026060,test_acc===0.573529
+INFO:root:epoch:62 train_eval_loss-->0.534600,train_acc-->0.960177,test_eval_loss-->1.000954,test_acc===0.617647
+INFO:root:epoch:63 train_eval_loss-->0.576727,train_acc-->0.949115,test_eval_loss-->1.009752,test_acc===0.580882
+INFO:root:epoch:64 train_eval_loss-->0.551343,train_acc-->0.955752,test_eval_loss-->0.988041,test_acc===0.654412
+INFO:root:epoch:65 train_eval_loss-->0.580375,train_acc-->0.960177,test_eval_loss-->1.040460,test_acc===0.632353
+INFO:root:epoch:66 train_eval_loss-->0.643229,train_acc-->0.944690,test_eval_loss-->1.010139,test_acc===0.713235
+INFO:root:epoch:67 train_eval_loss-->0.682012,train_acc-->0.909292,test_eval_loss-->0.987232,test_acc===0.661765
+INFO:root:epoch:68 train_eval_loss-->0.596162,train_acc-->0.944690,test_eval_loss-->0.980393,test_acc===0.661765
+INFO:root:epoch:69 train_eval_loss-->0.669139,train_acc-->0.940265,test_eval_loss-->1.086507,test_acc===0.544118
+INFO:root:epoch:70 train_eval_loss-->0.723146,train_acc-->0.880531,test_eval_loss-->1.013387,test_acc===0.661765
+INFO:root:epoch:71 train_eval_loss-->0.736022,train_acc-->0.873894,test_eval_loss-->1.334411,test_acc===0.345588
+INFO:root:epoch:72 train_eval_loss-->0.816831,train_acc-->0.849558,test_eval_loss-->0.985363,test_acc===0.661765
+INFO:root:epoch:73 train_eval_loss-->0.750423,train_acc-->0.891593,test_eval_loss-->1.050279,test_acc===0.683824
+INFO:root:epoch:74 train_eval_loss-->0.722105,train_acc-->0.887168,test_eval_loss-->1.063455,test_acc===0.588235
+INFO:root:epoch:75 train_eval_loss-->0.709920,train_acc-->0.889381,test_eval_loss-->1.082878,test_acc===0.529412
+INFO:root:epoch:76 train_eval_loss-->0.816397,train_acc-->0.845133,test_eval_loss-->1.134449,test_acc===0.566176
+INFO:root:epoch:77 train_eval_loss-->0.805835,train_acc-->0.845133,test_eval_loss-->1.058457,test_acc===0.632353
+INFO:root:epoch:78 train_eval_loss-->0.921273,train_acc-->0.727876,test_eval_loss-->1.364540,test_acc===0.426471
+INFO:root:epoch:79 train_eval_loss-->0.769961,train_acc-->0.882743,test_eval_loss-->1.168545,test_acc===0.544118
+INFO:root:epoch:80 train_eval_loss-->0.976265,train_acc-->0.725664,test_eval_loss-->1.436198,test_acc===0.316176
+INFO:root:epoch:81 train_eval_loss-->1.078079,train_acc-->0.601770,test_eval_loss-->1.142558,test_acc===0.536765
+INFO:root:epoch:82 train_eval_loss-->0.773449,train_acc-->0.860619,test_eval_loss-->1.193399,test_acc===0.485294
+INFO:root:epoch:83 train_eval_loss-->0.931491,train_acc-->0.756637,test_eval_loss-->1.296360,test_acc===0.522059
+INFO:root:epoch:84 train_eval_loss-->0.891498,train_acc-->0.787611,test_eval_loss-->1.094622,test_acc===0.573529
+INFO:root:epoch:85 train_eval_loss-->0.775389,train_acc-->0.889381,test_eval_loss-->1.203084,test_acc===0.492647
+INFO:root:epoch:86 train_eval_loss-->0.826319,train_acc-->0.853982,test_eval_loss-->1.146640,test_acc===0.522059
+INFO:root:epoch:87 train_eval_loss-->0.888830,train_acc-->0.772124,test_eval_loss-->1.328587,test_acc===0.404412
+INFO:root:epoch:88 train_eval_loss-->1.113834,train_acc-->0.619469,test_eval_loss-->1.107481,test_acc===0.544118
+INFO:root:epoch:89 train_eval_loss-->0.910850,train_acc-->0.754425,test_eval_loss-->1.179238,test_acc===0.470588
+INFO:root:epoch:90 train_eval_loss-->0.907032,train_acc-->0.752212,test_eval_loss-->1.176676,test_acc===0.514706
+INFO:root:epoch:91 train_eval_loss-->0.862309,train_acc-->0.827434,test_eval_loss-->1.087010,test_acc===0.610294
+INFO:root:epoch:92 train_eval_loss-->0.865483,train_acc-->0.809735,test_eval_loss-->1.050710,test_acc===0.647059
+INFO:root:epoch:93 train_eval_loss-->0.903105,train_acc-->0.756637,test_eval_loss-->1.341108,test_acc===0.316176
+INFO:root:epoch:94 train_eval_loss-->0.807096,train_acc-->0.834071,test_eval_loss-->1.147646,test_acc===0.522059
+INFO:root:epoch:95 train_eval_loss-->0.814256,train_acc-->0.847345,test_eval_loss-->1.188751,test_acc===0.470588
+INFO:root:epoch:96 train_eval_loss-->0.819490,train_acc-->0.851770,test_eval_loss-->1.037324,test_acc===0.669118
+INFO:root:epoch:97 train_eval_loss-->0.833403,train_acc-->0.816372,test_eval_loss-->1.283661,test_acc===0.433824
+INFO:root:epoch:98 train_eval_loss-->0.832951,train_acc-->0.803097,test_eval_loss-->1.165304,test_acc===0.522059
+INFO:root:epoch:99 train_eval_loss-->0.739991,train_acc-->0.884956,test_eval_loss-->1.340901,test_acc===0.323529
+INFO:root:epoch:100 train_eval_loss-->0.855224,train_acc-->0.809735,test_eval_loss-->1.108323,test_acc===0.580882
+INFO:root:epoch:101 train_eval_loss-->0.747665,train_acc-->0.902655,test_eval_loss-->1.112816,test_acc===0.595588
+INFO:root:epoch:102 train_eval_loss-->0.828293,train_acc-->0.834071,test_eval_loss-->1.222619,test_acc===0.463235
+INFO:root:epoch:103 train_eval_loss-->0.671192,train_acc-->0.926991,test_eval_loss-->1.121644,test_acc===0.558824
+INFO:root:epoch:104 train_eval_loss-->0.695662,train_acc-->0.900442,test_eval_loss-->1.152961,test_acc===0.573529
+INFO:root:epoch:105 train_eval_loss-->0.694507,train_acc-->0.915929,test_eval_loss-->1.224628,test_acc===0.529412
+INFO:root:epoch:106 train_eval_loss-->0.750231,train_acc-->0.907080,test_eval_loss-->1.067160,test_acc===0.602941
+INFO:root:epoch:107 train_eval_loss-->0.726249,train_acc-->0.911504,test_eval_loss-->1.235608,test_acc===0.448529
+INFO:root:epoch:108 train_eval_loss-->0.746739,train_acc-->0.860619,test_eval_loss-->1.260526,test_acc===0.463235
+INFO:root:epoch:109 train_eval_loss-->0.685460,train_acc-->0.924779,test_eval_loss-->1.120125,test_acc===0.573529
+INFO:root:epoch:110 train_eval_loss-->0.709314,train_acc-->0.920354,test_eval_loss-->1.067275,test_acc===0.661765
+INFO:root:epoch:111 train_eval_loss-->0.644605,train_acc-->0.942478,test_eval_loss-->1.053334,test_acc===0.639706
+INFO:root:epoch:112 train_eval_loss-->0.601079,train_acc-->0.969027,test_eval_loss-->1.167736,test_acc===0.566176
+INFO:root:epoch:113 train_eval_loss-->0.619461,train_acc-->0.949115,test_eval_loss-->1.083199,test_acc===0.602941
+INFO:root:epoch:114 train_eval_loss-->0.579550,train_acc-->0.964602,test_eval_loss-->1.052243,test_acc===0.573529
+INFO:root:epoch:115 train_eval_loss-->0.581719,train_acc-->0.969027,test_eval_loss-->1.147159,test_acc===0.551471
+INFO:root:epoch:116 train_eval_loss-->0.543111,train_acc-->0.964602,test_eval_loss-->1.269795,test_acc===0.448529
+INFO:root:epoch:117 train_eval_loss-->0.632475,train_acc-->0.935841,test_eval_loss-->1.047791,test_acc===0.595588
+INFO:root:epoch:118 train_eval_loss-->0.538988,train_acc-->0.988938,test_eval_loss-->1.076620,test_acc===0.558824
+INFO:root:epoch:119 train_eval_loss-->0.545653,train_acc-->0.977876,test_eval_loss-->1.128359,test_acc===0.529412
+INFO:root:epoch:120 train_eval_loss-->0.569418,train_acc-->0.957965,test_eval_loss-->0.983762,test_acc===0.676471
+INFO:root:epoch:121 train_eval_loss-->0.482515,train_acc-->0.988938,test_eval_loss-->1.027876,test_acc===0.654412
+INFO:root:epoch:122 train_eval_loss-->0.452428,train_acc-->0.991150,test_eval_loss-->1.016287,test_acc===0.683824
+INFO:root:epoch:123 train_eval_loss-->0.452014,train_acc-->0.984513,test_eval_loss-->1.161700,test_acc===0.544118
+INFO:root:epoch:124 train_eval_loss-->0.464841,train_acc-->0.991150,test_eval_loss-->1.018514,test_acc===0.683824
+INFO:root:epoch:125 train_eval_loss-->0.458402,train_acc-->0.993363,test_eval_loss-->1.017916,test_acc===0.588235
+INFO:root:epoch:126 train_eval_loss-->0.385023,train_acc-->0.993363,test_eval_loss-->1.078622,test_acc===0.580882
+INFO:root:epoch:127 train_eval_loss-->0.442330,train_acc-->0.991150,test_eval_loss-->0.971550,test_acc===0.683824
+INFO:root:epoch:128 train_eval_loss-->0.483751,train_acc-->0.980088,test_eval_loss-->1.022027,test_acc===0.647059
+INFO:root:epoch:129 train_eval_loss-->0.390605,train_acc-->0.988938,test_eval_loss-->1.034394,test_acc===0.602941
+INFO:root:epoch:130 train_eval_loss-->0.332224,train_acc-->0.993363,test_eval_loss-->1.007448,test_acc===0.683824
+INFO:root:epoch:131 train_eval_loss-->0.338162,train_acc-->0.991150,test_eval_loss-->1.000468,test_acc===0.632353
+INFO:root:epoch:132 train_eval_loss-->0.289268,train_acc-->0.993363,test_eval_loss-->0.992820,test_acc===0.676471
+INFO:root:epoch:133 train_eval_loss-->0.263833,train_acc-->0.993363,test_eval_loss-->1.022056,test_acc===0.647059
+INFO:root:epoch:134 train_eval_loss-->0.255110,train_acc-->0.993363,test_eval_loss-->0.974582,test_acc===0.691176
+INFO:root:epoch:135 train_eval_loss-->0.241578,train_acc-->0.993363,test_eval_loss-->0.966005,test_acc===0.735294
+INFO:root:epoch:136 train_eval_loss-->0.232481,train_acc-->0.993363,test_eval_loss-->0.990803,test_acc===0.647059
+INFO:root:epoch:137 train_eval_loss-->0.207634,train_acc-->0.993363,test_eval_loss-->0.985452,test_acc===0.661765
+INFO:root:epoch:138 train_eval_loss-->0.190398,train_acc-->0.993363,test_eval_loss-->0.978625,test_acc===0.683824
+INFO:root:epoch:139 train_eval_loss-->0.184282,train_acc-->0.993363,test_eval_loss-->0.971416,test_acc===0.698529
+INFO:root:epoch:140 train_eval_loss-->0.176111,train_acc-->0.993363,test_eval_loss-->0.976514,test_acc===0.691176
+INFO:root:epoch:141 train_eval_loss-->0.167970,train_acc-->0.993363,test_eval_loss-->0.979733,test_acc===0.683824
+INFO:root:epoch:142 train_eval_loss-->0.159347,train_acc-->0.993363,test_eval_loss-->0.974440,test_acc===0.691176
+INFO:root:epoch:143 train_eval_loss-->0.144601,train_acc-->0.993363,test_eval_loss-->0.983913,test_acc===0.683824
+INFO:root:epoch:144 train_eval_loss-->0.144730,train_acc-->0.993363,test_eval_loss-->0.969571,test_acc===0.705882
+INFO:root:epoch:145 train_eval_loss-->0.135362,train_acc-->0.993363,test_eval_loss-->0.974686,test_acc===0.676471
+INFO:root:epoch:146 train_eval_loss-->0.130420,train_acc-->0.993363,test_eval_loss-->0.978060,test_acc===0.676471
+INFO:root:epoch:147 train_eval_loss-->0.124686,train_acc-->0.993363,test_eval_loss-->0.976461,test_acc===0.691176
+INFO:root:epoch:148 train_eval_loss-->0.122295,train_acc-->0.993363,test_eval_loss-->0.974499,test_acc===0.691176
+INFO:root:epoch:149 train_eval_loss-->0.121354,train_acc-->0.993363,test_eval_loss-->0.976194,test_acc===0.691176
+INFO:root:epoch:150 train_eval_loss-->0.119308,train_acc-->0.993363,test_eval_loss-->0.975791,test_acc===0.691176
+INFO:root:epoch:151 train_eval_loss-->0.118600,train_acc-->0.993363,test_eval_loss-->0.977016,test_acc===0.683824
+INFO:root:epoch:152 train_eval_loss-->0.118936,train_acc-->0.993363,test_eval_loss-->0.978244,test_acc===0.683824
+INFO:root:epoch:153 train_eval_loss-->0.119642,train_acc-->0.993363,test_eval_loss-->0.976204,test_acc===0.676471
+INFO:root:epoch:154 train_eval_loss-->0.121876,train_acc-->0.993363,test_eval_loss-->0.977190,test_acc===0.691176
+INFO:root:epoch:155 train_eval_loss-->0.122200,train_acc-->0.993363,test_eval_loss-->0.977858,test_acc===0.698529
+INFO:root:epoch:156 train_eval_loss-->0.125315,train_acc-->0.993363,test_eval_loss-->0.975683,test_acc===0.698529
+INFO:root:epoch:157 train_eval_loss-->0.134938,train_acc-->0.993363,test_eval_loss-->0.972060,test_acc===0.691176
+INFO:root:epoch:158 train_eval_loss-->0.142644,train_acc-->0.993363,test_eval_loss-->0.985802,test_acc===0.661765
+INFO:root:epoch:159 train_eval_loss-->0.159067,train_acc-->0.993363,test_eval_loss-->0.978344,test_acc===0.683824
+INFO:root:epoch:160 train_eval_loss-->0.157467,train_acc-->0.993363,test_eval_loss-->0.977049,test_acc===0.676471
+INFO:root:epoch:161 train_eval_loss-->0.183479,train_acc-->0.993363,test_eval_loss-->0.977582,test_acc===0.698529
+INFO:root:epoch:162 train_eval_loss-->0.211671,train_acc-->0.993363,test_eval_loss-->0.977024,test_acc===0.691176
+INFO:root:epoch:163 train_eval_loss-->0.233062,train_acc-->0.993363,test_eval_loss-->0.987893,test_acc===0.713235
+INFO:root:epoch:164 train_eval_loss-->0.245118,train_acc-->0.993363,test_eval_loss-->0.984879,test_acc===0.727941
+INFO:root:epoch:165 train_eval_loss-->0.268389,train_acc-->0.993363,test_eval_loss-->0.997533,test_acc===0.713235
+INFO:root:epoch:166 train_eval_loss-->0.294237,train_acc-->0.993363,test_eval_loss-->0.958115,test_acc===0.705882
+INFO:root:epoch:167 train_eval_loss-->0.291094,train_acc-->0.993363,test_eval_loss-->0.969275,test_acc===0.698529
+INFO:root:epoch:168 train_eval_loss-->0.299744,train_acc-->0.991150,test_eval_loss-->1.018876,test_acc===0.661765
+INFO:root:epoch:169 train_eval_loss-->0.314542,train_acc-->0.993363,test_eval_loss-->1.043950,test_acc===0.617647
+INFO:root:epoch:170 train_eval_loss-->0.344001,train_acc-->0.993363,test_eval_loss-->1.064885,test_acc===0.602941
+INFO:root:epoch:171 train_eval_loss-->0.342184,train_acc-->0.993363,test_eval_loss-->1.009332,test_acc===0.676471
+INFO:root:epoch:172 train_eval_loss-->0.383594,train_acc-->0.986726,test_eval_loss-->1.000713,test_acc===0.705882
+INFO:root:epoch:173 train_eval_loss-->0.428661,train_acc-->0.988938,test_eval_loss-->0.984353,test_acc===0.676471
+INFO:root:epoch:174 train_eval_loss-->0.465876,train_acc-->0.993363,test_eval_loss-->1.012276,test_acc===0.683824
+INFO:root:epoch:175 train_eval_loss-->0.508406,train_acc-->0.977876,test_eval_loss-->1.015478,test_acc===0.617647
+INFO:root:epoch:176 train_eval_loss-->0.492437,train_acc-->0.982301,test_eval_loss-->1.027542,test_acc===0.669118
+INFO:root:epoch:177 train_eval_loss-->0.463098,train_acc-->0.986726,test_eval_loss-->1.143177,test_acc===0.500000
+INFO:root:epoch:178 train_eval_loss-->0.523255,train_acc-->0.984513,test_eval_loss-->1.037867,test_acc===0.683824
+INFO:root:epoch:179 train_eval_loss-->0.542516,train_acc-->0.975664,test_eval_loss-->1.026147,test_acc===0.625000
+INFO:root:epoch:180 train_eval_loss-->0.536511,train_acc-->0.982301,test_eval_loss-->1.059395,test_acc===0.683824
+INFO:root:epoch:181 train_eval_loss-->0.487518,train_acc-->0.977876,test_eval_loss-->0.998438,test_acc===0.632353
+INFO:root:epoch:182 train_eval_loss-->0.476920,train_acc-->0.991150,test_eval_loss-->1.092035,test_acc===0.602941
+INFO:root:epoch:183 train_eval_loss-->0.572693,train_acc-->0.957965,test_eval_loss-->1.164283,test_acc===0.558824
+INFO:root:epoch:184 train_eval_loss-->0.608280,train_acc-->0.944690,test_eval_loss-->1.027935,test_acc===0.610294
+INFO:root:epoch:185 train_eval_loss-->0.630205,train_acc-->0.913717,test_eval_loss-->1.042166,test_acc===0.632353
+INFO:root:epoch:186 train_eval_loss-->0.599534,train_acc-->0.977876,test_eval_loss-->1.291566,test_acc===0.419118
+INFO:root:epoch:187 train_eval_loss-->0.855899,train_acc-->0.794248,test_eval_loss-->1.138693,test_acc===0.485294
+INFO:root:epoch:188 train_eval_loss-->0.561454,train_acc-->0.953540,test_eval_loss-->1.146161,test_acc===0.514706
+INFO:root:epoch:189 train_eval_loss-->0.576889,train_acc-->0.951327,test_eval_loss-->1.125378,test_acc===0.536765
+INFO:root:epoch:190 train_eval_loss-->0.617335,train_acc-->0.942478,test_eval_loss-->1.151998,test_acc===0.507353
+INFO:root:epoch:191 train_eval_loss-->0.598680,train_acc-->0.951327,test_eval_loss-->1.120448,test_acc===0.544118
+INFO:root:epoch:192 train_eval_loss-->0.634809,train_acc-->0.938053,test_eval_loss-->1.146723,test_acc===0.529412
+INFO:root:epoch:193 train_eval_loss-->0.633208,train_acc-->0.918142,test_eval_loss-->1.128209,test_acc===0.536765
+INFO:root:epoch:194 train_eval_loss-->0.631505,train_acc-->0.929204,test_eval_loss-->1.092827,test_acc===0.566176
+INFO:root:epoch:195 train_eval_loss-->0.531470,train_acc-->0.975664,test_eval_loss-->1.089298,test_acc===0.588235
+INFO:root:epoch:196 train_eval_loss-->0.608640,train_acc-->0.938053,test_eval_loss-->1.100957,test_acc===0.566176
+INFO:root:epoch:197 train_eval_loss-->0.623213,train_acc-->0.953540,test_eval_loss-->1.005999,test_acc===0.654412
+INFO:root:epoch:198 train_eval_loss-->0.504974,train_acc-->0.951327,test_eval_loss-->1.234536,test_acc===0.492647
+INFO:root:epoch:199 train_eval_loss-->0.584417,train_acc-->0.931416,test_eval_loss-->1.231224,test_acc===0.485294
+INFO:root:epoch:200 train_eval_loss-->0.680177,train_acc-->0.898230,test_eval_loss-->1.046903,test_acc===0.639706
+INFO:root:epoch:201 train_eval_loss-->0.684209,train_acc-->0.938053,test_eval_loss-->1.133123,test_acc===0.492647
+INFO:root:epoch:202 train_eval_loss-->0.613422,train_acc-->0.942478,test_eval_loss-->0.974795,test_acc===0.683824
+INFO:root:epoch:203 train_eval_loss-->0.560970,train_acc-->0.949115,test_eval_loss-->1.080111,test_acc===0.647059
+INFO:root:epoch:204 train_eval_loss-->0.613032,train_acc-->0.973451,test_eval_loss-->1.053232,test_acc===0.602941
+INFO:root:epoch:205 train_eval_loss-->0.530741,train_acc-->0.977876,test_eval_loss-->1.154524,test_acc===0.551471
+INFO:root:epoch:206 train_eval_loss-->0.463791,train_acc-->0.969027,test_eval_loss-->1.009624,test_acc===0.669118
+INFO:root:epoch:207 train_eval_loss-->0.438664,train_acc-->0.971239,test_eval_loss-->1.138920,test_acc===0.595588
+INFO:root:epoch:208 train_eval_loss-->0.487724,train_acc-->0.988938,test_eval_loss-->1.027078,test_acc===0.691176
+INFO:root:epoch:209 train_eval_loss-->0.608730,train_acc-->0.935841,test_eval_loss-->1.011476,test_acc===0.713235
+INFO:root:epoch:210 train_eval_loss-->0.446340,train_acc-->0.975664,test_eval_loss-->1.087669,test_acc===0.595588
+INFO:root:epoch:211 train_eval_loss-->0.443765,train_acc-->0.980088,test_eval_loss-->1.046286,test_acc===0.654412
+INFO:root:epoch:212 train_eval_loss-->0.407488,train_acc-->0.986726,test_eval_loss-->1.034044,test_acc===0.661765
+INFO:root:epoch:213 train_eval_loss-->0.425128,train_acc-->0.982301,test_eval_loss-->1.166301,test_acc===0.514706
+INFO:root:epoch:214 train_eval_loss-->0.471973,train_acc-->0.986726,test_eval_loss-->1.068835,test_acc===0.661765
+INFO:root:epoch:215 train_eval_loss-->0.469848,train_acc-->0.969027,test_eval_loss-->0.955993,test_acc===0.727941
+INFO:root:epoch:216 train_eval_loss-->0.445433,train_acc-->0.975664,test_eval_loss-->1.016980,test_acc===0.691176
+INFO:root:epoch:217 train_eval_loss-->0.357570,train_acc-->0.984513,test_eval_loss-->1.011754,test_acc===0.720588
+INFO:root:epoch:218 train_eval_loss-->0.382795,train_acc-->0.986726,test_eval_loss-->1.013924,test_acc===0.676471
+INFO:root:epoch:219 train_eval_loss-->0.383166,train_acc-->0.988938,test_eval_loss-->1.002901,test_acc===0.639706
+INFO:root:epoch:220 train_eval_loss-->0.341283,train_acc-->0.995575,test_eval_loss-->1.055017,test_acc===0.610294
+INFO:root:epoch:221 train_eval_loss-->0.347730,train_acc-->0.993363,test_eval_loss-->0.991187,test_acc===0.705882
+INFO:root:epoch:222 train_eval_loss-->0.324662,train_acc-->0.991150,test_eval_loss-->1.016152,test_acc===0.676471
+INFO:root:epoch:223 train_eval_loss-->0.281645,train_acc-->0.995575,test_eval_loss-->1.043692,test_acc===0.610294
+INFO:root:epoch:224 train_eval_loss-->0.305743,train_acc-->0.991150,test_eval_loss-->1.020400,test_acc===0.647059
+INFO:root:epoch:225 train_eval_loss-->0.277133,train_acc-->0.991150,test_eval_loss-->1.038622,test_acc===0.632353
+INFO:root:epoch:226 train_eval_loss-->0.260402,train_acc-->0.997788,test_eval_loss-->1.053212,test_acc===0.610294
+INFO:root:epoch:227 train_eval_loss-->0.303289,train_acc-->0.995575,test_eval_loss-->0.988688,test_acc===0.691176
+INFO:root:epoch:228 train_eval_loss-->0.247560,train_acc-->0.997788,test_eval_loss-->0.991985,test_acc===0.691176
+INFO:root:epoch:229 train_eval_loss-->0.185206,train_acc-->0.997788,test_eval_loss-->1.003978,test_acc===0.654412
+INFO:root:epoch:230 train_eval_loss-->0.188777,train_acc-->0.997788,test_eval_loss-->0.971635,test_acc===0.720588
+INFO:root:epoch:231 train_eval_loss-->0.167814,train_acc-->1.000000,test_eval_loss-->0.995444,test_acc===0.698529
+INFO:root:epoch:232 train_eval_loss-->0.173612,train_acc-->0.995575,test_eval_loss-->1.013752,test_acc===0.669118
+INFO:root:epoch:233 train_eval_loss-->0.153171,train_acc-->0.997788,test_eval_loss-->0.974895,test_acc===0.698529
+INFO:root:epoch:234 train_eval_loss-->0.148727,train_acc-->0.997788,test_eval_loss-->0.976338,test_acc===0.698529
+INFO:root:epoch:235 train_eval_loss-->0.113993,train_acc-->1.000000,test_eval_loss-->0.991190,test_acc===0.676471
+INFO:root:epoch:236 train_eval_loss-->0.105673,train_acc-->0.997788,test_eval_loss-->0.990454,test_acc===0.705882
+INFO:root:epoch:237 train_eval_loss-->0.117455,train_acc-->0.997788,test_eval_loss-->0.991667,test_acc===0.698529
+INFO:root:epoch:238 train_eval_loss-->0.098409,train_acc-->0.997788,test_eval_loss-->0.977685,test_acc===0.705882
+INFO:root:epoch:239 train_eval_loss-->0.085065,train_acc-->0.997788,test_eval_loss-->0.981105,test_acc===0.683824
+INFO:root:epoch:240 train_eval_loss-->0.077266,train_acc-->0.997788,test_eval_loss-->0.981061,test_acc===0.705882
+INFO:root:epoch:241 train_eval_loss-->0.052476,train_acc-->1.000000,test_eval_loss-->0.975415,test_acc===0.713235
+INFO:root:epoch:242 train_eval_loss-->0.050330,train_acc-->1.000000,test_eval_loss-->0.976037,test_acc===0.705882
+INFO:root:epoch:243 train_eval_loss-->0.044378,train_acc-->1.000000,test_eval_loss-->0.979850,test_acc===0.713235
+INFO:root:epoch:244 train_eval_loss-->0.036530,train_acc-->1.000000,test_eval_loss-->0.973645,test_acc===0.713235
+INFO:root:epoch:245 train_eval_loss-->0.029095,train_acc-->1.000000,test_eval_loss-->0.976347,test_acc===0.713235
+INFO:root:epoch:246 train_eval_loss-->0.024033,train_acc-->1.000000,test_eval_loss-->0.973712,test_acc===0.705882
+INFO:root:epoch:247 train_eval_loss-->0.020864,train_acc-->1.000000,test_eval_loss-->0.975432,test_acc===0.713235
+INFO:root:epoch:248 train_eval_loss-->0.018505,train_acc-->1.000000,test_eval_loss-->0.975848,test_acc===0.705882
+INFO:root:epoch:249 train_eval_loss-->0.017367,train_acc-->1.000000,test_eval_loss-->0.975987,test_acc===0.705882
+INFO:root:epoch:250 train_eval_loss-->0.016142,train_acc-->1.000000,test_eval_loss-->0.975621,test_acc===0.705882
+INFO:root:epoch:251 train_eval_loss-->0.016296,train_acc-->1.000000,test_eval_loss-->0.976493,test_acc===0.705882
+INFO:root:epoch:252 train_eval_loss-->0.015685,train_acc-->1.000000,test_eval_loss-->0.976421,test_acc===0.705882
+INFO:root:epoch:253 train_eval_loss-->0.016404,train_acc-->1.000000,test_eval_loss-->0.976858,test_acc===0.705882
+INFO:root:epoch:254 train_eval_loss-->0.018672,train_acc-->1.000000,test_eval_loss-->0.976373,test_acc===0.713235
+INFO:root:epoch:255 train_eval_loss-->0.019389,train_acc-->1.000000,test_eval_loss-->0.975722,test_acc===0.705882
+INFO:root:epoch:256 train_eval_loss-->0.024910,train_acc-->1.000000,test_eval_loss-->0.977392,test_acc===0.705882
+INFO:root:epoch:257 train_eval_loss-->0.030328,train_acc-->1.000000,test_eval_loss-->0.976156,test_acc===0.705882
+INFO:root:epoch:258 train_eval_loss-->0.038806,train_acc-->1.000000,test_eval_loss-->0.977599,test_acc===0.705882
+INFO:root:epoch:259 train_eval_loss-->0.055984,train_acc-->1.000000,test_eval_loss-->0.969551,test_acc===0.720588
+INFO:root:epoch:260 train_eval_loss-->0.065130,train_acc-->0.997788,test_eval_loss-->0.975876,test_acc===0.713235
+INFO:root:epoch:261 train_eval_loss-->0.063039,train_acc-->0.997788,test_eval_loss-->0.983415,test_acc===0.713235
+INFO:root:epoch:262 train_eval_loss-->0.095170,train_acc-->0.997788,test_eval_loss-->0.976628,test_acc===0.713235
+INFO:root:epoch:263 train_eval_loss-->0.091802,train_acc-->0.997788,test_eval_loss-->0.999399,test_acc===0.661765
+INFO:root:epoch:264 train_eval_loss-->0.115238,train_acc-->0.997788,test_eval_loss-->0.964489,test_acc===0.720588
+INFO:root:epoch:265 train_eval_loss-->0.144629,train_acc-->0.997788,test_eval_loss-->1.002795,test_acc===0.661765
+INFO:root:epoch:266 train_eval_loss-->0.128636,train_acc-->0.997788,test_eval_loss-->0.979497,test_acc===0.698529
+INFO:root:epoch:267 train_eval_loss-->0.142198,train_acc-->0.997788,test_eval_loss-->1.008645,test_acc===0.661765
+INFO:root:epoch:268 train_eval_loss-->0.169049,train_acc-->1.000000,test_eval_loss-->0.979295,test_acc===0.713235
+INFO:root:epoch:269 train_eval_loss-->0.193547,train_acc-->0.997788,test_eval_loss-->0.993854,test_acc===0.720588
+INFO:root:epoch:270 train_eval_loss-->0.224313,train_acc-->0.997788,test_eval_loss-->1.001532,test_acc===0.669118
+INFO:root:epoch:271 train_eval_loss-->0.270731,train_acc-->0.995575,test_eval_loss-->0.962122,test_acc===0.705882
+INFO:root:epoch:272 train_eval_loss-->0.196947,train_acc-->1.000000,test_eval_loss-->0.973655,test_acc===0.735294
+INFO:root:epoch:273 train_eval_loss-->0.252914,train_acc-->0.995575,test_eval_loss-->1.045716,test_acc===0.654412
+INFO:root:epoch:274 train_eval_loss-->0.262502,train_acc-->0.997788,test_eval_loss-->0.966841,test_acc===0.742647
+INFO:root:epoch:275 train_eval_loss-->0.341771,train_acc-->0.993363,test_eval_loss-->1.032500,test_acc===0.654412
+INFO:root:epoch:276 train_eval_loss-->0.310457,train_acc-->0.995575,test_eval_loss-->0.990589,test_acc===0.669118
+INFO:root:epoch:277 train_eval_loss-->0.306324,train_acc-->0.991150,test_eval_loss-->1.065189,test_acc===0.588235
+INFO:root:epoch:278 train_eval_loss-->0.321638,train_acc-->0.995575,test_eval_loss-->1.041650,test_acc===0.625000
+INFO:root:epoch:279 train_eval_loss-->0.342257,train_acc-->0.995575,test_eval_loss-->1.027573,test_acc===0.683824
+INFO:root:epoch:280 train_eval_loss-->0.338579,train_acc-->0.995575,test_eval_loss-->1.010780,test_acc===0.676471
+INFO:root:epoch:281 train_eval_loss-->0.305652,train_acc-->0.997788,test_eval_loss-->0.999967,test_acc===0.691176
+INFO:root:epoch:282 train_eval_loss-->0.373862,train_acc-->0.991150,test_eval_loss-->1.020789,test_acc===0.639706
+INFO:root:epoch:283 train_eval_loss-->0.405684,train_acc-->0.982301,test_eval_loss-->1.044568,test_acc===0.617647
+INFO:root:epoch:284 train_eval_loss-->0.416796,train_acc-->0.984513,test_eval_loss-->1.152948,test_acc===0.536765
+INFO:root:epoch:285 train_eval_loss-->0.419451,train_acc-->0.993363,test_eval_loss-->0.983860,test_acc===0.698529
+INFO:root:epoch:286 train_eval_loss-->0.372344,train_acc-->0.995575,test_eval_loss-->0.998333,test_acc===0.676471
+INFO:root:epoch:287 train_eval_loss-->0.416033,train_acc-->0.988938,test_eval_loss-->1.062230,test_acc===0.625000
+INFO:root:epoch:288 train_eval_loss-->0.413258,train_acc-->0.991150,test_eval_loss-->1.325060,test_acc===0.448529
+INFO:root:epoch:289 train_eval_loss-->0.526210,train_acc-->0.953540,test_eval_loss-->1.038579,test_acc===0.683824
+INFO:root:epoch:290 train_eval_loss-->0.454714,train_acc-->0.977876,test_eval_loss-->1.093762,test_acc===0.625000
+INFO:root:epoch:291 train_eval_loss-->0.402037,train_acc-->0.993363,test_eval_loss-->1.050845,test_acc===0.639706
+INFO:root:epoch:292 train_eval_loss-->0.470128,train_acc-->0.984513,test_eval_loss-->1.131759,test_acc===0.595588
+INFO:root:epoch:293 train_eval_loss-->0.496194,train_acc-->0.977876,test_eval_loss-->1.001792,test_acc===0.647059
+INFO:root:epoch:294 train_eval_loss-->0.463425,train_acc-->0.986726,test_eval_loss-->1.063899,test_acc===0.647059
+INFO:root:epoch:295 train_eval_loss-->0.651078,train_acc-->0.904867,test_eval_loss-->1.186321,test_acc===0.492647
+INFO:root:epoch:296 train_eval_loss-->0.583001,train_acc-->0.938053,test_eval_loss-->1.059595,test_acc===0.632353
+INFO:root:epoch:297 train_eval_loss-->0.617257,train_acc-->0.920354,test_eval_loss-->1.105791,test_acc===0.595588
+INFO:root:epoch:298 train_eval_loss-->0.533545,train_acc-->0.964602,test_eval_loss-->1.152343,test_acc===0.544118
+INFO:root:epoch:299 train_eval_loss-->0.442488,train_acc-->0.975664,test_eval_loss-->1.015083,test_acc===0.647059
+INFO:root:epoch:300 train_eval_loss-->0.442673,train_acc-->0.980088,test_eval_loss-->1.124036,test_acc===0.477941
+INFO:root:epoch:301 train_eval_loss-->0.457874,train_acc-->0.988938,test_eval_loss-->1.048936,test_acc===0.647059
+INFO:root:epoch:302 train_eval_loss-->0.396716,train_acc-->0.988938,test_eval_loss-->1.029863,test_acc===0.691176
+INFO:root:epoch:303 train_eval_loss-->0.491534,train_acc-->0.977876,test_eval_loss-->1.138060,test_acc===0.573529
+INFO:root:epoch:304 train_eval_loss-->0.515479,train_acc-->0.971239,test_eval_loss-->1.012422,test_acc===0.647059
+INFO:root:epoch:305 train_eval_loss-->0.425926,train_acc-->0.984513,test_eval_loss-->1.058944,test_acc===0.647059
+INFO:root:epoch:306 train_eval_loss-->0.453289,train_acc-->0.975664,test_eval_loss-->1.116432,test_acc===0.588235
+INFO:root:epoch:307 train_eval_loss-->0.424775,train_acc-->0.988938,test_eval_loss-->1.052433,test_acc===0.595588
+INFO:root:epoch:308 train_eval_loss-->0.420158,train_acc-->0.988938,test_eval_loss-->1.003045,test_acc===0.683824
+INFO:root:epoch:309 train_eval_loss-->0.414207,train_acc-->0.993363,test_eval_loss-->1.068657,test_acc===0.632353
+INFO:root:epoch:310 train_eval_loss-->0.390817,train_acc-->0.993363,test_eval_loss-->1.048973,test_acc===0.647059
+INFO:root:epoch:311 train_eval_loss-->0.356199,train_acc-->0.993363,test_eval_loss-->0.980714,test_acc===0.691176
+INFO:root:epoch:312 train_eval_loss-->0.379697,train_acc-->0.993363,test_eval_loss-->1.109874,test_acc===0.558824
+INFO:root:epoch:313 train_eval_loss-->0.367601,train_acc-->0.993363,test_eval_loss-->0.997487,test_acc===0.661765
+INFO:root:epoch:314 train_eval_loss-->0.350169,train_acc-->0.984513,test_eval_loss-->0.975305,test_acc===0.720588
+INFO:root:epoch:315 train_eval_loss-->0.377968,train_acc-->0.993363,test_eval_loss-->1.013210,test_acc===0.632353
+INFO:root:epoch:316 train_eval_loss-->0.371368,train_acc-->0.982301,test_eval_loss-->1.072870,test_acc===0.661765
+INFO:root:epoch:317 train_eval_loss-->0.321415,train_acc-->0.995575,test_eval_loss-->1.028375,test_acc===0.625000
+INFO:root:epoch:318 train_eval_loss-->0.294324,train_acc-->0.991150,test_eval_loss-->1.013634,test_acc===0.705882
+INFO:root:epoch:319 train_eval_loss-->0.340156,train_acc-->0.988938,test_eval_loss-->1.011165,test_acc===0.683824
+INFO:root:epoch:320 train_eval_loss-->0.287695,train_acc-->0.995575,test_eval_loss-->1.007982,test_acc===0.661765
+INFO:root:epoch:321 train_eval_loss-->0.305396,train_acc-->0.997788,test_eval_loss-->0.998101,test_acc===0.669118
+INFO:root:epoch:322 train_eval_loss-->0.279748,train_acc-->0.997788,test_eval_loss-->1.070482,test_acc===0.595588
+INFO:root:epoch:323 train_eval_loss-->0.273785,train_acc-->0.995575,test_eval_loss-->1.029526,test_acc===0.676471
+INFO:root:epoch:324 train_eval_loss-->0.254558,train_acc-->0.997788,test_eval_loss-->1.022745,test_acc===0.654412
+INFO:root:epoch:325 train_eval_loss-->0.222816,train_acc-->1.000000,test_eval_loss-->1.014238,test_acc===0.647059
+INFO:root:epoch:326 train_eval_loss-->0.208951,train_acc-->0.997788,test_eval_loss-->1.000369,test_acc===0.698529
+INFO:root:epoch:327 train_eval_loss-->0.215194,train_acc-->0.997788,test_eval_loss-->0.992108,test_acc===0.691176
+INFO:root:epoch:328 train_eval_loss-->0.187593,train_acc-->0.997788,test_eval_loss-->0.999252,test_acc===0.669118
+INFO:root:epoch:329 train_eval_loss-->0.161885,train_acc-->0.997788,test_eval_loss-->1.048118,test_acc===0.639706
+INFO:root:epoch:330 train_eval_loss-->0.183997,train_acc-->0.997788,test_eval_loss-->1.003944,test_acc===0.691176
+INFO:root:epoch:331 train_eval_loss-->0.142058,train_acc-->1.000000,test_eval_loss-->0.987228,test_acc===0.727941
+INFO:root:epoch:332 train_eval_loss-->0.194673,train_acc-->0.997788,test_eval_loss-->0.996899,test_acc===0.720588
+INFO:root:epoch:333 train_eval_loss-->0.145145,train_acc-->1.000000,test_eval_loss-->0.982252,test_acc===0.727941
+INFO:root:epoch:334 train_eval_loss-->0.122752,train_acc-->0.997788,test_eval_loss-->1.003516,test_acc===0.691176
+INFO:root:epoch:335 train_eval_loss-->0.101499,train_acc-->1.000000,test_eval_loss-->0.991081,test_acc===0.713235
+INFO:root:epoch:336 train_eval_loss-->0.086245,train_acc-->0.997788,test_eval_loss-->0.992068,test_acc===0.698529
+INFO:root:epoch:337 train_eval_loss-->0.074372,train_acc-->1.000000,test_eval_loss-->0.998976,test_acc===0.691176
+INFO:root:epoch:338 train_eval_loss-->0.063890,train_acc-->0.997788,test_eval_loss-->0.997616,test_acc===0.691176
+INFO:root:epoch:339 train_eval_loss-->0.060048,train_acc-->1.000000,test_eval_loss-->0.988991,test_acc===0.691176
+INFO:root:epoch:340 train_eval_loss-->0.053120,train_acc-->1.000000,test_eval_loss-->0.994816,test_acc===0.705882
+INFO:root:epoch:341 train_eval_loss-->0.051898,train_acc-->1.000000,test_eval_loss-->0.993936,test_acc===0.691176
+INFO:root:epoch:342 train_eval_loss-->0.040978,train_acc-->1.000000,test_eval_loss-->0.989090,test_acc===0.698529
+INFO:root:epoch:343 train_eval_loss-->0.033309,train_acc-->1.000000,test_eval_loss-->0.989608,test_acc===0.698529
+INFO:root:epoch:344 train_eval_loss-->0.026041,train_acc-->1.000000,test_eval_loss-->0.990060,test_acc===0.698529
+INFO:root:epoch:345 train_eval_loss-->0.021223,train_acc-->1.000000,test_eval_loss-->0.991141,test_acc===0.691176
+INFO:root:epoch:346 train_eval_loss-->0.017205,train_acc-->1.000000,test_eval_loss-->0.989343,test_acc===0.698529
+INFO:root:epoch:347 train_eval_loss-->0.015371,train_acc-->1.000000,test_eval_loss-->0.990143,test_acc===0.698529
+INFO:root:epoch:348 train_eval_loss-->0.012839,train_acc-->1.000000,test_eval_loss-->0.990392,test_acc===0.698529
+INFO:root:epoch:349 train_eval_loss-->0.011408,train_acc-->1.000000,test_eval_loss-->0.990664,test_acc===0.691176
+INFO:root:epoch:350 train_eval_loss-->0.010331,train_acc-->1.000000,test_eval_loss-->0.990933,test_acc===0.691176
+INFO:root:epoch:351 train_eval_loss-->0.010155,train_acc-->1.000000,test_eval_loss-->0.989503,test_acc===0.698529
+INFO:root:epoch:352 train_eval_loss-->0.010289,train_acc-->1.000000,test_eval_loss-->0.989655,test_acc===0.698529
+INFO:root:epoch:353 train_eval_loss-->0.010226,train_acc-->1.000000,test_eval_loss-->0.990306,test_acc===0.691176
+INFO:root:epoch:354 train_eval_loss-->0.011891,train_acc-->1.000000,test_eval_loss-->0.989446,test_acc===0.698529
+INFO:root:epoch:355 train_eval_loss-->0.014752,train_acc-->1.000000,test_eval_loss-->0.989681,test_acc===0.691176
+INFO:root:epoch:356 train_eval_loss-->0.017023,train_acc-->1.000000,test_eval_loss-->0.989403,test_acc===0.698529
+INFO:root:epoch:357 train_eval_loss-->0.023216,train_acc-->1.000000,test_eval_loss-->0.990613,test_acc===0.683824
+INFO:root:epoch:358 train_eval_loss-->0.027951,train_acc-->1.000000,test_eval_loss-->0.991288,test_acc===0.691176
+INFO:root:epoch:359 train_eval_loss-->0.037285,train_acc-->1.000000,test_eval_loss-->0.988295,test_acc===0.698529
+INFO:root:epoch:360 train_eval_loss-->0.047016,train_acc-->0.997788,test_eval_loss-->0.999616,test_acc===0.683824
+INFO:root:epoch:361 train_eval_loss-->0.049729,train_acc-->1.000000,test_eval_loss-->0.988349,test_acc===0.698529
+INFO:root:epoch:362 train_eval_loss-->0.068805,train_acc-->0.997788,test_eval_loss-->0.989429,test_acc===0.705882
+INFO:root:epoch:363 train_eval_loss-->0.074326,train_acc-->1.000000,test_eval_loss-->0.995161,test_acc===0.691176
+INFO:root:epoch:364 train_eval_loss-->0.085925,train_acc-->0.997788,test_eval_loss-->0.987071,test_acc===0.691176
+INFO:root:epoch:365 train_eval_loss-->0.100880,train_acc-->1.000000,test_eval_loss-->0.983656,test_acc===0.713235
+INFO:root:epoch:366 train_eval_loss-->0.114925,train_acc-->0.997788,test_eval_loss-->0.994478,test_acc===0.683824
+INFO:root:epoch:367 train_eval_loss-->0.109914,train_acc-->1.000000,test_eval_loss-->1.007109,test_acc===0.683824
+INFO:root:epoch:368 train_eval_loss-->0.145414,train_acc-->0.997788,test_eval_loss-->0.995105,test_acc===0.691176
+INFO:root:epoch:369 train_eval_loss-->0.157799,train_acc-->1.000000,test_eval_loss-->0.972853,test_acc===0.727941
+INFO:root:epoch:370 train_eval_loss-->0.157620,train_acc-->0.997788,test_eval_loss-->0.999385,test_acc===0.691176
+INFO:root:epoch:371 train_eval_loss-->0.167330,train_acc-->1.000000,test_eval_loss-->1.011672,test_acc===0.720588
+INFO:root:epoch:372 train_eval_loss-->0.200547,train_acc-->0.997788,test_eval_loss-->1.012678,test_acc===0.720588
+INFO:root:epoch:373 train_eval_loss-->0.215525,train_acc-->1.000000,test_eval_loss-->1.051595,test_acc===0.625000
+INFO:root:epoch:374 train_eval_loss-->0.231957,train_acc-->0.997788,test_eval_loss-->0.979198,test_acc===0.727941
+INFO:root:epoch:375 train_eval_loss-->0.214407,train_acc-->0.997788,test_eval_loss-->1.031525,test_acc===0.639706
+INFO:root:epoch:376 train_eval_loss-->0.229467,train_acc-->0.997788,test_eval_loss-->1.017425,test_acc===0.691176
+INFO:root:epoch:377 train_eval_loss-->0.273341,train_acc-->0.991150,test_eval_loss-->1.042589,test_acc===0.632353
+INFO:root:epoch:378 train_eval_loss-->0.279555,train_acc-->0.995575,test_eval_loss-->1.027993,test_acc===0.639706
+INFO:root:epoch:379 train_eval_loss-->0.276436,train_acc-->0.988938,test_eval_loss-->1.094291,test_acc===0.625000
+INFO:root:epoch:380 train_eval_loss-->0.307223,train_acc-->0.993363,test_eval_loss-->1.051596,test_acc===0.595588
+INFO:root:epoch:381 train_eval_loss-->0.255436,train_acc-->0.993363,test_eval_loss-->0.984419,test_acc===0.713235
+INFO:root:epoch:382 train_eval_loss-->0.301510,train_acc-->0.997788,test_eval_loss-->1.027840,test_acc===0.661765
+INFO:root:epoch:383 train_eval_loss-->0.342122,train_acc-->0.997788,test_eval_loss-->1.000285,test_acc===0.705882
+INFO:root:epoch:384 train_eval_loss-->0.313905,train_acc-->0.991150,test_eval_loss-->1.048447,test_acc===0.610294
+INFO:root:epoch:385 train_eval_loss-->0.363229,train_acc-->0.997788,test_eval_loss-->0.991561,test_acc===0.720588
+INFO:root:epoch:386 train_eval_loss-->0.324863,train_acc-->0.997788,test_eval_loss-->0.975994,test_acc===0.735294
+INFO:root:epoch:387 train_eval_loss-->0.374509,train_acc-->0.988938,test_eval_loss-->1.087818,test_acc===0.595588
+INFO:root:epoch:388 train_eval_loss-->0.371360,train_acc-->0.993363,test_eval_loss-->0.972801,test_acc===0.669118
+INFO:root:epoch:389 train_eval_loss-->0.361473,train_acc-->0.993363,test_eval_loss-->1.153986,test_acc===0.544118
+INFO:root:epoch:390 train_eval_loss-->0.449444,train_acc-->0.980088,test_eval_loss-->1.006866,test_acc===0.610294
+INFO:root:epoch:391 train_eval_loss-->0.416521,train_acc-->0.997788,test_eval_loss-->1.038829,test_acc===0.647059
+INFO:root:epoch:392 train_eval_loss-->0.345257,train_acc-->0.986726,test_eval_loss-->1.010015,test_acc===0.639706
+INFO:root:epoch:393 train_eval_loss-->0.483912,train_acc-->0.986726,test_eval_loss-->1.222955,test_acc===0.426471
+INFO:root:epoch:394 train_eval_loss-->0.529221,train_acc-->0.960177,test_eval_loss-->1.016371,test_acc===0.676471
+INFO:root:epoch:395 train_eval_loss-->0.458123,train_acc-->0.973451,test_eval_loss-->1.029754,test_acc===0.602941
+INFO:root:epoch:396 train_eval_loss-->0.383640,train_acc-->0.986726,test_eval_loss-->1.033082,test_acc===0.654412
+INFO:root:epoch:397 train_eval_loss-->0.416125,train_acc-->0.984513,test_eval_loss-->1.044665,test_acc===0.654412
+INFO:root:epoch:398 train_eval_loss-->0.369654,train_acc-->0.993363,test_eval_loss-->1.050146,test_acc===0.698529
+INFO:root:epoch:399 train_eval_loss-->0.473380,train_acc-->0.977876,test_eval_loss-->1.110124,test_acc===0.602941
+INFO:root:epoch:400 train_eval_loss-->0.366163,train_acc-->0.993363,test_eval_loss-->1.029495,test_acc===0.698529
+INFO:root:epoch:401 train_eval_loss-->0.400767,train_acc-->0.988938,test_eval_loss-->1.046648,test_acc===0.676471
+INFO:root:epoch:402 train_eval_loss-->0.414039,train_acc-->0.986726,test_eval_loss-->1.001878,test_acc===0.698529
+INFO:root:epoch:403 train_eval_loss-->0.391231,train_acc-->0.991150,test_eval_loss-->1.071307,test_acc===0.632353
+INFO:root:epoch:404 train_eval_loss-->0.374335,train_acc-->0.997788,test_eval_loss-->1.081273,test_acc===0.632353
+INFO:root:epoch:405 train_eval_loss-->0.430121,train_acc-->0.991150,test_eval_loss-->1.049236,test_acc===0.647059
+INFO:root:epoch:406 train_eval_loss-->0.358461,train_acc-->0.995575,test_eval_loss-->1.067028,test_acc===0.647059
+INFO:root:epoch:407 train_eval_loss-->0.372712,train_acc-->0.984513,test_eval_loss-->1.042947,test_acc===0.595588
+INFO:root:epoch:408 train_eval_loss-->0.333874,train_acc-->0.986726,test_eval_loss-->1.071096,test_acc===0.647059
+INFO:root:epoch:409 train_eval_loss-->0.380308,train_acc-->0.991150,test_eval_loss-->1.078796,test_acc===0.595588
+INFO:root:epoch:410 train_eval_loss-->0.444535,train_acc-->0.980088,test_eval_loss-->1.074815,test_acc===0.654412
+INFO:root:epoch:411 train_eval_loss-->0.330624,train_acc-->0.995575,test_eval_loss-->1.135277,test_acc===0.522059
+INFO:root:epoch:412 train_eval_loss-->0.332801,train_acc-->0.993363,test_eval_loss-->1.063174,test_acc===0.647059
+INFO:root:epoch:413 train_eval_loss-->0.309005,train_acc-->0.995575,test_eval_loss-->1.076280,test_acc===0.602941
+INFO:root:epoch:414 train_eval_loss-->0.303228,train_acc-->0.993363,test_eval_loss-->1.042770,test_acc===0.669118
+INFO:root:epoch:415 train_eval_loss-->0.303959,train_acc-->0.997788,test_eval_loss-->0.984424,test_acc===0.735294
+INFO:root:epoch:416 train_eval_loss-->0.272418,train_acc-->1.000000,test_eval_loss-->0.992138,test_acc===0.669118
+INFO:root:epoch:417 train_eval_loss-->0.297464,train_acc-->0.993363,test_eval_loss-->1.100608,test_acc===0.595588
+INFO:root:epoch:418 train_eval_loss-->0.275520,train_acc-->0.995575,test_eval_loss-->1.058938,test_acc===0.617647
+INFO:root:epoch:419 train_eval_loss-->0.304944,train_acc-->0.991150,test_eval_loss-->1.035678,test_acc===0.647059
+INFO:root:epoch:420 train_eval_loss-->0.260406,train_acc-->1.000000,test_eval_loss-->1.023147,test_acc===0.698529
+INFO:root:epoch:421 train_eval_loss-->0.250171,train_acc-->0.997788,test_eval_loss-->1.107644,test_acc===0.595588
+INFO:root:epoch:422 train_eval_loss-->0.247626,train_acc-->0.997788,test_eval_loss-->1.032213,test_acc===0.617647
+INFO:root:epoch:423 train_eval_loss-->0.203177,train_acc-->0.995575,test_eval_loss-->1.030719,test_acc===0.647059
+INFO:root:epoch:424 train_eval_loss-->0.196314,train_acc-->0.997788,test_eval_loss-->1.004676,test_acc===0.720588
+INFO:root:epoch:425 train_eval_loss-->0.178633,train_acc-->1.000000,test_eval_loss-->0.989280,test_acc===0.735294
+INFO:root:epoch:426 train_eval_loss-->0.164430,train_acc-->0.997788,test_eval_loss-->1.013028,test_acc===0.639706
+INFO:root:epoch:427 train_eval_loss-->0.155540,train_acc-->0.997788,test_eval_loss-->1.016705,test_acc===0.654412
+INFO:root:epoch:428 train_eval_loss-->0.163452,train_acc-->0.997788,test_eval_loss-->0.988830,test_acc===0.713235
+INFO:root:epoch:429 train_eval_loss-->0.144639,train_acc-->1.000000,test_eval_loss-->1.005517,test_acc===0.654412
+INFO:root:epoch:430 train_eval_loss-->0.161718,train_acc-->0.997788,test_eval_loss-->1.012904,test_acc===0.669118
+INFO:root:epoch:431 train_eval_loss-->0.127844,train_acc-->1.000000,test_eval_loss-->0.992613,test_acc===0.683824
+INFO:root:epoch:432 train_eval_loss-->0.138031,train_acc-->0.997788,test_eval_loss-->0.998126,test_acc===0.713235
+INFO:root:epoch:433 train_eval_loss-->0.108180,train_acc-->0.997788,test_eval_loss-->1.002697,test_acc===0.691176
+INFO:root:epoch:434 train_eval_loss-->0.101096,train_acc-->0.997788,test_eval_loss-->0.999431,test_acc===0.691176
+INFO:root:epoch:435 train_eval_loss-->0.103092,train_acc-->0.997788,test_eval_loss-->0.997290,test_acc===0.698529
+INFO:root:epoch:436 train_eval_loss-->0.084210,train_acc-->1.000000,test_eval_loss-->0.997980,test_acc===0.713235
+INFO:root:epoch:437 train_eval_loss-->0.074165,train_acc-->0.997788,test_eval_loss-->1.009707,test_acc===0.691176
+INFO:root:epoch:438 train_eval_loss-->0.060010,train_acc-->1.000000,test_eval_loss-->1.003365,test_acc===0.698529
+INFO:root:epoch:439 train_eval_loss-->0.060506,train_acc-->1.000000,test_eval_loss-->0.998315,test_acc===0.705882
+INFO:root:epoch:440 train_eval_loss-->0.045873,train_acc-->1.000000,test_eval_loss-->1.000164,test_acc===0.683824
+INFO:root:epoch:441 train_eval_loss-->0.038038,train_acc-->1.000000,test_eval_loss-->1.002561,test_acc===0.683824
+INFO:root:epoch:442 train_eval_loss-->0.032174,train_acc-->1.000000,test_eval_loss-->1.001677,test_acc===0.683824
+INFO:root:epoch:443 train_eval_loss-->0.029450,train_acc-->1.000000,test_eval_loss-->1.000171,test_acc===0.698529
+INFO:root:epoch:444 train_eval_loss-->0.022766,train_acc-->1.000000,test_eval_loss-->1.001264,test_acc===0.691176
+INFO:root:epoch:445 train_eval_loss-->0.018225,train_acc-->1.000000,test_eval_loss-->1.000154,test_acc===0.698529
+INFO:root:epoch:446 train_eval_loss-->0.016678,train_acc-->1.000000,test_eval_loss-->1.000585,test_acc===0.683824
+INFO:root:epoch:447 train_eval_loss-->0.012159,train_acc-->1.000000,test_eval_loss-->0.999698,test_acc===0.691176
+INFO:root:epoch:448 train_eval_loss-->0.009486,train_acc-->1.000000,test_eval_loss-->0.999478,test_acc===0.691176
+INFO:root:epoch:449 train_eval_loss-->0.009160,train_acc-->1.000000,test_eval_loss-->0.999373,test_acc===0.698529
+INFO:root:epoch:450 train_eval_loss-->0.007943,train_acc-->1.000000,test_eval_loss-->0.999699,test_acc===0.691176
+INFO:root:epoch:451 train_eval_loss-->0.008044,train_acc-->1.000000,test_eval_loss-->0.999806,test_acc===0.691176
+INFO:root:epoch:452 train_eval_loss-->0.007757,train_acc-->1.000000,test_eval_loss-->0.999855,test_acc===0.698529
+INFO:root:epoch:453 train_eval_loss-->0.009252,train_acc-->1.000000,test_eval_loss-->0.999552,test_acc===0.705882
+INFO:root:epoch:454 train_eval_loss-->0.010089,train_acc-->1.000000,test_eval_loss-->0.999908,test_acc===0.691176
+INFO:root:epoch:455 train_eval_loss-->0.014522,train_acc-->1.000000,test_eval_loss-->1.001235,test_acc===0.691176
+INFO:root:epoch:456 train_eval_loss-->0.016264,train_acc-->1.000000,test_eval_loss-->1.001419,test_acc===0.698529
+INFO:root:epoch:457 train_eval_loss-->0.022877,train_acc-->1.000000,test_eval_loss-->1.000662,test_acc===0.698529
+INFO:root:epoch:458 train_eval_loss-->0.024707,train_acc-->1.000000,test_eval_loss-->0.999207,test_acc===0.705882
+INFO:root:epoch:459 train_eval_loss-->0.030898,train_acc-->1.000000,test_eval_loss-->0.994926,test_acc===0.713235
+INFO:root:epoch:460 train_eval_loss-->0.046646,train_acc-->1.000000,test_eval_loss-->0.996676,test_acc===0.713235
+INFO:root:epoch:461 train_eval_loss-->0.050377,train_acc-->1.000000,test_eval_loss-->1.007764,test_acc===0.698529
+INFO:root:epoch:462 train_eval_loss-->0.068848,train_acc-->0.997788,test_eval_loss-->1.001289,test_acc===0.683824
+INFO:root:epoch:463 train_eval_loss-->0.065288,train_acc-->1.000000,test_eval_loss-->1.005526,test_acc===0.676471
+INFO:root:epoch:464 train_eval_loss-->0.084681,train_acc-->0.997788,test_eval_loss-->1.001764,test_acc===0.720588
+INFO:root:epoch:465 train_eval_loss-->0.088402,train_acc-->1.000000,test_eval_loss-->0.994884,test_acc===0.713235
+INFO:root:epoch:466 train_eval_loss-->0.093192,train_acc-->0.997788,test_eval_loss-->0.988960,test_acc===0.720588
+INFO:root:epoch:467 train_eval_loss-->0.099766,train_acc-->1.000000,test_eval_loss-->1.008469,test_acc===0.669118
+INFO:root:epoch:468 train_eval_loss-->0.121797,train_acc-->0.997788,test_eval_loss-->0.999103,test_acc===0.705882
+INFO:root:epoch:469 train_eval_loss-->0.110271,train_acc-->1.000000,test_eval_loss-->1.002600,test_acc===0.691176
+INFO:root:epoch:470 train_eval_loss-->0.152267,train_acc-->0.997788,test_eval_loss-->1.005873,test_acc===0.676471
+INFO:root:epoch:471 train_eval_loss-->0.140057,train_acc-->1.000000,test_eval_loss-->1.036667,test_acc===0.617647
+INFO:root:epoch:472 train_eval_loss-->0.170364,train_acc-->0.997788,test_eval_loss-->1.028547,test_acc===0.669118
+INFO:root:epoch:473 train_eval_loss-->0.149233,train_acc-->1.000000,test_eval_loss-->0.994982,test_acc===0.705882
+INFO:root:epoch:474 train_eval_loss-->0.199465,train_acc-->0.997788,test_eval_loss-->1.006373,test_acc===0.698529
+INFO:root:epoch:475 train_eval_loss-->0.206876,train_acc-->0.995575,test_eval_loss-->1.035799,test_acc===0.647059
+INFO:root:epoch:476 train_eval_loss-->0.202400,train_acc-->0.997788,test_eval_loss-->1.044802,test_acc===0.647059
+INFO:root:epoch:477 train_eval_loss-->0.214239,train_acc-->0.997788,test_eval_loss-->1.014415,test_acc===0.683824
+INFO:root:epoch:478 train_eval_loss-->0.234468,train_acc-->0.997788,test_eval_loss-->1.006586,test_acc===0.705882
+INFO:root:epoch:479 train_eval_loss-->0.249625,train_acc-->0.997788,test_eval_loss-->1.048078,test_acc===0.610294
+INFO:root:epoch:480 train_eval_loss-->0.260974,train_acc-->0.995575,test_eval_loss-->1.014215,test_acc===0.654412
+INFO:root:epoch:481 train_eval_loss-->0.257549,train_acc-->0.995575,test_eval_loss-->1.003447,test_acc===0.676471
+INFO:root:epoch:482 train_eval_loss-->0.256138,train_acc-->0.997788,test_eval_loss-->1.010217,test_acc===0.654412
+INFO:root:epoch:483 train_eval_loss-->0.259429,train_acc-->0.995575,test_eval_loss-->1.093043,test_acc===0.580882
+INFO:root:epoch:484 train_eval_loss-->0.293407,train_acc-->0.995575,test_eval_loss-->1.020448,test_acc===0.639706
+INFO:root:epoch:485 train_eval_loss-->0.296380,train_acc-->1.000000,test_eval_loss-->1.011655,test_acc===0.698529
+INFO:root:epoch:486 train_eval_loss-->0.299654,train_acc-->0.995575,test_eval_loss-->1.026194,test_acc===0.661765
+INFO:root:epoch:487 train_eval_loss-->0.303643,train_acc-->0.991150,test_eval_loss-->1.011929,test_acc===0.720588
+INFO:root:epoch:488 train_eval_loss-->0.330845,train_acc-->0.995575,test_eval_loss-->1.040544,test_acc===0.610294
+INFO:root:epoch:489 train_eval_loss-->0.288169,train_acc-->1.000000,test_eval_loss-->1.050024,test_acc===0.595588
+INFO:root:epoch:490 train_eval_loss-->0.379948,train_acc-->0.988938,test_eval_loss-->1.002173,test_acc===0.750000
+INFO:root:epoch:491 train_eval_loss-->0.291491,train_acc-->0.988938,test_eval_loss-->1.044614,test_acc===0.661765
+INFO:root:epoch:492 train_eval_loss-->0.343918,train_acc-->0.995575,test_eval_loss-->1.069123,test_acc===0.610294
+INFO:root:epoch:493 train_eval_loss-->0.385642,train_acc-->0.986726,test_eval_loss-->1.062945,test_acc===0.683824
+INFO:root:epoch:494 train_eval_loss-->0.351604,train_acc-->0.991150,test_eval_loss-->1.095807,test_acc===0.566176
+INFO:root:epoch:495 train_eval_loss-->0.388161,train_acc-->0.984513,test_eval_loss-->1.032435,test_acc===0.683824
+INFO:root:epoch:496 train_eval_loss-->0.365120,train_acc-->0.993363,test_eval_loss-->1.096262,test_acc===0.573529
+INFO:root:epoch:497 train_eval_loss-->0.382683,train_acc-->0.991150,test_eval_loss-->1.065669,test_acc===0.617647
+INFO:root:epoch:498 train_eval_loss-->0.400615,train_acc-->0.995575,test_eval_loss-->1.011903,test_acc===0.705882
+INFO:root:epoch:499 train_eval_loss-->0.397758,train_acc-->0.988938,test_eval_loss-->1.075446,test_acc===0.632353

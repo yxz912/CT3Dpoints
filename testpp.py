@@ -322,4 +322,16 @@ import torch.nn as nn
 #
 # print(f"Hello ,{full_name.title()}!")
 
-print(bin(333))
+# print(bin(333))
+
+# a= int(input())
+# b= int(input())
+#
+# for i in range(a,b+1):
+#     if '3' in str(i):
+#         print(i)
+# common=3
+# listc = list(range(0, common, 1))
+# randc = random.choice(listc)
+# print(randc)
+

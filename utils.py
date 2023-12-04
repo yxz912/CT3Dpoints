@@ -12,6 +12,7 @@ import logging
 import logging.handlers
 from matplotlib import pyplot as plt
 import cv2
+import torchvision.transforms as transforms
 
 
 def get_minsize(dicom_dir):
@@ -99,9 +100,31 @@ class myResize:
         self.size_w = size_w
     def __call__(self, data):
         image, mask = data
-        # mask[...,0] = mask[...,0]*(self.size_w/image.shape[1])
-        # mask[...,1] = mask[...,1]*(self.size_h/image.shape[2])
-        return TF.resize(image, [self.size_h, self.size_w]), mask
+        if (image.shape[1] !=self.size_w) or (image.shape[2] != self.size_h):
+            mask[...,0] = mask[...,0]*(self.size_w/image.shape[1])
+            mask[...,1] = mask[...,1]*(self.size_h/image.shape[2])
+            image = TF.resize(image, [self.size_h, self.size_w])
+        return image, mask
+
+
+class myRandomEqualize_multichannel:
+    def __init__(self, p=0.5):
+        self.p = p
+    def __call__(self,data):
+        image, mask = data
+        # 随机决定是否进行均衡化
+        if np.random.rand() > self.p:
+            return image,mask
+        # 获取图像的通道数
+        num_channels = image.shape[0]
+
+        # 对每个通道进行直方图均衡化
+        equalized_channels = [cv2.equalizeHist(image[i, :, :].astype(np.uint8)) for i in range(num_channels) ]
+
+        # 将均衡化后的通道重新组合成多通道图像
+        equalized_image = np.stack(equalized_channels, axis=0)
+
+        return equalized_image.astype(np.float32),mask
 
 class myRandomHorizontalFlip:
     def __init__(self, p=0.5,input_size_w=512):
@@ -303,14 +326,14 @@ class EuclideanLoss(nn.Module):
         super(EuclideanLoss, self).__init__()
         self.setting_config=config
 
-    def forward(self, output, target):
+    def forward(self, output, target,l2_reg):
         #loss=torch.sqrt(((output - target)**2).sum())
         eg=(output-target)**2
         egd=torch.sqrt(torch.sum(eg,dim=(2,3)))
         # eg = abs(output - target)
         # egd=torch.sum(eg,dim=(2,3))
         loss=egd.sum() / (self.setting_config.batch_size*self.setting_config.num_classes)
-        return loss
+        return loss + (self.setting_config.l2_lambda * l2_reg).item()
 
 class Deepeucloss(nn.Module):
     def __init__(self,config):
@@ -318,13 +341,13 @@ class Deepeucloss(nn.Module):
         self.euc=EuclideanLoss(config)
         self.config=config
 
-    def forward(self,gt_pre,out,target):
-        outloss=self.euc(out,target)
+    def forward(self,gt_pre,out,target,l2_reg):
+        outloss=self.euc(out,target,l2_reg)
 
         gt_loss=0.0
         for i in range(len(gt_pre)):
             #gt_loss += gt_pre[i][0]* self.euc(gt_pre[i][1],target)
-            gt_loss += 0.1*(i+1)*self.euc(gt_pre[i][1],target)
+            gt_loss += 0.1*(i+1)*self.euc(gt_pre[i][1],target,l2_reg)
             #print(gt_pre[i][0])
-        return outloss + gt_loss
+        return outloss + gt_loss + (self.config.l2_lambda * l2_reg).item()
 

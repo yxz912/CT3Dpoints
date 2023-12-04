@@ -1,0 +1,56 @@
+2023-11-30 17:09:35 - #----------Config info----------#
+2023-11-30 17:09:35 - network: Pointneted_plus,
+2023-11-30 17:09:35 - data_path: /media/yxz/新加卷/teeth_ct_points/CT3Dpoints/,
+2023-11-30 17:09:35 - label_path: /media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx,
+2023-11-30 17:09:35 - pretrained_path: ./pre_trained/,
+2023-11-30 17:09:35 - cfg: [48, 64, 96, 128, 256, 512, 256, 128, 64, 32, 16],
+2023-11-30 17:09:35 - num_classes: 3,
+2023-11-30 17:09:35 - input_size_h: 512,
+2023-11-30 17:09:35 - input_size_w: 512,
+2023-11-30 17:09:35 - input_channels: 64,
+2023-11-30 17:09:35 - distributed: False,
+2023-11-30 17:09:35 - local_rank: -1,
+2023-11-30 17:09:35 - num_workers: 4,
+2023-11-30 17:09:35 - seed: 42,
+2023-11-30 17:09:35 - world_size: None,
+2023-11-30 17:09:35 - rank: None,
+2023-11-30 17:09:35 - amp: False,
+2023-11-30 17:09:35 - l2_lambda: 0.001,
+2023-11-30 17:09:35 - gpu_id: 0,
+2023-11-30 17:09:35 - batch_size: 2,
+2023-11-30 17:09:35 - val_bs: 1,
+2023-11-30 17:09:35 - epochs: 500,
+2023-11-30 17:09:35 - deep_supervision: False,
+2023-11-30 17:09:35 - tailadd: True,
+2023-11-30 17:09:35 - threshold: 8.660254037844387,
+2023-11-30 17:09:35 - rand_data: True,
+2023-11-30 17:09:35 - mean_common: False,
+2023-11-30 17:09:35 - train_mean: 0,
+2023-11-30 17:09:35 - train_std: 0,
+2023-11-30 17:09:35 - val_mean: 0,
+2023-11-30 17:09:35 - val_std: 0,
+2023-11-30 17:09:35 - work_dir: results/Pointneted_plus_Thursday_30_November_2023_17h_09m_35s/,
+2023-11-30 17:09:35 - tensor_size: 0,
+2023-11-30 17:09:35 - train_transformer: Compose(
+    <utils.myToTensor object at 0x7f72aad89910>
+    <utils.myResize object at 0x7f7392726b50>
+),
+2023-11-30 17:09:35 - test_transformer: Compose(
+    <utils.myToTensor object at 0x7f7392726c10>
+    <utils.myResize object at 0x7f7392726c40>
+),
+2023-11-30 17:09:35 - opt: AdamW,
+2023-11-30 17:09:35 - lr: 0.001,
+2023-11-30 17:09:35 - betas: (0.9, 0.999),
+2023-11-30 17:09:35 - eps: 1e-08,
+2023-11-30 17:09:35 - weight_decay: 0.01,
+2023-11-30 17:09:35 - amsgrad: False,
+2023-11-30 17:09:35 - sch: CosineAnnealingLR,
+2023-11-30 17:09:35 - T_max: 50,
+2023-11-30 17:09:35 - eta_min: 1e-05,
+2023-11-30 17:09:35 - last_epoch: -1,
+INFO:root:train--mean-->41.68455
+INFO:root:train--std-->54.433514
+INFO:root:val--mean-->42.785255
+INFO:root:val--std-->54.970303
+INFO:root:real_input_channels-->49
