@@ -23,6 +23,7 @@ class YXZ_datasets(Dataset):
         self.rand_data = config.rand_data
         self.mean_common = config.mean_common
         self.horizontal_flip = config.horizontal_flip
+        self.label_num=config.label_num
 
         if train:
             images_list = sorted(os.listdir(path_Data+'train/images/'))
@@ -190,24 +191,24 @@ class YXZ_datasets(Dataset):
         array_2d = np.zeros((self.num_cls, 3))
         if len(result) == 1:
             row_index = result[0]
-            if self.horizontal_flip:
-                for i,k in enumerate([2,3,8,9,15,16,17,18,21,22]):
-                    x_value = self.data_label.loc[row_index + k, 'x']
-                    y_value = self.data_label.loc[row_index + k, 'y']
-                    z_value = self.data_label.loc[row_index + k, 'z'] + 100
-                    if hf:
-                        if i%2==0:
-                            z_value = self.data_label.loc[row_index + k+1, 'z'] + 100
-                        else:
-                            z_value = self.data_label.loc[row_index + k-1, 'z'] + 100
-                        #z_value = -1*self.data_label.loc[row_index + k, 'z'] + 100
-                    array_2d[i] = [x_value, y_value, z_value]
-            else:
-                for k in range(array_2d.shape[0]):
-                    x_value = self.data_label.loc[row_index+k, 'x']
-                    y_value = self.data_label.loc[row_index+k, 'y']
-                    z_value = self.data_label.loc[row_index+k, 'z'] + 100
-                    array_2d[k]=[x_value,y_value,z_value]
+            #if self.horizontal_flip:
+            for i,k in enumerate(self.label_num):
+                x_value = self.data_label.loc[row_index + k, 'x']
+                y_value = self.data_label.loc[row_index + k, 'y']
+                z_value = self.data_label.loc[row_index + k, 'z'] + 100
+                if hf:
+                    # if i%2==0:
+                    #     z_value = self.data_label.loc[row_index + k+1, 'z'] + 100
+                    # else:
+                    #     z_value = self.data_label.loc[row_index + k-1, 'z'] + 100
+                    z_value = -1*self.data_label.loc[row_index + k, 'z'] + 100
+                array_2d[i] = [x_value, y_value, z_value]
+            # else:
+            #     for k in range(array_2d.shape[0]):
+            #         x_value = self.data_label.loc[row_index+k, 'x']
+            #         y_value = self.data_label.loc[row_index+k, 'y']
+            #         z_value = self.data_label.loc[row_index+k, 'z'] + 100
+            #         array_2d[k]=[x_value,y_value,z_value]
         else:
             print(f"找不到 {name}")
         array_2d=np.expand_dims(array_2d, axis=1)

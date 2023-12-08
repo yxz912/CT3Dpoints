@@ -326,14 +326,17 @@ class EuclideanLoss(nn.Module):
         super(EuclideanLoss, self).__init__()
         self.setting_config=config
 
-    def forward(self, output, target,l2_reg):
+    def forward(self, output, target,leg,l_dynamic):
         #loss=torch.sqrt(((output - target)**2).sum())
         eg=(output-target)**2
         egd=torch.sqrt(torch.sum(eg,dim=(2,3)))
         # eg = abs(output - target)
         # egd=torch.sum(eg,dim=(2,3))
-        loss=egd.sum() / (self.setting_config.batch_size*self.setting_config.num_classes)
-        return loss + (self.setting_config.l2_lambda * l2_reg).item()
+        loss=egd.sum() / (output.shape[0]*self.setting_config.num_classes)
+        if leg==None:
+            return loss
+        else:
+            return loss +  (self.setting_config.l2_lambda * 0.2 * l_dynamic * leg).item()
 
 class Deepeucloss(nn.Module):
     def __init__(self,config):
@@ -341,13 +344,12 @@ class Deepeucloss(nn.Module):
         self.euc=EuclideanLoss(config)
         self.config=config
 
-    def forward(self,gt_pre,out,target,l2_reg):
-        outloss=self.euc(out,target,l2_reg)
+    def forward(self,gt_pre,out,target,leg,l_dynamic):
+        outloss=self.euc(out,target,leg,l_dynamic)
 
         gt_loss=0.0
-        for i in range(len(gt_pre)):
-            #gt_loss += gt_pre[i][0]* self.euc(gt_pre[i][1],target)
-            gt_loss += 0.1*(i+1)*self.euc(gt_pre[i][1],target,l2_reg)
-            #print(gt_pre[i][0])
-        return outloss + gt_loss + (self.config.l2_lambda * l2_reg).item()
+        for i,pre in enumerate(gt_pre):
+            if i>0:
+                gt_loss += 0.1*(i+1)*self.euc(gt_pre[i][1],target,None,0)
+        return outloss + gt_loss + (gt_pre[0].item() * self.config.l2_lambda * l_dynamic)
 

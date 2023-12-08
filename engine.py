@@ -7,11 +7,16 @@ from sklearn.metrics import confusion_matrix
 import os
 
 def simple_train_val(config=None,model=None,train_loader=None,validate_loader=None,
-                     optimizer=None,loss_function=None,logging=None,scheduler=None,val_size=49,train_size=113):
+                     optimizer=None,loss_function=None,logging=None,scheduler=None,val_size=34,train_size=113):
     best_test_acc=0.0
+    best_train_acc=0.0
     tv=[]
     vv=[]
-
+    epct=0
+    epcv=0
+    test_k=0.0
+    train_k=0.0
+    l_dynamic=1.0
     for epoch in range(config.epochs):
         # train
         model.train()
@@ -29,7 +34,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                         l2_reg = param.norm(2)
                     else:
                         l2_reg = l2_reg + param.norm(2)
-                loss = loss_function(pre,out,labels.cuda().float(),l2_reg)
+                loss = loss_function(pre,out,labels.cuda().float(),l2_reg,l_dynamic)
             else:
                 out = model(images.cuda().float())
                 l2_reg = None  # 定义一个空的 L2 正则化项
@@ -38,7 +43,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                         l2_reg = param.norm(2)
                     else:
                         l2_reg = l2_reg + param.norm(2)
-                loss = loss_function(out, labels.cuda().float(),l2_reg)
+                loss = loss_function(out, labels.cuda().float(),l2_reg,l_dynamic)
 
             egt = (out - labels.cuda().float()) ** 2
             egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))
@@ -74,7 +79,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                             l2_reg = param.norm(2)
                         else:
                             l2_reg = l2_reg + param.norm(2)
-                    loss += loss_function(pre, outputs, val_labels.cuda().float(),l2_reg)
+                    loss += loss_function(pre, outputs, val_labels.cuda().float(),l2_reg,l_dynamic)
                 else:
                     outputs = model(val_images.cuda().float())  # eval model only have last output layer
                     l2_reg = None  # 定义一个空的 L2 正则化项
@@ -83,7 +88,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                             l2_reg = param.norm(2)
                         else:
                             l2_reg = l2_reg + param.norm(2)
-                    loss += loss_function(outputs, val_labels.cuda().float(),l2_reg)
+                    loss += loss_function(outputs, val_labels.cuda().float(),l2_reg,l_dynamic)
                 eg = (outputs - val_labels.cuda().float()) ** 2
                 #eg=torch.sum(eg,dim=(1,2,3))
                 #count += (eg <= config.threshold).sum().item()
@@ -101,16 +106,33 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             tv.append(train_accurate)
             vv.append(val_accurate)
             if val_accurate>best_test_acc:
+                if epoch!=epcv:
+                    test_k = (val_accurate-best_test_acc)/(epoch-epcv)
                 best_test_acc = val_accurate
+                epcv = epoch
+            if train_accurate>best_train_acc:
+                if epoch!=epct:
+                    train_k = (train_accurate-best_train_acc)/(epoch-epct)
+                best_train_acc = val_accurate
+                epct = epoch
+
+            if epoch>6:
+                if train_k-test_k>test_k:
+                    print(train_k-test_k>test_k)
+                    if l_dynamic<20:
+                        l_dynamic += train_k/test_k
+                        print(l_dynamic)
+
             print('[epoch %d] train_eval_loss: %.4f train_accuracy: %.4f test_eval_loss: %.4f  test_accuracy: %.4f' %
                   (epoch , running_loss/(train_size*config.num_classes),train_accurate,loss/(val_size*config.num_classes), val_accurate))
             logging.info("epoch:%d train_eval_loss-->%f,train_acc-->%f,test_eval_loss-->%f,test_acc===%f", epoch,running_loss/(train_size*config.num_classes),train_accurate,loss/(val_size*config.num_classes),val_accurate)
 
     print("the best test acc==",best_test_acc)
-    # 创建 x 值的列表，可以是迭代的次数或任何你希望作为 x 轴的变量
+    logging.info("the best test acc===%f",best_test_acc)
 
     # 使用 matplotlib 绘制迭代图
     plt.plot(range(len(vv)), vv, 'o-')
+    plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
 
     # 添加标题和标签
     plt.title(f"Test Accuracy over Iterations---{config.network}")

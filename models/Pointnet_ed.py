@@ -653,12 +653,34 @@ class Pointneted_plus(nn.Module):
         if self.tail_add :
             x21 = self.tail2(torch.add(self.tailadd1(x25),x20))
             x16 = self.tail1(torch.add(self.tailadd2(x20),x15))
+            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + list(self.tail1.parameters()) + list(self.tailadd2.parameters())
+            all_params4 = list(self.bridge1.parameters()) + list(self._3t4_2.parameters()) + \
+                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) + list(self.tail2.parameters()) + list(self.tailadd1.parameters())
         else:
             x16 = self.tail1(x15)  ##nc,1,3
             x21 = self.tail2(x20)  ##nc,1,3
+            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + list(self.tail1.parameters())
+            all_params4 = list(self.bridge1.parameters()) + list(self._3t4_2.parameters()) + \
+                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) + list(self.tail2.parameters())
 
+        all_params1 = list(self.head.parameters()) + list(self.layer1.parameters()) + list(self.head_l1.parameters()) +\
+                      list(self.layer2.parameters())+list(self.l1_l2.parameters()) + list(self.layer3.parameters())+\
+                      list(self.l2_l3.parameters()) + list(self.head_l3.parameters())+ list(self.layer4.parameters())
+
+        all_params2 = list(self.A3D1.parameters()) + list(self.A3D2.parameters()) + list(self.A3D3.parameters())
+        all_params5 = list(self.bridge2.parameters()) + list(self._3t4_3.parameters())+list(self.A4D3.parameters()) + list(self.up_sample2.parameters()) + list(self._4t3_3.parameters())+list(self.tail3.parameters())
+        # 计算L2正则化项
+        l2_reg=[]
+        l2_loss=0.0
+        l2_reg.append(sum(param.norm(2) for param in all_params1))
+        l2_reg.append(sum(param.norm(2) for param in all_params2))
+        l2_reg.append(sum(param.norm(2) for param in all_params3))
+        l2_reg.append(sum(param.norm(2) for param in all_params4))
+        l2_reg.append(sum(param.norm(2) for param in all_params5))
+        for i in l2_reg:
+            l2_loss+=(i/sum(l2_reg)) * i
         if self.deepsuper:
-            return [[0.2, x16], [0.4, x21]], x26
+            return [l2_loss,[0.1, x16], [0.2, x21]], x26
         else:
             return x26
 
