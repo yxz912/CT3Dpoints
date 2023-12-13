@@ -316,7 +316,6 @@ class Pointneted(nn.Module):
 
         self.deepsuper = deep_supervision
         self.num_classes = num_classes
-        #self.weight = nn.Parameter(torch.ones(4))
 
         self.layer1 = nn.Sequential(nn.Conv2d(input_channels, cfg[0], kernel_size=3,stride=2, padding=1),
                                     nn.GELU(),
@@ -477,7 +476,8 @@ class Pointneted_plus(nn.Module):
                                     nn.GELU(),
                                     nn.Conv2d(cfg[0], cfg[1], kernel_size=3, stride=1, padding=1),
                                     nn.GELU(),
-                                    LayerNorm(cfg[1], eps=1e-6, data_format='channels_first'),
+                                    #LayerNorm(cfg[1], eps=1e-6, data_format='channels_first'),
+                                    nn.BatchNorm2d(cfg[1])
         )
 
         self.layer2 = nn.Sequential(nn.Conv2d(cfg[1],cfg[1],kernel_size=3,stride=1,padding=1,groups=cfg[1]),
@@ -486,7 +486,8 @@ class Pointneted_plus(nn.Module):
                                     nn.GELU(),
                                     nn.Conv2d(cfg[2], cfg[3], kernel_size=3, stride=2, padding=1),
                                     nn.GELU(),
-                                    LayerNorm(cfg[3], eps=1e-6, data_format='channels_first'),
+                                    #LayerNorm(cfg[3], eps=1e-6, data_format='channels_first'),
+                                    nn.BatchNorm2d(cfg[3])
         )
 
         self.layer3 = nn.Sequential(nn.Conv2d(cfg[3], cfg[3], kernel_size=3, stride=1, padding=1,groups=cfg[3]),
@@ -497,7 +498,8 @@ class Pointneted_plus(nn.Module):
                                     nn.GELU(),
                                     nn.Conv2d(cfg[5], cfg[6], kernel_size=3, stride=2, padding=1),
                                     nn.GELU(),
-                                    LayerNorm(cfg[6], eps=1e-6, data_format='channels_first'),
+                                    #LayerNorm(cfg[6], eps=1e-6, data_format='channels_first'),
+                                    nn.BatchNorm2d(cfg[6])
         )
 
         self.layer4 = nn.Sequential(nn.Conv2d(cfg[6]+cfg[0], cfg[5], kernel_size=3, stride=1, padding=1),
@@ -507,32 +509,38 @@ class Pointneted_plus(nn.Module):
 
         self.A3D1 = nn.Sequential( Self_Attention_3D(cfg[6], cfg[6]),
                                    nn.Conv2d(2*cfg[6],cfg[7],kernel_size=3,stride=1,padding=1),
-                                   LayerNorm(cfg[7], eps=1e-6, data_format='channels_first')
+                                   #LayerNorm(cfg[7], eps=1e-6, data_format='channels_first')
+                                   nn.BatchNorm2d(cfg[7])
         )
 
         self.A3D2 = nn.Sequential( Self_Attention_3D(cfg[7], cfg[7]),
                                    nn.Conv2d(2*cfg[7],cfg[8],kernel_size=3,stride=2,padding=1),
-                                   LayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                   #LayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                   nn.BatchNorm2d(cfg[8])
         )
 
         self.A3D3 = nn.Sequential(Self_Attention_3D(cfg[8]+cfg[7], cfg[7]),
                                   nn.Conv2d(cfg[8]+2*cfg[7], cfg[7], kernel_size=3, stride=1, padding=1),
-                                  LayerNorm(cfg[7], eps=1e-6, data_format='channels_first')
+                                  #LayerNorm(cfg[7], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm2d(cfg[7])
                                   )
 
         self.A4D1 = nn.Sequential(Self_Attention_4D(cfg[8], cfg[9]),
                                   nn.Conv3d(cfg[8]+cfg[9], cfg[8], kernel_size=3, stride=1, padding=1),
-                                  Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  #Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm3d(cfg[8])
                                   )
 
         self.A4D2 = nn.Sequential(Self_Attention_4D(cfg[10], cfg[10]),
                                   nn.Conv3d(2 * cfg[10], cfg[8], kernel_size=3, stride=1, padding=1),
-                                  Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  #Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm3d(cfg[8])
                                   )
 
         self.A4D3 = nn.Sequential(Self_Attention_4D(cfg[10], cfg[10]),
                                   nn.Conv3d(2 * cfg[10], cfg[8], kernel_size=3, stride=1, padding=1),
-                                  Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  #Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm3d(cfg[8])
                                   )
 
         self._3t4_1 = Ascension_3t4D(cfg[7],cfg[8])
@@ -653,32 +661,39 @@ class Pointneted_plus(nn.Module):
         if self.tail_add :
             x21 = self.tail2(torch.add(self.tailadd1(x25),x20))
             x16 = self.tail1(torch.add(self.tailadd2(x20),x15))
-            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + list(self.tail1.parameters()) + list(self.tailadd2.parameters())
+            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + \
+                          list(self.tail1.parameters()) + list(self.tailadd2.parameters())+ list(self.A3D3.parameters())
             all_params4 = list(self.bridge1.parameters()) + list(self._3t4_2.parameters()) + \
-                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) + list(self.tail2.parameters()) + list(self.tailadd1.parameters())
+                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) \
+                          + list(self.tail2.parameters()) + list(self.tailadd1.parameters())+list(self.A3D2.parameters())
         else:
             x16 = self.tail1(x15)  ##nc,1,3
             x21 = self.tail2(x20)  ##nc,1,3
-            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + list(self.tail1.parameters())
+            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + list(self.tail1.parameters())+ list(self.A3D3.parameters())
             all_params4 = list(self.bridge1.parameters()) + list(self._3t4_2.parameters()) + \
-                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) + list(self.tail2.parameters())
+                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) + list(self.tail2.parameters())+list(self.A3D2.parameters())
 
         all_params1 = list(self.head.parameters()) + list(self.layer1.parameters()) + list(self.head_l1.parameters()) +\
                       list(self.layer2.parameters())+list(self.l1_l2.parameters()) + list(self.layer3.parameters())+\
-                      list(self.l2_l3.parameters()) + list(self.head_l3.parameters())+ list(self.layer4.parameters())
+                      list(self.l2_l3.parameters()) + list(self.head_l3.parameters())+ list(self.layer4.parameters())+\
+                      list(self.A3D1.parameters())+list(self.A3D2.parameters())+list(self.A3D3.parameters())
 
-        all_params2 = list(self.A3D1.parameters()) + list(self.A3D2.parameters()) + list(self.A3D3.parameters())
-        all_params5 = list(self.bridge2.parameters()) + list(self._3t4_3.parameters())+list(self.A4D3.parameters()) + list(self.up_sample2.parameters()) + list(self._4t3_3.parameters())+list(self.tail3.parameters())
+
+        all_params5 = list(self.bridge2.parameters()) + list(self._3t4_3.parameters())+list(self.A4D3.parameters()) + list(self.up_sample2.parameters()) \
+                      + list(self._4t3_3.parameters())+list(self.tail3.parameters())+list(self.A3D1.parameters())
+
         # 计算L2正则化项
         l2_reg=[]
         l2_loss=0.0
         l2_reg.append(sum(param.norm(2) for param in all_params1))
-        l2_reg.append(sum(param.norm(2) for param in all_params2))
         l2_reg.append(sum(param.norm(2) for param in all_params3))
         l2_reg.append(sum(param.norm(2) for param in all_params4))
         l2_reg.append(sum(param.norm(2) for param in all_params5))
+
         for i in l2_reg:
             l2_loss+=(i/sum(l2_reg)) * i
+            #print(i/sum(l2_reg)*i)
+
         if self.deepsuper:
             return [l2_loss,[0.1, x16], [0.2, x21]], x26
         else:

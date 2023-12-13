@@ -115,7 +115,15 @@ if __name__ == '__main__':
         loss_function = EuclideanLoss(config)
     optimizer = get_optimizer(config, model)
     scheduler = get_scheduler(config, optimizer)
+    l_dynamic=1.0
+    if config.pre_net:
+        print('#----------Resume Model and Other params----------#')
+        checkpoint = torch.load(config.pre_net, map_location=torch.device('cpu'))
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        l_dynamic = checkpoint['l_dynamic']
 
     print('#----------train and test start...----------#')
-    simple_train_val(config,model,train_loader,val_loader,optimizer,loss_function,logging,scheduler,val_dataset.val_size,train_dataset.train_size)
+    simple_train_val(config,model,train_loader,val_loader,optimizer,loss_function,logging,scheduler,val_dataset.val_size,train_dataset.train_size,l_dynamic)
 

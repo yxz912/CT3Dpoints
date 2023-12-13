@@ -5,6 +5,7 @@ from datetime import datetime
 
 class setting_config:
     network ='Pointneted_plus' #'pointnet3d' #'Pointneted' #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
+    pre_net = "/home/yxz/progress/CT3Dpoints/results/Pointneted_plus_Wednesday_13_December_2023_17h_07m_39s/checkpoints/best.pth"
     data_path='/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/'
     label_path="/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
     pretrained_path = './pre_trained/'
@@ -25,7 +26,7 @@ class setting_config:
     gpu_id = '0'
     batch_size = 4
     val_bs = 1
-    epochs = 400
+    epochs = 800
     deep_supervision = True
     tailadd = True
     threshold = math.sqrt(75)

@@ -24,6 +24,7 @@ class YXZ_datasets(Dataset):
         self.mean_common = config.mean_common
         self.horizontal_flip = config.horizontal_flip
         self.label_num=config.label_num
+        self.train = train
 
         if train:
             images_list = sorted(os.listdir(path_Data+'train/images/'))
@@ -77,7 +78,7 @@ class YXZ_datasets(Dataset):
 
         img = self.concat_cv(img_path, common)
         msk = self.get_label(msk_path,hf=False)
-        if self.horizontal_flip==True and random.random() < 0.5:
+        if self.horizontal_flip==True and random.random() < 0.5 and self.train:
             img = cv2.flip(img, 1)
             msk = self.get_label(msk_path,hf=True)
         img= (img - self.mean) / self.std

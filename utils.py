@@ -14,7 +14,6 @@ from matplotlib import pyplot as plt
 import cv2
 import torchvision.transforms as transforms
 
-
 def get_minsize(dicom_dir):
     k=float('inf')
     for j in sorted(os.listdir(dicom_dir)):
@@ -26,7 +25,7 @@ def get_minsize(dicom_dir):
         if k>size_png:
             k=size_png
             name=r_path
-    print(k,name)
+    #print(k,name)
     return k
 
 def set_seed(seed):
@@ -332,7 +331,7 @@ class EuclideanLoss(nn.Module):
         egd=torch.sqrt(torch.sum(eg,dim=(2,3)))
         # eg = abs(output - target)
         # egd=torch.sum(eg,dim=(2,3))
-        loss=egd.sum() / (output.shape[0]*self.setting_config.num_classes)
+        loss=egd.sum() / (self.setting_config.num_classes)
         if leg==None:
             return loss
         else:
