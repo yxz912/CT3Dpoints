@@ -269,195 +269,46 @@ class lower_4t3D(nn.Module):
 
         return tx
 
+class ASPP(nn.Module):
+    def __init__(self, in_channels, out_channels, rates):
+        super(ASPP, self).__init__()
+        self.aspp_1 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 1, 1),
+            nn.ReLU(inplace=True)
+        )
+        self.aspp_6 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, 1, padding=rates[0], dilation=rates[0]),
+            nn.ReLU(inplace=True)
+        )
+        self.aspp_12 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, 1, padding=rates[1], dilation=rates[1]),
+            nn.ReLU(inplace=True)
+        )
+        self.aspp_18 = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, 1, padding=rates[2], dilation=rates[2]),
+            nn.ReLU(inplace=True)
+        )
+        self.aspp_pool = nn.Sequential(
+            nn.AdaptiveMaxPool2d(1),
+            nn.Conv2d(in_channels, out_channels, 1, 1),
+            nn.ReLU(inplace=True)
+        )
 
-# 定义 RBF 模块
-'''
-RBFLayer用作卷积神经网络的特征提取层。
-RBFLayer实现了基于径向基函数(RBF)的卷积操作。它首先使用普通的卷积层提取特征图。然后应用径向基函数来生成新的特征表示。
-RBFLayer会:
-使用conv_rbf卷积层对输入进行卷积操作,得到out_channels * num_centers 个特征图
-将特征图reshape为out_channels个通道,每个通道有num_centers个特征图
-对每个通道的num_centers个特征图,计算与learnable参数rbf_weights的欧式距离(径向基函数)
-对每个通道沿着num_centers这个维度求和,生成out_channels个新特征图
-所以RBFLayer学习了一个新的特征表示,可以用来代替普通的卷积层,作为CNN网络的特征提取模块。它通常可以学习更加判别性的特征,提高模型区分样本的能力。
-RBFLayer可以很好地作为卷积神经网络特征提取层使用,取代部分普通卷积层,以学习更有判别性的特征。
-'''
-
-class RBFLayer(nn.Module):
-    def __init__(self, in_channels, out_channels, num_centers, kernel_size=3, stride=1, padding=1):
-        super().__init__()
-
-        self.in_channels = in_channels
-        self.out_channels = out_channels
-        self.num_centers = num_centers
-
-        self.conv_rbf = nn.Conv2d(in_channels, out_channels*num_centers, kernel_size=kernel_size, stride=stride,
-                                  padding=padding, bias=False)
-
-        self.rbf_weights = nn.Parameter(torch.randn(out_channels, num_centers))
+        self.conv_1x1_output = nn.Conv2d(out_channels * 5, out_channels, 1)
 
     def forward(self, x):
-        batch_size, _, height, width = x.size()
+        x_1 = self.aspp_1(x)
+        x_6 = self.aspp_6(x)
+        x_12 = self.aspp_12(x)
+        x_18 = self.aspp_18(x)
 
-        x_rbf = self.conv_rbf(x)  # Apply convolution
+        x_image_pool = self.aspp_pool(x)
+        x_image_pool = F.upsample_bilinear(x_image_pool, size=x.size()[2:])
 
-        x_rbf = x_rbf.view(batch_size, self.out_channels, self.num_centers, height, width)  # Reshape
+        x_out = torch.cat([x_1, x_6, x_12, x_18, x_image_pool], dim=1)
+        x_out = self.conv_1x1_output(x_out)
 
-        rbf_output = (x_rbf - self.rbf_weights.unsqueeze(0).unsqueeze(-1).unsqueeze(-1)) ** 2  # Calculate RBF output
-
-        rbf_output = torch.sum(rbf_output, dim=2)  # Sum along the num_centers dimension
-
-        return rbf_output
-
-
-class Pointneted(nn.Module):
-    def __init__(self,num_classes=3,input_channels=64,cfg=[96,128,256,512,1024,512,256,128,64,32],deep_supervision=True):
-        super().__init__()
-
-        self.deepsuper = deep_supervision
-        self.num_classes = num_classes
-
-        self.layer1 = nn.Sequential(nn.Conv2d(input_channels, cfg[0], kernel_size=3,stride=2, padding=1),
-                                    nn.GELU(),
-                                    Self_Attention_3D(cfg[0], cfg[1]),
-                                    nn.Conv2d(cfg[1]+cfg[0], cfg[1], kernel_size=3, stride=2, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[1],eps=1e-6, data_format='channels_first'),
-                                    # nn.Dropout(p=0.5)
-        )
-
-        self.layer2 = nn.Sequential( nn.Conv2d(cfg[1], cfg[2],  kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    nn.Conv2d( cfg[2],cfg[3],  kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[3], eps=1e-6, data_format='channels_first')
-        )
-
-        self.layer3 = nn.Sequential(nn.Conv2d(cfg[3], cfg[5],  kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    nn.Conv2d(cfg[5], cfg[6],  kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[6], eps=1e-6, data_format='channels_first')
-        )
-
-        self.layer4 = nn.Sequential(nn.Conv2d(cfg[6], cfg[5],  kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    nn.Conv2d( cfg[5],cfg[4],  kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    nn.Conv2d(cfg[4], cfg[6],  kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[6], eps=1e-6, data_format='channels_first'),
-                                    # nn.Dropout(p=0.5)
-        )
-
-        self.layer5 = nn.Sequential(
-                                    #Self_Attention_3D(cfg[6],cfg[7]),
-                                    Ascension_3t4D(cfg[6],cfg[8]),
-                                    Self_Attention_4D(cfg[8],cfg[8]),
-                                    Deepwisenn(cfg[7], cfg[8]),
-                                    Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
-        )
-
-        self.addx = nn.Sequential(
-                        nn.Conv2d(cfg[3]+cfg[1], cfg[3], kernel_size=3, stride=2, padding=1),
-                        nn.GELU(),
-                        nn.Conv2d(cfg[3] , cfg[2], kernel_size=3, stride=1, padding=1),
-                        LayerNorm(cfg[2], eps=1e-6, data_format='channels_first'),
-                        # nn.Dropout(p=0.5)
-        )
-
-        self.tail1 = nn.Sequential(  nn.GroupNorm(4, cfg[8]),
-                                    nn.Conv3d(cfg[8], cfg[7], kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    Conv4DLayerNorm(cfg[7], eps=1e-6, data_format='channels_first'),
-                                    nn.Conv3d(cfg[7], cfg[8], kernel_size=3, stride=2, padding=1),
-                                    lower_4t3D(cfg[8],cfg[9],2),
-                                     LayerNorm(cfg[9], eps=1e-6, data_format='channels_first'),
-        )
-
-        self.tail2 = nn.Sequential( nn.Conv2d(cfg[9]+cfg[6], cfg[7], kernel_size=3, stride=1, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[7], eps=1e-6, data_format='channels_first'),
-                                    nn.Conv2d(cfg[7], cfg[9], kernel_size=3, stride=2, padding=1),
-                                    nn.Conv2d(cfg[9], num_classes, kernel_size=1),
-                                    nn.AdaptiveAvgPool2d((1, 3))
-        )
-
-        self.deep1 = nn.Sequential( nn.GroupNorm(4, cfg[1]),
-                                    nn.Conv2d(cfg[1], cfg[5], kernel_size=3, stride=2, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[5], eps=1e-6, data_format='channels_first'),
-                                    nn.Conv2d(cfg[5], cfg[8], kernel_size=3, stride=2, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[8], eps=1e-6, data_format='channels_first'),
-                                    nn.Conv2d(cfg[8], num_classes, kernel_size=3, stride=2, padding=1),
-                                    nn.AdaptiveAvgPool2d((1,3))
-        )
-
-        self.deep2 = nn.Sequential( nn.GroupNorm(4, cfg[2]),
-                                    nn.Conv2d(cfg[2], cfg[7], kernel_size=3, stride=2, padding=1),
-                                    nn.GELU(),
-                                    LayerNorm(cfg[7], eps=1e-6, data_format='channels_first'),
-                                    nn.Conv2d(cfg[7], num_classes, kernel_size=3, stride=2, padding=1),
-                                    nn.AdaptiveAvgPool2d((1,3))
-
-        )
-
-        self.up_sample1 = nn.Sequential(nn.Upsample(scale_factor=4, mode='bilinear', align_corners=True),
-                                       nn.Conv2d(288, cfg[1], kernel_size=3, stride=1, padding=1),
-        )
-        self.up_sample2 = nn.Sequential(nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
-                                        nn.Conv2d(288, cfg[2], kernel_size=3, stride=1, padding=1),
-                                        )
-
-        self.apply(self._init_weights)
-
-    def _init_weights(self, m):
-        '''
-        对于nn.Linear层，使用trunc_normal_方法将权重初始化为均值为0，标准差为0.02的截断正态分布，并将偏置初始化为0。
-        对于nn.Conv1d层，根据该层的卷积核大小、输出通道数和输入通道数计算fan_out，并使用正态分布方法将权重初始化为均值为0，标准差为sqrt(2.0 / n)的值。
-        对于nn.Conv2d层，根据该层的卷积核大小、输出通道数、输入通道数和组数计算fan_out，并使用正态分布方法将权重初始化为均值为0，标准差为sqrt(2.0 / fan_out)的值，并将偏置初始化为0。
-        '''
-        if isinstance(m, nn.Linear):
-            trunc_normal_(m.weight, std=.02)
-            if isinstance(m, nn.Linear) and m.bias is not None:
-                nn.init.constant_(m.bias, 0)
-        elif isinstance(m, nn.Conv1d):
-            n = m.kernel_size[0] * m.out_channels
-            m.weight.data.normal_(0, math.sqrt(2. / n))
-        elif isinstance(m, nn.Conv2d):
-            fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-            fan_out //= m.groups
-            m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
-            if m.bias is not None:
-                m.bias.data.zero_()
-        elif isinstance(m, nn.Conv3d):
-            fan_out = m.kernel_size[0] * m.kernel_size[1] * m.kernel_size[2] * m.out_channels
-            fan_out //= m.groups
-            m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
-            if m.bias is not None:
-                m.bias.data.zero_()
-
-    def forward(self,x):
-        x = self.layer1(x)    ## ,
-        x1 = self.layer2(x)    ##,
-        x2 = self.layer3(x1)  ##,
-        x3 = self.layer4(x2)  ##,
-        x4 = torch.cat((x2,x3),dim=1) ##,
-        x5 = torch.cat((torch.add(x1,x4),x),dim=1)  ##,
-        x5 = self.addx(x5)    ##,
-        x6 = self.layer5(x5)  ##,
-        x7 = self.tail1(x6)
-        x7 = torch.cat((x7,F.max_pool2d(x5,kernel_size=2)),dim=1)
-        x8 = self.tail2(x7)
-
-        if self.deepsuper:
-            dx1 = self.deep1(torch.add(self.up_sample1(x7),x))
-            dx2 = self.deep2(torch.add(self.up_sample2(x7),x5))
-            return [[0.2,dx1],[0.4,dx2]],x8
-        else:
-            return x8
-
+        return x_out
 
 class Pointneted_plus(nn.Module):
     def __init__(self,num_classes=3,input_channels=64,cfg=[96,128,256,512,1024,512,256,128,64,32,16],deep_supervision=True,tailadd=True):
@@ -467,6 +318,9 @@ class Pointneted_plus(nn.Module):
         self.tail_add = tailadd
         self.num_classes = num_classes
         #self.weight = nn.Parameter(torch.ones(4))
+        #self.l2w = nn.Parameter(torch.ones(4))
+
+        #self.aspp = ASPP(in_channels=input_channels,out_channels=input_channels,rates=[1,3,5,7])
 
         self.head = nn.Sequential(nn.Conv2d(input_channels,cfg[0],kernel_size=3,stride=1,padding=1),
                                     nn.GELU(),
@@ -691,8 +545,10 @@ class Pointneted_plus(nn.Module):
         l2_reg.append(sum(param.norm(2) for param in all_params5))
 
         for i in l2_reg:
-            l2_loss+=(i/sum(l2_reg)) * i
+            l2_loss += (i/sum(l2_reg)) * i
             #print(i/sum(l2_reg)*i)
+            #l2_loss += i
+        #print("|***--L2 LOSS====>:",l2_loss)
 
         if self.deepsuper:
             return [l2_loss,[0.1, x16], [0.2, x21]], x26

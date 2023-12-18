@@ -335,12 +335,21 @@ import torch.nn as nn
 # randc = random.choice(listc)
 # print(randc)
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
+#
+# x = [1, 2, 3, 4, 5]
+# y = [2, 4, 6, 8, 10]
+#
+# plt.plot(x, y)
+# plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
+# plt.show()
 
-x = [1, 2, 3, 4, 5]
-y = [2, 4, 6, 8, 10]
+import torch
+import math
+# a = torch.tensor([[[[ -3,  3,  1]],[[  2, 0, 4]],[[ 5,  6,  2]]],[[[ 5,  6, 2]],[[ 3, 4,3]],[[2, 0,4]]]])
+# b = torch.tensor([[[[1,2,3]]]])
+#
+# c=a*b
+# print(c)
 
-plt.plot(x, y)
-plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
-plt.show()
-
+print(torch.tensor(9.).norm(2))

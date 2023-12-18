@@ -125,28 +125,25 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                 best_train_acc = train_accurate
                 epct = epoch
 
-            if epoch>22:
+            if epoch>22 and config.Dynamic_regularization:
                 if train_k-test_k>test_k:
                     if l_dynamic<40:
                         l_dynamic += (train_k/test_k)/1.5
                         if l_dynamic>40:
                             l_dynamic=40
-                    # else:
-                    #     l_dynamic=40
+
                 # if train_accurate-val_accurate>cs:
                 #     if l_dynamic < 50:
                 #         l_dynamic += l_dynamic*(1-train_accurate+val_accurate)
                 #         cs = (train_accurate-val_accurate)/1.2
-            if round(train_accurate,4) == round(best_train_acc,4) and best_train_acc>0.99:
-                tip +=1
-                #print("tip====",tip)
-            else:
-                tip=0
-            if tip >5:
-                if l_dynamic<80:
-                    l_dynamic += tip
-                 #print('l_dynamic==',l_dynamic)
-                 #tip=0
+            # if round(train_accurate,4) == round(best_train_acc,4) and best_train_acc>0.99:
+            #     tip +=1
+            # else:
+            #     tip=0
+            # if tip >5 and config.Dynamic_regularization:
+            #     if l_dynamic<80:
+            #         l_dynamic += tip
+
 
             print('[epoch %d] train_eval_loss: %.4f train_accuracy: %.4f test_eval_loss: %.4f  test_accuracy: %.4f' %
                   (epoch , running_loss/(train_size*config.num_classes),train_accurate,loss/(val_size*config.num_classes), val_accurate))

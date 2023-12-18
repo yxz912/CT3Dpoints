@@ -18,6 +18,8 @@ def test_model(model,data):
         else:
             outputs = model(val_images.cuda().float())  # eval model only have last output layer
         eg = (outputs - val_labels.cuda().float()) ** 2
+        # print("out=",outputs)
+        # print("label=",val_labels)
         # eg=torch.sum(eg,dim=(1,2,3))
         # count += (eg <= config.threshold).sum().item()
         eg = torch.sqrt(torch.sum(eg, dim=(2, 3)))
@@ -106,7 +108,7 @@ def get_label(label_path,name):
     array_2d=np.expand_dims(array_2d, axis=1)
     return array_2d
 
-model_path = "/home/yxz/progress/CT3Dpoints/TESTMODEL/best.pth" #"/home/yxz/progress/CT3Dpoints/results/Pointneted_plus_Wednesday_13_December_2023_17h_07m_39s/checkpoints/best.pth"
+model_path = "/home/yxz/progress/CT3Dpoints/TESTMODEL/best4.pth"
 data_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/val/images/"
 label_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
 
