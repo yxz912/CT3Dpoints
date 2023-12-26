@@ -5,6 +5,7 @@ from datetime import datetime
 
 class setting_config:
     network ='Pointneted_plus' #'pointnet3d' #'Pointneted' #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
+    data_mmld = True
     pre_net = None#"/home/yxz/progress/CT3Dpoints/results/Pointneted_plus_Wednesday_13_December_2023_17h_07m_39s/checkpoints/best.pth"
     data_path='/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/'
     label_path="/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
@@ -22,11 +23,11 @@ class setting_config:
     world_size = None
     rank = None
     amp = False
-    l2_lambda = 0.00  # 设置 L2 局部正则化权重
+    l2_lambda = 0.0  # 设置 L2 局部正则化权重
     gpu_id = '0'
     batch_size = 4
     val_bs = 1
-    epochs = 800
+    epochs = 1000
     deep_supervision = True
     tailadd = True
     threshold = math.sqrt(75)
@@ -34,6 +35,7 @@ class setting_config:
     mean_common = False
     horizontal_flip = True
     Dynamic_regularization = False
+    freeze = False
 
     if rand_data:
         train_mean=41.68455

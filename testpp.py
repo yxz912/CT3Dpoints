@@ -344,12 +344,24 @@ import torch.nn as nn
 # plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
 # plt.show()
 
-import torch
-import math
-# a = torch.tensor([[[[ -3,  3,  1]],[[  2, 0, 4]],[[ 5,  6,  2]]],[[[ 5,  6, 2]],[[ 3, 4,3]],[[2, 0,4]]]])
-# b = torch.tensor([[[[1,2,3]]]])
+# import torch
+# import math
+# # a = torch.tensor([[[[ -3,  3,  1]],[[  2, 0, 4]],[[ 5,  6,  2]]],[[[ 5,  6, 2]],[[ 3, 4,3]],[[2, 0,4]]]])
+# # b = torch.tensor([[[[1,2,3]]]])
+# #
+# # c=a*b
+# # print(c)
 #
-# c=a*b
-# print(c)
+# print(torch.tensor(9.).norm(2))
 
-print(torch.tensor(9.).norm(2))
+acc =[4,14,5]
+acc1 = [4,67,2]
+
+plt.plot(range(len(acc)), acc, label='no attention Acc')
+plt.plot(range(len(acc1)), acc1, label='attention Acc')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+# 添加图例
+plt.legend()
+# 显示图形
+plt.show()

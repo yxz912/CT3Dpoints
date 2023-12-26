@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 import timm
 from datasets.dataset import YXZ_datasets
+from datasets.data3d import Molar3D
 from tensorboardX import SummaryWriter
 from engine import *
 import os
@@ -45,35 +46,40 @@ if __name__ == '__main__':
     torch.cuda.empty_cache()  # 用于清空GPU缓存
 
     print('#----------Preparing dataset----------#')
-    train_dataset = YXZ_datasets(config.data_path,config.label_path, config, train=True)
-    logging.info("train--mean-->%s",np.array(train_dataset.mean))
-    logging.info("train--std-->%s",np.array(train_dataset.std))
+    if config.data_mmld:
+        train_dataset = Molar3D(None,'train','/home/yxz/data/mmld_code/mmld_code/mmld_dataset','all')
+        train_loader = DataLoader(train_dataset,
+                                 batch_size=config.batch_size,
+                                 shuffle=True,
+                                 num_workers=config.num_workers)
+        val_dataset = Molar3D(None, 'val', '/home/yxz/data/mmld_code/mmld_code/mmld_dataset', 'all')
+        val_loader = DataLoader(val_dataset,
+                                  batch_size=config.batch_size,
+                                  shuffle=True,
+                                  num_workers=config.num_workers)
+    else:
+        train_dataset = YXZ_datasets(config.data_path,config.label_path, config, train=True)
+        logging.info("train--mean-->%s",np.array(train_dataset.mean))
+        logging.info("train--std-->%s",np.array(train_dataset.std))
 
-    train_loader = DataLoader(train_dataset,
-                              batch_size=config.batch_size,
-                              shuffle=True,
-                              pin_memory=True,
-                              num_workers=config.num_workers)
-    val_dataset = YXZ_datasets(config.data_path, config.label_path,config, train=False)
-    logging.info("val--mean-->%s",np.array(val_dataset.mean))
-    logging.info("val--std-->%s",np.array(val_dataset.std))
-    logging.info("real_input_channels-->%d",val_dataset.real_input_channels)
-    val_loader = DataLoader(val_dataset,
-                            batch_size=config.val_bs,
-                            shuffle=False,
-                            pin_memory=True,
-                            num_workers=config.num_workers,
-                            drop_last=True)
+        train_loader = DataLoader(train_dataset,
+                                  batch_size=config.batch_size,
+                                  shuffle=True,
+                                  pin_memory=True,
+                                  num_workers=config.num_workers)
+        val_dataset = YXZ_datasets(config.data_path, config.label_path,config, train=False)
+        logging.info("val--mean-->%s",np.array(val_dataset.mean))
+        logging.info("val--std-->%s",np.array(val_dataset.std))
+        logging.info("real_input_channels-->%d",val_dataset.real_input_channels)
+        val_loader = DataLoader(val_dataset,
+                                batch_size=config.val_bs,
+                                shuffle=False,
+                                pin_memory=True,
+                                num_workers=config.num_workers,
+                                drop_last=True)
 
     print('#----------Prepareing Model----------#')
-    if config.network == 'Pointneted':
-        model = Pointneted(num_classes=config.num_classes,
-                           input_channels=train_dataset.real_input_channels,
-                           cfg=[96,128,256,512,1024,512,256,128,64,32],
-                           deep_supervision=config.deep_supervision
-                        )
-
-    elif config.network == 'resnet50':
+    if config.network == 'resnet50':
         model = resnet50(input_channels=train_dataset.real_input_channels,
                      num_classes=config.num_classes,
                      )

@@ -19,11 +19,15 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
     train_k=0.0
     cs=0.06
     tip=0
+    TIP = 0.001
+    acc=0.0
+    fzd = []
     for epoch in range(config.epochs):
         # train
         model.train()
         running_loss = 0.0
         countt = 0
+        freeze = []
         for step, data in enumerate(train_loader, start=0):
             images, labels = data
             optimizer.zero_grad()
@@ -52,6 +56,18 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             countt += (egt <= config.threshold).sum().item()
 
             loss.backward()
+
+            if config.freeze and epoch > int(0.7 * config.epochs) and acc > 0.979:  # 0.7*config.epochs
+                # 冻结部分层
+                for name, param in model.named_parameters():
+                    if (param.grad is not None) and (abs(torch.mean(param.grad).item()) < TIP) and (
+                            "tail" not in name) and (name not in fzd):
+                        freeze.append(name)
+                    elif param.grad is None and (name not in fzd):
+                        freeze.append(name)
+                if TIP < 0.1:
+                    TIP += 0.004
+
             optimizer.step()
 
             # print statistics
@@ -65,6 +81,14 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             # logging.info("loss-->%f", loss)
         scheduler.step()
         print()
+        freezed = []
+        if config.freeze:
+            for char in freeze:
+                if char in freezed:
+                    continue
+                elif freeze.count(char) > 8:
+                    freezed.append(char)
+            fzd += freezed
 
         # validate
         model.eval()
@@ -144,10 +168,16 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             #     if l_dynamic<80:
             #         l_dynamic += tip
 
-
+            acc = train_accurate
             print('[epoch %d] train_eval_loss: %.4f train_accuracy: %.4f test_eval_loss: %.4f  test_accuracy: %.4f' %
                   (epoch , running_loss/(train_size*config.num_classes),train_accurate,loss/(val_size*config.num_classes), val_accurate))
             logging.info("epoch:%d train_eval_loss-->%f,train_acc-->%f,test_eval_loss-->%f,test_acc===%f", epoch,running_loss/(train_size*config.num_classes),train_accurate,loss/(val_size*config.num_classes),val_accurate)
+        if config.freeze and len(freezed)!=0:
+            for fz in freezed:
+                for name, param in model.named_parameters():
+                    if name == fz:
+                        print("# ----------<freeze %s>----------#" % (fz))
+                        param.requires_grad = False
 
     print("the best test acc==",best_test_acc)
     logging.info("the best test acc===%f",best_test_acc)
@@ -157,7 +187,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
     plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
 
     # 添加标题和标签
-    plt.title(f"Test Accuracy over Iterations---{config.network}")
+    plt.title(f"Test Accuracy--{config.network + '--'+ str(config.l2_lambda)+'--'+str(config.freeze)}")
     plt.xlabel('Iterations')
     plt.ylabel('Accuracy')
     os.mkdir(config.work_dir + "plt/")

@@ -539,10 +539,10 @@ class Pointneted_plus(nn.Module):
         # 计算L2正则化项
         l2_reg=[]
         l2_loss=0.0
-        l2_reg.append(sum(param.norm(2) for param in all_params1))
-        l2_reg.append(sum(param.norm(2) for param in all_params3))
-        l2_reg.append(sum(param.norm(2) for param in all_params4))
-        l2_reg.append(sum(param.norm(2) for param in all_params5))
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params1)**0.5)
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params3)**0.5)
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params4)**0.5)
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params5)**0.5)
 
         for i in l2_reg:
             l2_loss += (i/sum(l2_reg)) * i
