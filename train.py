@@ -16,6 +16,7 @@ from models.Pointnet_ed import Pointneted_plus
 from models.unet import UNet
 from models.egeunet import EGEUNet
 from models.Pointnet3d import pointnet3d
+import transforms as tr
 
 import warnings
 warnings.filterwarnings("ignore")  ##警告过滤
@@ -47,16 +48,32 @@ if __name__ == '__main__':
 
     print('#----------Preparing dataset----------#')
     if config.data_mmld:
-        train_dataset = Molar3D(None,'train','/home/yxz/data/mmld_code/mmld_code/mmld_dataset','all')
+        train_transform = transforms.Compose([
+            tr.RandomCrop(),  # zoom and random crop for data augumentation
+            #tr.LandmarkProposal(shrink=args.shrink, anchors=args.anchors),  # generate the anchor proposal
+            #tr.Normalize(),
+            tr.ToTensor(),
+        ])
+        val_transform = transforms.Compose([
+            tr.RandomCrop(),  # zoom and random crop for data augumentation
+            # tr.LandmarkProposal(shrink=args.shrink, anchors=args.anchors),  # generate the anchor proposal
+            #tr.Normalize(),
+            tr.ToTensor(),
+        ])
+        train_dataset = Molar3D(train_transform,'train','/home/yxz/data/mmld_code/mmld_code/mmld_dataset','all')
         train_loader = DataLoader(train_dataset,
                                  batch_size=config.batch_size,
                                  shuffle=True,
                                  num_workers=config.num_workers)
-        val_dataset = Molar3D(None, 'val', '/home/yxz/data/mmld_code/mmld_code/mmld_dataset', 'all')
+        val_dataset = Molar3D(val_transform, 'val', '/home/yxz/data/mmld_code/mmld_code/mmld_dataset', 'all')
         val_loader = DataLoader(val_dataset,
                                   batch_size=config.batch_size,
                                   shuffle=True,
                                   num_workers=config.num_workers)
+        train_dataset.real_input_channels=64
+        val_dataset.val_size=100
+        train_dataset.train_size=458
+        config.num_classes =14
     else:
         train_dataset = YXZ_datasets(config.data_path,config.label_path, config, train=True)
         logging.info("train--mean-->%s",np.array(train_dataset.mean))

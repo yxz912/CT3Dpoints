@@ -183,11 +183,11 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
     logging.info("the best test acc===%f",best_test_acc)
 
     # 使用 matplotlib 绘制迭代图
-    plt.plot(range(len(vv)), vv, 'o-')
+    plt.plot(range(len(vv)), vv,  label=config.network)
     plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
 
     # 添加标题和标签
-    plt.title(f"Test Accuracy--{config.network + '--'+ str(config.l2_lambda)+'--'+str(config.freeze)}")
+    plt.title(f"Test Accuracy--{str(config.l2_lambda)+'--'+str(config.freeze)}")
     plt.xlabel('Iterations')
     plt.ylabel('Accuracy')
     os.mkdir(config.work_dir + "plt/")

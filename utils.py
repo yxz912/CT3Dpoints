@@ -100,8 +100,9 @@ class myResize:
     def __call__(self, data):
         image, mask = data
         if (image.shape[1] !=self.size_w) or (image.shape[2] != self.size_h):
-            mask[...,0] = mask[...,0]*(self.size_w/image.shape[1])
-            mask[...,1] = mask[...,1]*(self.size_h/image.shape[2])
+            # mask[...,0] = mask[...,0]*(self.size_w/image.shape[1])
+            # mask[...,1] = mask[...,1]*(self.size_h/image.shape[2])
+            #mask[..., 2] = mask[..., 2] * (self.size_h / image.shape[0])
             image = TF.resize(image, [self.size_h, self.size_w])
         return image, mask
 

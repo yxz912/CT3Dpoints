@@ -1,0 +1,82 @@
+2023-12-26 16:25:31 - #----------Config info----------#
+2023-12-26 16:25:31 - network: Pointneted_plus,
+2023-12-26 16:25:31 - data_mmld: True,
+2023-12-26 16:25:31 - pre_net: None,
+2023-12-26 16:25:31 - data_path: /media/yxz/新加卷/teeth_ct_points/CT3Dpoints/,
+2023-12-26 16:25:31 - label_path: /media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx,
+2023-12-26 16:25:31 - pretrained_path: ./pre_trained/,
+2023-12-26 16:25:31 - cfg: [32, 64, 96, 128, 256, 128, 256, 128, 64, 32, 16],
+2023-12-26 16:25:31 - label_num: [0, 1, 10, 11, 14, 19],
+2023-12-26 16:25:31 - num_classes: 6,
+2023-12-26 16:25:31 - input_size_h: 256,
+2023-12-26 16:25:31 - input_size_w: 256,
+2023-12-26 16:25:31 - input_channels: 64,
+2023-12-26 16:25:31 - distributed: False,
+2023-12-26 16:25:31 - local_rank: -1,
+2023-12-26 16:25:31 - num_workers: 4,
+2023-12-26 16:25:31 - seed: 42,
+2023-12-26 16:25:31 - world_size: None,
+2023-12-26 16:25:31 - rank: None,
+2023-12-26 16:25:31 - amp: False,
+2023-12-26 16:25:31 - l2_lambda: 0.0,
+2023-12-26 16:25:31 - gpu_id: 0,
+2023-12-26 16:25:31 - batch_size: 4,
+2023-12-26 16:25:31 - val_bs: 1,
+2023-12-26 16:25:31 - epochs: 1000,
+2023-12-26 16:25:31 - deep_supervision: True,
+2023-12-26 16:25:31 - tailadd: True,
+2023-12-26 16:25:31 - threshold: 2.165063509461097,
+2023-12-26 16:25:31 - rand_data: False,
+2023-12-26 16:25:31 - mean_common: False,
+2023-12-26 16:25:31 - horizontal_flip: True,
+2023-12-26 16:25:31 - Dynamic_regularization: False,
+2023-12-26 16:25:31 - freeze: False,
+2023-12-26 16:25:31 - train_mean: [38.167084, 36.47113, 35.658463, 34.7275, 34.397972, 34.392757, 33.96709, 34.126865, 34.28234, 33.729267, 32.7962, 32.064926, 31.681631, 31.124203, 30.844501, 31.361849, 32.73974, 34.215652, 36.648277, 38.611458, 40.539837, 42.120747, 43.28669, 44.45494, 45.614132, 46.21989, 47.45023, 48.500004, 49.44821, 50.419426, 52.140045, 53.649082, 54.722622, 55.427254, 55.996006, 56.55678, 57.03274, 56.78339, 56.16994, 56.052105, 56.084873, 55.73664, 55.51461, 54.455627, 53.19349, 51.708523, 50.496777, 48.39798, 46.618237],
+2023-12-26 16:25:31 - train_std: [52.12329, 51.107494, 50.941055, 50.223755, 50.00628, 50.154346, 49.390217, 49.584064, 49.46689, 48.635002, 46.955963, 45.86415, 45.254314, 44.008198, 43.081245, 43.15782, 44.181343, 45.16833, 47.433487, 48.60615, 50.44894, 51.635715, 52.542904, 53.638527, 54.554443, 54.860928, 55.634895, 56.127644, 56.314377, 56.52658, 57.31575, 57.992775, 58.40813, 58.65052, 58.6726, 58.786034, 59.043797, 59.15101, 58.878242, 59.1303, 59.565495, 59.95643, 60.605595, 60.74457, 60.784153, 60.811424, 61.18004, 60.75567, 60.8064],
+2023-12-26 16:25:31 - val_mean: [39.743374, 38.122738, 37.19561, 35.71686, 35.202812, 34.790627, 34.621647, 34.678947, 34.44854, 33.327152, 32.52173, 31.267305, 30.603254, 30.013475, 29.536041, 30.480452, 31.952286, 33.71057, 36.010574, 38.201912, 39.313183, 42.94376, 44.53766, 45.518337, 46.94797, 46.58542, 47.49811, 48.238167, 51.026104, 52.292915, 52.69654, 53.169758, 53.87486, 55.697067, 57.654236, 57.586315, 57.758514, 57.174618, 57.736595, 57.24419, 57.544117, 57.37176, 56.43062, 55.96641, 55.325653, 53.10815, 52.179287, 50.27785, 47.04305],
+2023-12-26 16:25:31 - val_std: [53.15056, 52.15993, 51.616505, 50.33102, 50.21509, 50.081203, 50.03935, 49.86299, 49.531567, 48.28274, 46.95426, 45.172287, 43.96861, 42.88531, 41.24616, 42.37183, 43.43441, 44.75589, 46.571957, 48.567627, 49.173023, 51.97025, 53.31617, 54.147503, 55.217754, 54.256313, 54.82137, 55.228252, 57.024765, 57.493202, 57.21687, 57.12449, 57.009945, 58.07164, 58.968643, 58.816093, 58.97068, 58.471672, 58.976105, 58.958794, 59.510704, 60.026344, 60.16703, 60.841858, 61.621956, 61.22611, 61.83866, 62.08808, 61.1031],
+2023-12-26 16:25:31 - work_dir: results/Pointneted_plus_Tuesday_26_December_2023_16h_25m_31s/,
+2023-12-26 16:25:31 - tensor_size: 0,
+2023-12-26 16:25:31 - train_transformer: Compose(
+    <utils.myToTensor object at 0x7fae9f60b8b0>
+    <utils.myResize object at 0x7fae9f60b8e0>
+),
+2023-12-26 16:25:31 - test_transformer: Compose(
+    <utils.myToTensor object at 0x7fae9f60b730>
+    <utils.myResize object at 0x7fae9f60b700>
+),
+2023-12-26 16:25:31 - opt: AdamW,
+2023-12-26 16:25:31 - lr: 0.001,
+2023-12-26 16:25:31 - betas: (0.9, 0.999),
+2023-12-26 16:25:31 - eps: 1e-08,
+2023-12-26 16:25:31 - weight_decay: 0.01,
+2023-12-26 16:25:31 - amsgrad: False,
+2023-12-26 16:25:31 - sch: CosineAnnealingLR,
+2023-12-26 16:25:31 - T_max: 50,
+2023-12-26 16:25:31 - eta_min: 1e-05,
+2023-12-26 16:25:31 - last_epoch: -1,
+INFO:root:epoch:0 train_eval_loss-->6.015158,train_acc-->0.080942,test_eval_loss-->6.269090,test_acc===0.037857
+INFO:root:epoch:1 train_eval_loss-->4.693761,train_acc-->0.099657,test_eval_loss-->4.420341,test_acc===0.066429
+INFO:root:epoch:2 train_eval_loss-->4.259883,train_acc-->0.106207,test_eval_loss-->4.517164,test_acc===0.191429
+INFO:root:epoch:3 train_eval_loss-->3.615043,train_acc-->0.170150,test_eval_loss-->4.148918,test_acc===0.137857
+INFO:root:epoch:4 train_eval_loss-->3.371417,train_acc-->0.218653,test_eval_loss-->4.194707,test_acc===0.247857
+INFO:root:epoch:5 train_eval_loss-->3.720381,train_acc-->0.213194,test_eval_loss-->3.466518,test_acc===0.277857
+INFO:root:epoch:6 train_eval_loss-->3.220814,train_acc-->0.220212,test_eval_loss-->4.188101,test_acc===0.254286
+INFO:root:epoch:7 train_eval_loss-->3.230055,train_acc-->0.217405,test_eval_loss-->3.815887,test_acc===0.129286
+INFO:root:epoch:8 train_eval_loss-->3.033562,train_acc-->0.242202,test_eval_loss-->3.060920,test_acc===0.299286
+INFO:root:epoch:9 train_eval_loss-->3.339058,train_acc-->0.283375,test_eval_loss-->3.191339,test_acc===0.150714
+INFO:root:epoch:10 train_eval_loss-->2.899327,train_acc-->0.332658,test_eval_loss-->3.261664,test_acc===0.261429
+INFO:root:epoch:11 train_eval_loss-->2.914545,train_acc-->0.379289,test_eval_loss-->3.232628,test_acc===0.405000
+INFO:root:epoch:12 train_eval_loss-->2.865995,train_acc-->0.379601,test_eval_loss-->3.339548,test_acc===0.256429
+INFO:root:epoch:13 train_eval_loss-->2.775206,train_acc-->0.301466,test_eval_loss-->8.372617,test_acc===0.160000
+INFO:root:epoch:14 train_eval_loss-->3.155691,train_acc-->0.241110,test_eval_loss-->2.941728,test_acc===0.283571
+INFO:root:epoch:15 train_eval_loss-->2.759159,train_acc-->0.305989,test_eval_loss-->3.616125,test_acc===0.221429
+INFO:root:epoch:16 train_eval_loss-->2.837447,train_acc-->0.355115,test_eval_loss-->3.084795,test_acc===0.405714
+INFO:root:epoch:17 train_eval_loss-->2.796400,train_acc-->0.387399,test_eval_loss-->2.884077,test_acc===0.165000
+INFO:root:epoch:18 train_eval_loss-->2.801407,train_acc-->0.450717,test_eval_loss-->3.754281,test_acc===0.460000
+INFO:root:epoch:19 train_eval_loss-->2.513486,train_acc-->0.455084,test_eval_loss-->2.845078,test_acc===0.366429
+INFO:root:epoch:20 train_eval_loss-->2.696982,train_acc-->0.466001,test_eval_loss-->3.074278,test_acc===0.409286
+INFO:root:epoch:21 train_eval_loss-->2.784545,train_acc-->0.434966,test_eval_loss-->3.116580,test_acc===0.462857
+INFO:root:epoch:22 train_eval_loss-->2.724614,train_acc-->0.447442,test_eval_loss-->3.048914,test_acc===0.453571
+INFO:root:epoch:23 train_eval_loss-->2.582037,train_acc-->0.467717,test_eval_loss-->3.269774,test_acc===0.412143
+INFO:root:epoch:24 train_eval_loss-->2.450493,train_acc-->0.504211,test_eval_loss-->2.739133,test_acc===0.498571

@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import math
 import pandas as pd
+import torchvision.transforms.functional as TF
 
 def test_model(model,data):
     model.eval()
@@ -49,6 +50,7 @@ def test(model_path,data_path,label_path):
         size = len(sorted(os.listdir(data_path+img_path)))
         common = math.ceil(size / 64)
         img = concat_cv(input_channels,data_path+img_path,common)
+        img = cv2.resize(img, [setting_config.input_size_h , setting_config.input_size_w])
         msk = get_label(label_path, img_path)
         img = (img - setting_config.train_mean) / setting_config.train_std
         img = ((img - np.min(img)) / (np.max(img) - np.min(img))) * 255.
@@ -64,8 +66,8 @@ def test(model_path,data_path,label_path):
 def concat_cv(real_input_channels,folder, common=1):
     img_paths = [os.path.join(folder, f) for f in sorted(os.listdir(folder)) if f.endswith('.png')]
     # 获取图像的宽度和高度
-    height, width = cv2.imdecode(np.fromfile(img_paths[0], dtype=np.uint8), cv2.IMREAD_COLOR).shape[:2]
-
+    img = cv2.imdecode(np.fromfile(img_paths[0], dtype=np.uint8), cv2.IMREAD_COLOR)
+    height, width = img.shape[:2]
     # 创建一个与图像尺寸相同的数组（初始化为零）
     r_concat = np.zeros((height, width, 1), dtype=np.uint8)
     rc = r_concat.copy()
@@ -108,7 +110,7 @@ def get_label(label_path,name):
     array_2d=np.expand_dims(array_2d, axis=1)
     return array_2d
 
-model_path = "/home/yxz/progress/CT3Dpoints/TESTMODEL/best4.pth"
+model_path = "/home/yxz/progress/CT3Dpoints/TESTMODEL/best3.pth"
 data_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/val/images/"
 label_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
 

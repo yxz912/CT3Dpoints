@@ -272,7 +272,8 @@ class ToTensor(object):
 
     def __call__(self, sample):
         img = np.array(sample['image']).astype(np.float32)
-        img = np.expand_dims(img, 0)
+        #img = np.expand_dims(img, 0)
+        img = np.transpose(img, (2, 0, 1))
         sample['image'] = img
         sample['landmarks'] = sample['landmarks'].astype(np.float32)
         return sample
