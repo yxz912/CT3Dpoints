@@ -354,14 +354,88 @@ import torch.nn as nn
 #
 # print(torch.tensor(9.).norm(2))
 
-acc =[4,14,5]
-acc1 = [4,67,2]
+# acc =[4,14,5]
+# acc1 = [4,67,2]
+#
+# plt.plot(range(len(acc)), acc, label='no attention Acc')
+# plt.plot(range(len(acc1)), acc1, label='attention Acc')
+# plt.xlabel('Epochs')
+# plt.ylabel('Accuracy')
+# # 添加图例
+# plt.legend()
+# # 显示图形
+# plt.show()
+#
+# import torch
+#
+# tensor= torch.tensor([[[[-0.9505, -1.0060,  0.2246]],
+#          [[ 1.1415,  1.7670, -0.1949]],
+#          [[-0.7992,  0.0960, -0.0668]],
+#          [[ 0.8869,  1.8635,  0.6075]]],
+#         [[[ 0.1123,  1.8968,  0.3042]],
+#          [[ 0.2816,  1.3720,  0.7798]],
+#          [[ 1.6692, -0.9294,  0.4123]],
+#          [[-0.9770, -0.0060, -0.3128]]],
+#         [[[ 1.2612, -0.5297, -1.1499]],
+#          [[-0.4561, -0.9753,  0.3849]],
+#          [[ 1.3418, -1.4879, -1.5372]],
+#          [[ 1.6373, -0.8774, -0.7387]]],
+#         [[[ 0.6596,  0.5533, -1.2232]],
+#          [[-1.4159, -0.6947,  0.9320]],
+#          [[ 1.0285,  0.0119, -0.1490]],
+#          [[-0.3919,  0.8766, -0.9656]]]])
+#
+# tensor1= torch.tensor([[[[ 0.6596,  0.5533, -1.2232]],
+#          [[-1.4159, -0.6947,  0.9320]],
+#          [[ 1.0285,  0.0119, -0.1490]],
+#          [[-0.3919,  0.8766, -0.9656]]],
+#         [[[-0.9505, -1.0060,  0.2246]],
+#          [[ 1.1415,  1.7670, -0.1949]],
+#          [[-0.7992,  0.0960, -0.0668]],
+#          [[ 0.8869,  1.8635,  0.6075]]],
+#         [[[ 0.1123,  1.8968,  0.3042]],
+#          [[ 0.2816,  1.3720,  0.7798]],
+#          [[ 1.6692, -0.9294,  0.4123]],
+#          [[-0.9770, -0.0060, -0.3128]]],
+#         [[[ 1.2612, -0.5297, -1.1499]],
+#          [[-0.4561, -0.9753,  0.3849]],
+#          [[ 1.3418, -1.4879, -1.5372]],
+#          [[ 1.6373, -0.8774, -0.7387]]],
+#         ])
+#
+# bi = torch.tensor([[0.4883, 0.4883, 0.5000],
+#         [0.4924, 0.4924, 0.9964],
+#         [0.4883, 0.4883, 1.0000],
+#         [0.4883, 0.4883, 0.5000]])
+#
+# # out = (tensor-tensor1)*torch.tensor([[0.4883, 0.4883, 0.5000],
+# #         [0.4924, 0.4924, 0.9964],
+# #         [0.4883, 0.4883, 1.0000],
+# #         [0.4883, 0.4883, 0.5000]])
+# out=[]
+# for i ,ten in enumerate(tensor):
+#      ot = (ten-tensor1[i])*bi[i]
+#      out.append(ot[:].tolist())
+# print(torch.tensor(out).shape,out)
 
-plt.plot(range(len(acc)), acc, label='no attention Acc')
-plt.plot(range(len(acc1)), acc1, label='attention Acc')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
-# 添加图例
-plt.legend()
-# 显示图形
-plt.show()
+# # 沿着指定的轴求均值
+# point_mean = torch.mean(tensor.float(), dim=2)
+#
+# print(point_mean)
+# def find_positions(matrix, value):
+#     positions = []
+#     for i in range(len(matrix)):
+#         for j in range(len(matrix[i])):
+#             if matrix[i][j] < value:
+#                 positions.append((i, j))
+#     return positions
+#
+# result = find_positions(point_mean, 7)
+# print(result)
+# for t in result:
+#      tensor[t[0]][t[1]] = torch.tensor([-1,-1,-1]).float()
+# print(tensor)
+
+rate = np.full_like(np.array([1., 1., 1.]), 4.)
+f = np.array([1.1, 1.2, 1.3])
+print(rate*f)

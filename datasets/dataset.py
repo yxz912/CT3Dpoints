@@ -196,19 +196,19 @@ class YXZ_datasets(Dataset):
             for i,k in enumerate(self.label_num):
                 x_value = self.data_label.loc[row_index + k, 'x']
                 y_value = self.data_label.loc[row_index + k, 'y']
-                z_value = self.data_label.loc[row_index + k, 'z'] + 100
+                z_value = self.data_label.loc[row_index + k, 'z'] + 128
                 if hf:
                     # if i%2==0:
-                    #     z_value = self.data_label.loc[row_index + k+1, 'z'] + 100
+                    #     z_value = self.data_label.loc[row_index + k+1, 'z'] + 128
                     # else:
-                    #     z_value = self.data_label.loc[row_index + k-1, 'z'] + 100
-                    z_value = -1*self.data_label.loc[row_index + k, 'z'] + 100
+                    #     z_value = self.data_label.loc[row_index + k-1, 'z'] + 128
+                    z_value = -1*self.data_label.loc[row_index + k, 'z'] +128
                 array_2d[i] = [x_value, y_value, z_value]
             # else:
             #     for k in range(array_2d.shape[0]):
             #         x_value = self.data_label.loc[row_index+k, 'x']
             #         y_value = self.data_label.loc[row_index+k, 'y']
-            #         z_value = self.data_label.loc[row_index+k, 'z'] + 100
+            #         z_value = self.data_label.loc[row_index+k, 'z'] + 128
             #         array_2d[k]=[x_value,y_value,z_value]
         else:
             print(f"找不到 {name}")

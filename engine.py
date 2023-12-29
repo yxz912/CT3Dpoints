@@ -29,7 +29,14 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
         countt = 0
         freeze = []
         for step, data in enumerate(train_loader, start=0):
-            images, labels = data
+            if config.data_mmld:
+                #images,labels,spacing = data
+                images = data['image']
+                labels= data['landmarks']
+                spacing = data['spacing']
+
+            else:
+                images, labels = data
             optimizer.zero_grad()
 
             if config.deep_supervision:
@@ -50,14 +57,22 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                     else:
                         l2_reg = l2_reg + param.norm(2)
                 loss = loss_function(out, labels.cuda().float(),l2_reg,l_dynamic)
-
-            egt = (out - labels.cuda().float()) ** 2
-            egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))
+            if config.data_mmld:
+                outt = []
+                for i, ten in enumerate(out):
+                    print(config.rate)
+                    ot = (ten - labels.cuda().float()[i]) *spacing[i].cuda().float()
+                    outt.append(ot[:].tolist())
+                egt = torch.tensor(outt) ** 2
+                egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))
+            else:
+                egt = (out - labels.cuda().float()) ** 2
+                egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))
             countt += (egt <= config.threshold).sum().item()
 
             loss.backward()
 
-            if config.freeze and epoch > int(0.7 * config.epochs) and acc > 0.979:  # 0.7*config.epochs
+            if config.freeze and epoch > int(0.8 * config.epochs) and acc > 0.985:  # 0.8*config.epochs
                 # 冻结部分层
                 for name, param in model.named_parameters():
                     if (param.grad is not None) and (abs(torch.mean(param.grad).item()) < TIP) and (
@@ -96,7 +111,13 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             count=0
             loss=0.0
             for i ,val_data in enumerate(validate_loader):
-                val_images, val_labels = val_data
+                if config.data_mmld:
+                    #val_images, val_labels, val_spacing = val_data
+                    val_images = val_data['image']
+                    val_labels = val_data['landmarks']
+                    val_spacing = val_data['spacing']
+                else:
+                    val_images, val_labels = val_data
                 if config.deep_supervision:
                     pre,outputs = model(val_images.cuda().float())
                     l2_reg = None  # 定义一个空的 L2 正则化项
@@ -115,10 +136,19 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                         else:
                             l2_reg = l2_reg + param.norm(2)
                     loss += loss_function(outputs, val_labels.cuda().float(),l2_reg,l_dynamic)
-                eg = (outputs - val_labels.cuda().float()) ** 2
-                #eg=torch.sum(eg,dim=(1,2,3))
-                #count += (eg <= config.threshold).sum().item()
-                eg=torch.sqrt(torch.sum(eg,dim=(2,3)))
+
+                if config.data_mmld:
+                    out=[]
+                    for i, ten in enumerate(outputs):
+                        ot = (ten - val_labels.cuda().float()[i]) * val_spacing[i].cuda().float()
+                        out.append(ot[:].tolist())
+                    eg = torch.tensor(out)**2
+                    eg = torch.sqrt(torch.sum(eg,dim=(2,3)))
+                else:
+                    eg = (outputs - val_labels.cuda().float()) ** 2
+                    #eg=torch.sum(eg,dim=(1,2,3))
+                    #count += (eg <= config.threshold).sum().item()
+                    eg=torch.sqrt(torch.sum(eg,dim=(2,3)))
 
                 # for k in range(config.val_bs):
                 #     coun = (eg[k] <= config.threshold).sum().item()
@@ -160,13 +190,14 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                 #     if l_dynamic < 50:
                 #         l_dynamic += l_dynamic*(1-train_accurate+val_accurate)
                 #         cs = (train_accurate-val_accurate)/1.2
-            # if round(train_accurate,4) == round(best_train_acc,4) and best_train_acc>0.99:
-            #     tip +=1
-            # else:
-            #     tip=0
-            # if tip >5 and config.Dynamic_regularization:
-            #     if l_dynamic<80:
-            #         l_dynamic += tip
+            if round(train_accurate,4) == round(best_train_acc,4) and best_train_acc>0.99:
+                tip +=1
+            else:
+                tip=0
+            if tip >5 and config.Dynamic_regularization:
+                if l_dynamic<80:
+                    l_dynamic += tip
+                    tip -=2
 
             acc = train_accurate
             print('[epoch %d] train_eval_loss: %.4f train_accuracy: %.4f test_eval_loss: %.4f  test_accuracy: %.4f' %
@@ -194,5 +225,3 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
     plt.savefig(config.work_dir + "plt/" + config.network + '.png')
     # 显示图形
     plt.show()
-
-

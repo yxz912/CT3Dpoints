@@ -1,11 +1,13 @@
 import torch
 import numpy as np
 from scipy.ndimage.interpolation import zoom
-
+from configs.config_setting import setting_config
 
 def zoomout_imgandlandmark(img, landmarks, rate):
     new_img = zoom(img, rate, order=1)
     new_landmarks = []
+    rated = [1/rate[0],1/rate[1],1/rate[2]]
+    setting_config.rate = np.full_like(np.array([1., 1., 1.]), 4.) * np.array(rated)
     for position in landmarks:
         position_c = position[0] * rate[0]
         position_h = position[1] * rate[1]

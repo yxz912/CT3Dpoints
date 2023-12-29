@@ -5,12 +5,12 @@ from datetime import datetime
 
 class setting_config:
     network ='Pointneted_plus' #'pointnet3d' #'Pointneted' #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
-    data_mmld = False
+    data_mmld = True
     pre_net = None#"/home/yxz/progress/CT3Dpoints/results/Pointneted_plus_Wednesday_13_December_2023_17h_07m_39s/checkpoints/best.pth"
     data_path='/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/'
     label_path="/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
     pretrained_path = './pre_trained/'
-    cfg = [32,64,96,128,256,128,256,128,64,32,16] #[32,64,128,256,512,128,256,128,64,32,16]#[96, 128, 256, 512, 1024, 512, 256, 128, 64, 32,16]#[64, 96, 128,64,32,256,512,256,128,64,32]  #[48, 64, 96, 128, 256, 512, 256, 128, 64, 32 ,16] #[256,128,64,32,64,128,256,128,64,32,16]
+    cfg = [96, 128, 256, 512, 1024, 512, 256, 128, 64, 32,16] #[32,64,96,128,256,128,256,128,64,32,16] #[32,64,128,256,512,128,256,128,64,32,16]#[96, 128, 256, 512, 1024, 512, 256, 128, 64, 32,16]#[64, 96, 128,64,32,256,512,256,128,64,32]  #[48, 64, 96, 128, 256, 512, 256, 128, 64, 32 ,16] #[256,128,64,32,64,128,256,128,64,32,16]
     label_num=[0,1,10,11,14,19]  #[2,3,8,9,15,16,17,18,21,22] #[0,1,2,3,8,9,10,11,14,15,16,17,18,19,21,22]
     num_classes = len(label_num)
     input_size_h = 256
@@ -23,7 +23,7 @@ class setting_config:
     world_size = None
     rank = None
     amp = False
-    l2_lambda = 0.04  # 设置 L2 局部正则化权重
+    l2_lambda = 0.00 # 设置 L2 局部正则化权重
     gpu_id = '0'
     batch_size = 4
     val_bs = 1
@@ -34,8 +34,13 @@ class setting_config:
     rand_data = False
     mean_common = False
     horizontal_flip = True
-    Dynamic_regularization = True
-    freeze = False
+    Dynamic_regularization = False
+    freeze = True
+    rate = np.full_like(np.array([1., 1., 1.]), 4.)
+
+    if data_mmld:
+        network = 'Pointneted_plus_mmld'
+        threshold = 2
 
     if rand_data:
         train_mean=41.68455

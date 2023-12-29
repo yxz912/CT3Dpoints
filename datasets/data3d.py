@@ -46,9 +46,13 @@ class Molar3D(Dataset):
         #sample = _img, _landmark
         if self.transform is not None:
             sample = self.transform(sample)
-            # sample['landmarks'] = sample['landmarks'] / torch.tensor(4.)
+            sample['landmarks'] = sample['landmarks'] / torch.tensor(4.)
+            for ldx, landmark in enumerate(sample['landmarks']):
+                if min(landmark) <0:
+                    sample['landmarks'][ldx] = torch.tensor([-1.,-1.,-1.])
             sample['landmarks'] = sample['landmarks'].reshape((sample['landmarks'].shape[0],1,3))
-            return sample['image'],sample['landmarks']
+
+            return sample
         else:
             sample = Totensor(sample)
             return sample

@@ -4,6 +4,14 @@ import torch.nn.functional as F
 import math
 from timm.models.layers import trunc_normal_
 
+def find_positions(matrix, value):
+    positions = []
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] < value:
+                positions.append((i, j))
+    return positions
+
 class LayerNorm(nn.Module):
     r"""
     实现了层内归一化(Layer Normalization),这个LayerNorm类就提供了一个通用的层内归一化实现,既支持NCHW也支持NHWC两种格式。
@@ -549,6 +557,266 @@ class Pointneted_plus(nn.Module):
             #print(i/sum(l2_reg)*i)
             #l2_loss += i
         #print("|***--L2 LOSS====>:",l2_loss)
+
+        if self.deepsuper:
+            return [l2_loss,[0.1, x16], [0.2, x21]], x26
+        else:
+            return x26
+
+class Pointneted_plus_mmld(nn.Module):
+    def __init__(self,num_classes=3,input_channels=64,cfg=[96,128,256,512,1024,512,256,128,64,32,16],deep_supervision=True,tailadd=True):
+        super().__init__()
+
+        self.deepsuper = deep_supervision
+        self.tail_add = tailadd
+        self.num_classes = num_classes
+        #self.weight = nn.Parameter(torch.ones(4))
+        #self.l2w = nn.Parameter(torch.ones(4))
+
+        #self.aspp = ASPP(in_channels=input_channels,out_channels=input_channels,rates=[1,3,5,7])
+
+        self.head = nn.Sequential(nn.Conv2d(input_channels,cfg[0],kernel_size=3,stride=1,padding=1),
+                                    nn.GELU(),
+        )
+
+        self.layer1 = nn.Sequential(nn.Conv2d(cfg[0],cfg[0],kernel_size=3,stride=1,padding=1,groups=cfg[0]),
+                                    nn.GELU(),
+                                    nn.Conv2d(cfg[0], cfg[1], kernel_size=3, stride=1, padding=1),
+                                    nn.GELU(),
+                                    #LayerNorm(cfg[1], eps=1e-6, data_format='channels_first'),
+                                    nn.BatchNorm2d(cfg[1])
+        )
+
+        self.layer2 = nn.Sequential(nn.Conv2d(cfg[1],cfg[1],kernel_size=3,stride=1,padding=1,groups=cfg[1]),
+                                    nn.GELU(),
+                                    nn.Conv2d(cfg[1], cfg[2], kernel_size=3, stride=1, padding=1),
+                                    nn.GELU(),
+                                    nn.Conv2d(cfg[2], cfg[3], kernel_size=3, stride=2, padding=1),
+                                    nn.GELU(),
+                                    #LayerNorm(cfg[3], eps=1e-6, data_format='channels_first'),
+                                    nn.BatchNorm2d(cfg[3])
+        )
+
+        self.layer3 = nn.Sequential(nn.Conv2d(cfg[3], cfg[3], kernel_size=3, stride=1, padding=1,groups=cfg[3]),
+                                    nn.GELU(),
+                                    nn.Conv2d(cfg[3], cfg[4], kernel_size=3, stride=1, padding=1),
+                                    nn.GELU(),
+                                    nn.Conv2d(cfg[4], cfg[5], kernel_size=3, stride=1, padding=1),
+                                    nn.GELU(),
+                                    nn.Conv2d(cfg[5], cfg[6], kernel_size=3, stride=2, padding=1),
+                                    nn.GELU(),
+                                    #LayerNorm(cfg[6], eps=1e-6, data_format='channels_first'),
+                                    nn.BatchNorm2d(cfg[6])
+        )
+
+        self.layer4 = nn.Sequential(nn.Conv2d(cfg[6]+cfg[0], cfg[5], kernel_size=3, stride=1, padding=1),
+                                    nn.GELU(),
+                                    Deepwisenn(cfg[5],cfg[6]),
+        )
+
+        self.A3D1 = nn.Sequential( Self_Attention_3D(cfg[6], cfg[6]),
+                                   nn.Conv2d(2*cfg[6],cfg[7],kernel_size=3,stride=1,padding=1),
+                                   #LayerNorm(cfg[7], eps=1e-6, data_format='channels_first')
+                                   nn.BatchNorm2d(cfg[7])
+        )
+
+        self.A3D2 = nn.Sequential( Self_Attention_3D(cfg[7], cfg[7]),
+                                   nn.Conv2d(2*cfg[7],cfg[8],kernel_size=3,stride=2,padding=1),
+                                   #LayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                   nn.BatchNorm2d(cfg[8])
+        )
+
+        self.A3D3 = nn.Sequential(Self_Attention_3D(cfg[8]+cfg[7], cfg[7]),
+                                  nn.Conv2d(cfg[8]+2*cfg[7], cfg[7], kernel_size=3, stride=1, padding=1),
+                                  #LayerNorm(cfg[7], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm2d(cfg[7])
+                                  )
+
+        self.A4D1 = nn.Sequential(Self_Attention_4D(cfg[8], cfg[9]),
+                                  nn.Conv3d(cfg[8]+cfg[9], cfg[8], kernel_size=3, stride=1, padding=1),
+                                  #Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm3d(cfg[8])
+                                  )
+
+        self.A4D2 = nn.Sequential(Self_Attention_4D(cfg[10], cfg[10]),
+                                  nn.Conv3d(2 * cfg[10], cfg[8], kernel_size=3, stride=1, padding=1),
+                                  #Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm3d(cfg[8])
+                                  )
+
+        self.A4D3 = nn.Sequential(Self_Attention_4D(cfg[10], cfg[10]),
+                                  nn.Conv3d(2 * cfg[10], cfg[8], kernel_size=3, stride=1, padding=1),
+                                  #Conv4DLayerNorm(cfg[8], eps=1e-6, data_format='channels_first')
+                                  nn.BatchNorm3d(cfg[8])
+                                  )
+
+        self._3t4_1 = Ascension_3t4D(cfg[7],cfg[8])
+
+        self._3t4_2 = Ascension_3t4D(cfg[8],cfg[10])
+
+        self._3t4_3 = Ascension_3t4D(cfg[7],cfg[10])
+
+        self._4t3_1 = lower_4t3D(cfg[8],cfg[9],2)
+
+        self._4t3_2 = lower_4t3D(cfg[8],cfg[8],4)
+
+        self._4t3_3 = lower_4t3D(cfg[8],cfg[7],8)
+
+        self.head_l1 = nn.Conv2d(cfg[0], cfg[1], kernel_size=1)
+
+        self.l1_l2 = nn.Conv2d(cfg[1], cfg[3], kernel_size=3,stride=2,padding=1)
+
+        self.l2_l3 = nn.Conv2d(cfg[3], cfg[6], kernel_size=3,stride=2,padding=1)
+
+        self.wl1 = nn.Conv2d(cfg[3],cfg[8],kernel_size=1,stride=1)
+
+        self.wl2 = nn.Conv2d(cfg[6],cfg[9],kernel_size=1,stride=1)
+
+        self.head_l3 = nn.MaxPool2d(kernel_size=4)
+
+        self.bridge1 = nn.Conv2d(cfg[9],cfg[8],kernel_size=1)
+
+        self.bridge2 = nn.Conv2d(cfg[8],cfg[7],kernel_size=1)
+
+        self.up_sample1 = nn.Conv3d(cfg[9],cfg[10],kernel_size=1)
+
+        self.up_sample2 = nn.Conv3d(cfg[8],cfg[10],kernel_size=1)
+
+        self.tail1 = nn.Sequential(nn.GroupNorm(4, cfg[9]),
+                                   nn.Conv2d(cfg[9], num_classes, kernel_size=3, stride=2, padding=1),
+                                   nn.AdaptiveAvgPool2d((1,3))
+        )
+
+        self.tail2 = nn.Sequential(nn.GroupNorm(4, cfg[8]),
+                                   nn.Conv2d(cfg[8], cfg[10], kernel_size=3, stride=2, padding=1),
+                                   nn.Conv2d(cfg[10], num_classes, kernel_size=3, stride=2, padding=1),
+                                   nn.AdaptiveAvgPool2d((1,3))
+        )
+
+        self.tail3 = nn.Sequential(nn.GroupNorm(4, cfg[7]),
+                                   nn.Conv2d(cfg[7], cfg[8], kernel_size=3, stride=2, padding=1),
+                                   nn.GELU(),
+                                   nn.Conv2d(cfg[8], cfg[10], kernel_size=3, stride=2, padding=1),
+                                   nn.Conv2d(cfg[10], num_classes, kernel_size=3, stride=2, padding=1),
+                                   nn.AdaptiveAvgPool2d((1,3))
+        )
+
+        self.tailadd1 = nn.Conv2d(cfg[7], cfg[8], kernel_size=3, stride=2, padding=1)
+
+        self.tailadd2 = nn.Conv2d(cfg[8], cfg[9], kernel_size=1)
+
+        self.apply(self._init_weights)
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Linear):
+            trunc_normal_(m.weight, std=.02)
+            if isinstance(m, nn.Linear) and m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+        elif isinstance(m, nn.Conv1d):
+            n = m.kernel_size[0] * m.out_channels
+            m.weight.data.normal_(0, math.sqrt(2. / n))
+        elif isinstance(m, nn.Conv2d):
+            fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+            fan_out //= m.groups
+            m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
+            if m.bias is not None:
+                m.bias.data.zero_()
+        elif isinstance(m, nn.Conv3d):
+            fan_out = m.kernel_size[0] * m.kernel_size[1] * m.kernel_size[2] * m.out_channels
+            fan_out //= m.groups
+            m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
+            if m.bias is not None:
+                m.bias.data.zero_()
+
+    def forward(self,x):
+        x1 = self.head(x)        ##96,512,512
+        x2 = self.layer1(x1)      ##128,512,512
+        x1d = self.head_l1(x1)      ## 128,512,512
+        x3 = torch.add(x1d,x2)      ##128,512,512
+        x4 = self.layer2(x3)        ## 512,256,256
+        x2d = self.l1_l2(x2)        ##512,256,256
+        x5 = torch.add(x4,x2d)      ##512,256,256
+        x6 = self.layer3(x5)      ##256,128,128
+        x3d = self.l2_l3(x4)       ## 256,128,128
+        x7 = torch.add(x6,x3d)    ## 256,128,128
+        x4d = self.head_l3(x1)     ## 96,128,128
+        x8 = torch.cat((x4d,x7),dim=1) ##256+96,128,128
+        x9 = self.layer4(x8)    ## 256,128,128
+        x10 = self.A3D1(x9)    ##128,128,128
+        x11 = self.A3D2(x10)   ##64,64,64
+        x12 = self.A3D3(torch.cat((x11,F.max_pool2d(x10,2,2)),dim=1))   ## 128,64,64
+        x13 = self._3t4_1(x12)  ##64,64,64,2
+        x14 = self.A4D1(x13)    ##64,64,64,2
+        x15 = self._4t3_1(x14)  ##32,64,64
+        #x15 = torch.add(F.max_pool2d(self.wl2(x7), 2, 2), x15)
+        #x16 = self.tail1(x15)   ##nc,1,3
+
+        x17 = torch.add(x11,self.bridge1(x15)) ##64,64,64
+        x18 = self._3t4_2(x17) ## 16,64,64,4
+        x19 = self.A4D2(torch.add(self.up_sample1(x14.view(x18.shape[0],-1,x18.shape[2],x18.shape[3],x18.shape[4])),x18)) ##64,64,64,4
+        x20 = self._4t3_2(x19) ##64,64,64
+        #x20 =torch.add(F.max_pool2d(self.wl1(x5),4,4),x20)
+        #x21 = self.tail2(x20)  ##nc,1,3
+
+        x22 = torch.add(x10,self.bridge2(F.interpolate(x20, size=x10.shape[2:4], mode='bilinear',align_corners=True)))  ##128,128,128
+        x23 = self._3t4_3(x22) ##16,128,128,8
+        x24 = self.A4D3(torch.add(self.up_sample2(F.interpolate(x19,size=x23.shape[2:5], mode='trilinear',align_corners=True)),x23))  ##64,128,128,8
+        x25 = self._4t3_3(x24)   ##128,128,128
+        #x25 = torch.add(F.max_pool2d(x3, 4, 4),x25)
+        x26 = self.tail3(x25)  ##nc,1,3
+
+        if self.tail_add :
+            x21 = self.tail2(torch.add(self.tailadd1(x25),x20))
+            x16 = self.tail1(torch.add(self.tailadd2(x20),x15))
+            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + \
+                          list(self.tail1.parameters()) + list(self.tailadd2.parameters())+ list(self.A3D3.parameters())
+            all_params4 = list(self.bridge1.parameters()) + list(self._3t4_2.parameters()) + \
+                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) \
+                          + list(self.tail2.parameters()) + list(self.tailadd1.parameters())+list(self.A3D2.parameters())
+        else:
+            x16 = self.tail1(x15)  ##nc,1,3
+            x21 = self.tail2(x20)  ##nc,1,3
+            all_params3 = list(self._3t4_1.parameters()) + list(self.A4D1.parameters()) + list(self._4t3_1.parameters()) + list(self.tail1.parameters())+ list(self.A3D3.parameters())
+            all_params4 = list(self.bridge1.parameters()) + list(self._3t4_2.parameters()) + \
+                          list(self.A4D2.parameters()) + list(self.up_sample1.parameters()) + list(self._4t3_2.parameters()) + list(self.tail2.parameters())+list(self.A3D2.parameters())
+
+        all_params1 = list(self.head.parameters()) + list(self.layer1.parameters()) + list(self.head_l1.parameters()) +\
+                      list(self.layer2.parameters())+list(self.l1_l2.parameters()) + list(self.layer3.parameters())+\
+                      list(self.l2_l3.parameters()) + list(self.head_l3.parameters())+ list(self.layer4.parameters())+\
+                      list(self.A3D1.parameters())+list(self.A3D2.parameters())+list(self.A3D3.parameters())
+
+
+        all_params5 = list(self.bridge2.parameters()) + list(self._3t4_3.parameters())+list(self.A4D3.parameters()) + list(self.up_sample2.parameters()) \
+                      + list(self._4t3_3.parameters())+list(self.tail3.parameters())+list(self.A3D1.parameters())
+
+        # 计算L2正则化项
+        l2_reg=[]
+        l2_loss=0.0
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params1)**0.5)
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params3)**0.5)
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params4)**0.5)
+        l2_reg.append(sum(param.norm(2)**2 for param in all_params5)**0.5)
+
+        for i in l2_reg:
+            l2_loss += (i/sum(l2_reg)) * i
+            #print(i/sum(l2_reg)*i)
+            #l2_loss += i
+        #print("|***--L2 LOSS====>:",l2_loss)
+
+        point_mean26 = torch.mean(x26, dim=2)
+        point_mean16 = torch.mean(x16, dim=2)
+        point_mean21 = torch.mean(x21, dim=2)
+
+        result26 = find_positions(point_mean26, 100/4)
+        result16 = find_positions(point_mean16, 100/4)
+        result21 = find_positions(point_mean21, 100/4)
+
+        for t in result26:
+            result26[t[0]][t[1]] = torch.tensor([-1., -1., -1.])
+        for t in result21:
+            result21[t[0]][t[1]] = torch.tensor([-1., -1., -1.])
+        for t in result16:
+            result16[t[0]][t[1]] = torch.tensor([-1., -1., -1.])
 
         if self.deepsuper:
             return [l2_loss,[0.1, x16], [0.2, x21]], x26
