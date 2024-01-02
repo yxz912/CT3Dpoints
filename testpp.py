@@ -436,6 +436,9 @@ import torch.nn as nn
 #      tensor[t[0]][t[1]] = torch.tensor([-1,-1,-1]).float()
 # print(tensor)
 
-rate = np.full_like(np.array([1., 1., 1.]), 4.)
-f = np.array([1.1, 1.2, 1.3])
-print(rate*f)
+# rate = np.full_like(np.array([1., 1., 1.]), 4.)
+# f = np.array([1.1, 1.2, 1.3])
+# print(rate*f)
+np1 = np.array([3.,1.,4.])
+ff = np.array([3.,1.,4.])
+print(np1*ff)

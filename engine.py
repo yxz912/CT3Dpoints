@@ -60,8 +60,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             if config.data_mmld:
                 outt = []
                 for i, ten in enumerate(out):
-                    print(config.rate)
-                    ot = (ten - labels.cuda().float()[i]) *spacing[i].cuda().float()
+                    ot = (ten - labels.cuda().float()[i]) * spacing[i].cuda().float()
                     outt.append(ot[:].tolist())
                 egt = torch.tensor(outt) ** 2
                 egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))

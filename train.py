@@ -12,7 +12,7 @@ from configs.config_setting import setting_config
 import logging
 import torch.optim as optim
 from models.resnet import resnet34, resnet101,resnet50,resnet152
-from models.Pointnet_ed import Pointneted_plus,Pointneted_plus_mmld
+from models.Pointnet_ed import Pointneted_plus,Pointneted_plus_mmld,Pointneted
 from models.unet import UNet
 from models.egeunet import EGEUNet
 from models.Pointnet3d import pointnet3d
@@ -70,7 +70,7 @@ if __name__ == '__main__':
                                   batch_size=config.batch_size,
                                   shuffle=True,
                                   num_workers=config.num_workers)
-        train_dataset.real_input_channels=64
+        train_dataset.real_input_channels=config.input_channels
         val_dataset.val_size=100
         train_dataset.train_size=458
         config.num_classes =14
@@ -133,6 +133,14 @@ if __name__ == '__main__':
                                 cfg=config.cfg,
                                 deep_supervision=config.deep_supervision,
                                 tailadd=config.tailadd,
+                                )
+    elif  config.network == 'Pointneted':
+        model = Pointneted(num_classes=config.num_classes,
+                                input_channels=train_dataset.real_input_channels,
+                                cfg=config.cfg,
+                                deep_supervision=config.deep_supervision,
+                                tailadd=config.tailadd,
+                                data = config.data_mmld
                                 )
     else:
         raise Exception('network in not right!')

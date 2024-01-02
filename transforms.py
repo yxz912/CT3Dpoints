@@ -6,8 +6,7 @@ from configs.config_setting import setting_config
 def zoomout_imgandlandmark(img, landmarks, rate):
     new_img = zoom(img, rate, order=1)
     new_landmarks = []
-    rated = [1/rate[0],1/rate[1],1/rate[2]]
-    setting_config.rate = np.full_like(np.array([1., 1., 1.]), 4.) * np.array(rated)
+
     for position in landmarks:
         position_c = position[0] * rate[0]
         position_h = position[1] * rate[1]
@@ -24,6 +23,7 @@ class RandomCrop(object):
     def __call__(self, sample):
         img = sample['image']
         landmarks = sample['landmarks']
+        spacing = sample['spacing']
         min_ = np.ones((3,)) * 1000
         max_ = np.zeros((3,))
         for landmark in landmarks:
@@ -48,6 +48,9 @@ class RandomCrop(object):
             random_rate1=zoom_max[1]
             random_rate2=zoom_max[2]
         img, landmarks = zoomout_imgandlandmark(img, landmarks, [random_rate0,random_rate1,random_rate2])
+
+        rated = np.array([1. / random_rate0, 1. / random_rate1, 1. / random_rate2])
+        spacing = rated * spacing
 
         min_ = np.ones((3,)) * 1000
         max_ = np.zeros((3,))
@@ -86,7 +89,8 @@ class RandomCrop(object):
             cur_landmark = landmark - np.array([cc, ch, cw])          
             pre_new_landmarks.append(cur_landmark)
         sample['landmarks'] = np.array(pre_new_landmarks) 
-        sample['image'] = cur_crop_img  
+        sample['image'] = cur_crop_img
+        sample['spacing'] = spacing
         return sample
 
     

@@ -2,10 +2,8 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from einops import rearrange
-
 from timm.models.layers import trunc_normal_
 import math
-
 
 class DepthWiseConv2d(nn.Module):
     def __init__(self, dim_in, dim_out, kernel_size=3, padding=1, stride=1, dilation=1):
@@ -22,7 +20,6 @@ class DepthWiseConv2d(nn.Module):
 
     def forward(self, x):
         return self.conv2(self.norm_layer(self.conv1(x)))
-
 
 class LayerNorm(nn.Module):
     r"""
