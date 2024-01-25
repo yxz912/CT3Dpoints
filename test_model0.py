@@ -1,5 +1,5 @@
 import torch
-from models.Pointnet_ed import Pointneted_plus,Pointnet_ed
+from models.Pointnet_ed import Pointneted_plus
 from configs.config_setting import setting_config
 import os
 import cv2
@@ -7,8 +7,6 @@ import numpy as np
 import math
 import pandas as pd
 import torchvision.transforms.functional as TF
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 def test_model(model,data):
     model.eval()
@@ -21,23 +19,23 @@ def test_model(model,data):
         else:
             outputs = model(val_images.cuda().float())  # eval model only have last output layer
         eg = (outputs - val_labels.cuda().float()) ** 2
-        ed = torch.sqrt(eg)
-        disx = torch.unsqueeze(ed[:,:,:,0].cpu(),dim=-1)
-        disy = torch.unsqueeze(ed[:, :, :, 1].cpu(),dim=-1)
-        disz = torch.unsqueeze(ed[:, :, :, 2].cpu(),dim=-1)
-
+        # print("out=",outputs)
+        # print("label=",val_labels)
         # eg=torch.sum(eg,dim=(1,2,3))
         # count += (eg <= config.threshold).sum().item()
         eg = torch.sqrt(torch.sum(eg, dim=(2, 3)))
+        # for k in range(config.val_bs):
+        #     coun = (eg[k] <= config.threshold).sum().item()
+        #     print(coun,eg[k])
+        #     if coun==3:
+        #         count+=1
+        #print("eg==",eg)
         count = (eg <= setting_config.threshold).sum().item()
-
-        outputs_np = outputs.cpu().numpy()[0, :, 0, :]  # 变成 [6, 3]
-        val_labels_np = val_labels.cpu().numpy()[0, :, 0, :]  # 变成 [6, 3]
-        return count,outputs_np,val_labels_np,disx,disy,disz,eg
+        return count
 
 def test(model_path,data_path,label_path):
     input_channels=49
-    model = Pointnet_ed(num_classes=setting_config.num_classes,
+    model = Pointneted_plus(num_classes=setting_config.num_classes,
                             input_channels=input_channels,
                             cfg=setting_config.cfg,
                             deep_supervision=setting_config.deep_supervision,
@@ -46,16 +44,8 @@ def test(model_path,data_path,label_path):
     checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint['model_state_dict'])
     model.cuda()
-    for name, param in model.named_parameters():
-        print(name)
     images_list = sorted(os.listdir(data_path))
     cou=0
-    outputs=[]
-    labelsd=[]
-    x=[]
-    y=[]
-    z=[]
-    egd = torch.zeros([1,6])
     for i,img_path in enumerate(images_list):
         size = len(sorted(os.listdir(data_path+img_path)))
         common = math.ceil(size / 64)
@@ -68,61 +58,10 @@ def test(model_path,data_path,label_path):
         msk = torch.from_numpy(msk)
         img=torch.from_numpy(img)
         data = torch.unsqueeze(img, 0),torch.unsqueeze(msk,0)
-        coun,out,lab,disx,disy,disz,eg=test_model(model,data)
+        coun=test_model(model,data)
         cou+= coun
-        outputs.append(out.tolist().copy())
-        labelsd.append(lab.tolist()[:])
-        x.append(torch.mean(disx))
-        y.append(torch.mean(disy))
-        z.append(torch.mean(disz))
-        egd += eg.cpu()
         print(("name=%s,right_point=%d")%(img_path,coun))
     print("test_acc=",cou/(len(images_list)*setting_config.num_classes))
-    # 创建一个新的图形和 3D 轴
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    # 绘制输出坐标点，使用红色
-    ax.scatter(np.array(outputs)[:, 0], np.array(outputs)[:, 1], np.array(outputs)[:, 2], color='r', label='Outputs')
-    # 绘制标签坐标点，使用蓝色
-    ax.scatter(np.array(labelsd)[:, 0], np.array(labelsd)[:, 1], np.array(labelsd)[:, 2], color='b', label='Labels')
-    # 添加图例
-    ax.legend()
-    # 添加坐标轴标签
-    ax.set_xlabel('X Coordinate')
-    ax.set_ylabel('Y Coordinate')
-    ax.set_zlabel('Z Coordinate')
-    # 显示图表
-    plt.show()
-
-    plt.plot(range(len(x)), x, label="x")
-    plt.plot(range(len(y)), y, label="y")
-    plt.plot(range(len(z)), z, label="z")
-    # 添加曲线标签
-    plt.legend()
-    # 添加标题和标签
-    plt.title(f"Distance--x,y,z")
-    plt.xlabel('sample')
-    plt.ylabel('distance')
-    # 显示图形
-    plt.show()
-
-    data =np.squeeze(np.array(egd/len(images_list),dtype=float))
-    print(data)
-    # 创建索引
-    indices = np.arange(len(data))
-    # 绘制矩形图
-    plt.bar(indices, data)
-
-    # 自定义 x 轴标签
-    labels = ['ANS', 'B1', 'U1', 'Me', 'N', 'S']
-    plt.xticks(indices, labels)
-
-    # 添加坐标轴标签
-    plt.xlabel('Category')
-    plt.ylabel('Average Distance Value')
-    # 显示图表
-    plt.show()
-
 
 def concat_cv(real_input_channels,folder, common=1):
     img_paths = [os.path.join(folder, f) for f in sorted(os.listdir(folder)) if f.endswith('.png')]
@@ -164,14 +103,14 @@ def get_label(label_path,name):
         for i,k in enumerate(setting_config.label_num):
             x_value =data_label.loc[row_index + k, 'x']
             y_value = data_label.loc[row_index + k, 'y']
-            z_value = data_label.loc[row_index + k, 'z'] + 128  ####128
+            z_value = data_label.loc[row_index + k, 'z'] + 100
             array_2d[i] = [x_value, y_value, z_value]
     else:
         print(f"找不到 {name}")
     array_2d=np.expand_dims(array_2d, axis=1)
     return array_2d
 
-model_path = "/home/yxz/progress/CT3Dpoints/TESTMODEL/best4.pth"
+model_path = "/home/yxz/progress/CT3Dpoints/TESTMODEL/best.pth"
 data_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/val/images/"
 label_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
 

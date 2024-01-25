@@ -439,6 +439,304 @@ import torch.nn as nn
 # rate = np.full_like(np.array([1., 1., 1.]), 4.)
 # f = np.array([1.1, 1.2, 1.3])
 # print(rate*f)
-np1 = np.array([3.,1.,4.])
-ff = np.array([3.,1.,4.])
-print(np1*ff)
+# np1 = np.array([3.,1.,4.])
+# ff = np.array([3.,1.,4.])
+# print(np1*ff)
+
+import numpy as np
+from sklearn.neighbors import KernelDensity
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from configs.config_setting import setting_config
+
+
+# def get_label(label_path,name):
+#     data_label = pd.read_excel(label_path)
+#     result = data_label[data_label['姓名'] == name].index.tolist()
+#     array_2d = np.zeros((setting_config.num_classes, 3))
+#     if len(result) == 1:
+#         row_index = result[0]
+#         for i,k in enumerate(setting_config.label_num):
+#             x_value =data_label.loc[row_index + k, 'x']
+#             y_value = data_label.loc[row_index + k, 'y']
+#             z_value = data_label.loc[row_index + k, 'z'] + 100
+#             array_2d[i] = [x_value, y_value, z_value]
+#     else:
+#         print(f"找不到 {name}")
+#     return array_2d
+#
+# import numpy as np
+# from sklearn.neighbors import KernelDensity
+#
+# def calculate_cross_entropy(x, kde_p, kde_q):
+#     # 计算概率密度
+#     p_density = np.exp(kde_p.score_samples(x.reshape(-1, 1)))
+#     q_density = np.exp(kde_q.score_samples(x.reshape(-1, 1)))
+#
+#     # 将概率密度离散化
+#     p_distribution = p_density / np.sum(p_density)
+#     q_distribution = q_density / np.sum(q_density)
+#
+#     # 计算交叉熵
+#     cross_entropy = -np.sum(p_distribution * np.log(q_distribution))
+#
+#     return cross_entropy
+#
+#
+#
+# # 使用蒙特卡罗积分来估算KL散度
+# def monte_carlo_kl_divergence(kde_p, kde_q, samples):
+#     # 使用kde_p的分布生成采样点
+#     drawn_samples = kde_p.resample(size=samples).T
+#     # 评估两个核密度估计在采样点处的概率密度值
+#     p_vals = kde_p(drawn_samples.T)
+#     q_vals = kde_q(drawn_samples.T)
+#
+#     # 计算KL散度的定义公式的一部分：p(x) * log(p(x)/q(x))
+#     nonzero = q_vals > 0
+#     divergences = p_vals[nonzero] * np.log(p_vals[nonzero] / q_vals[nonzero])
+#     return np.mean(divergences)
+#
+#
+# label_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
+# data_patht = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/train/images/"
+# data_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/val/images/"
+# images_listt = sorted(os.listdir(data_patht))
+# datast = np.zeros((len(images_listt),setting_config.num_classes,3))
+# images_list = sorted(os.listdir(data_path))
+# datas = np.zeros((len(images_list),setting_config.num_classes,3))
+# for i, img_path in enumerate(images_list):
+#     msk = get_label(label_path, img_path)
+#     datas[i] = msk
+# for i, img_path in enumerate(images_listt):
+#     mskt = get_label(label_path, img_path)
+#     datast[i] = mskt
+from scipy.stats import gaussian_kde
+
+# for k in range(setting_config.num_classes):#setting_config.num_classes
+#     data = datas[:,k,:]
+#     datat = datast[:,k,:]
+#     # 定义核密度估计模型
+#     kde = KernelDensity(bandwidth=1.0, kernel='gaussian')
+#     kdet = KernelDensity(bandwidth=1.0, kernel='gaussian')
+#     # 用样本数据拟合模型
+#     kde.fit(data)
+#     kdet.fit(datat)
+#
+#     # 实例化真实数据和预测数据的核密度估计
+#     kde_real = gaussian_kde(data.T)
+#     kde_pred = gaussian_kde(datat.T)
+#
+#     # 生成用于绘制密度的网格点
+#     x, y, z = np.meshgrid(np.linspace(-3, 3, 100), np.linspace(-3, 3, 100), np.linspace(-3, 3, 100))
+#     grid_points = np.column_stack((x.ravel(), y.ravel(), z.ravel()))
+#
+#     # 计算每个网格点的概率密度
+#     log_density = kde.score_samples(grid_points)
+#
+#     # 将一维的概率密度转换为三维网格
+#     density = np.exp(log_density).reshape(100, 100, 100)
+#
+#     # 画出三维图
+#     fig = plt.figure()
+#     ax = fig.add_subplot(111, projection='3d')
+#     ax.scatter(data[:, 0], data[:, 1], data[:, 2], color='blue', alpha=0.5)
+#     ax.scatter(grid_points[:, 0], grid_points[:, 1], grid_points[:, 2], c=density.flatten(), cmap='viridis', marker='.')
+#     plt.show()
+#
+#     # 计算KL散度
+#     kl_div = monte_carlo_kl_divergence(kde_real, kde_pred, samples=1000)
+#     print(f"Estimated KL divergence: {kl_div}")
+from scipy.stats import entropy
+# data = datast[:,0,:]
+# datat = datas[:,0,:]
+# np.random.seed(0)
+# # data = np.random.multivariate_normal(mean=[0, 0, 0], cov=np.eye(3), size=1000)
+# # datat = np.random.multivariate_normal(mean=[0.5, 0.5, 0.5], cov=np.eye(3), size=1000)
+# kde_real = gaussian_kde(data.T)
+# kde_pred = gaussian_kde(datat.T)
+# # 计算KL散度
+# kl_div = monte_carlo_kl_divergence(kde_real, kde_pred, samples=len(images_listt))
+# print(f"Estimated KL divergence: {kl_div}")
+
+#
+# import matplotlib.pyplot as plt
+# from mpl_toolkits.mplot3d import Axes3D
+# from matplotlib import cm
+# from scipy.stats import multivariate_normal
+# import os
+# import itertools
+# import numpy as np
+# import pyswarms as ps
+# from pyswarms.utils.functions import single_obj as fx
+# import pandas as pd
+# from configs.config_setting import setting_config
+# from scipy.optimize import curve_fit
+#
+# def get_label(label_path,name):
+#     data_label = pd.read_excel(label_path)
+#     result = data_label[data_label['姓名'] == name].index.tolist()
+#     array_2d = np.zeros((setting_config.num_classes, 3))
+#     if len(result) == 1:
+#         row_index = result[0]
+#         for i,k in enumerate(setting_config.label_num):
+#             x_value =data_label.loc[row_index + k, 'x']
+#             y_value = data_label.loc[row_index + k, 'y']
+#             z_value = data_label.loc[row_index + k, 'z'] + 100
+#             array_2d[i] = [x_value, y_value, z_value]
+#     else:
+#         print(f"找不到 {name}")
+#     array_2d=np.expand_dims(array_2d, axis=2)
+#     return array_2d
+#
+# label_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
+# data_path = "/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/train/images/"
+# images_list = sorted(os.listdir(data_path))
+# xyz = np.array(0)
+# for i,img_path in enumerate(images_list):
+#     msk = get_label(label_path, img_path)
+#     if i == 0:
+#         xyz = msk.copy()
+#     else:
+#         xyz = np.dstack((xyz, msk))
+#
+#
+# '''
+# x = np.linspace(np.min(xyz) - 5, np.max(xyz) + 5, 100)
+# y = np.linspace(np.min(xyz) - 5, np.max(xyz) + 5, 100)
+# x, y = np.meshgrid(x, y)
+# pos = np.empty(x.shape + (3,))
+# pos[:, :, 0] = x
+# pos[:, :, 1] = y
+# pos[:, :, 2] = 0  # Z维的值，由于高斯函数是关于xy平面对称的，我们可以取一个z的切面
+#
+# # 绘制高斯分布图
+# fig = plt.figure(figsize=(10, 7))
+# ax = fig.add_subplot(111, projection='3d')
+#
+# for point in range(xyz.shape[0]):
+#     points = np.squeeze(xyz.transpose(0, 2, 1)[point, :, :])
+#     # 分别计算 x, y, z 的均值
+#     mean_x, mean_y, mean_z = points.mean(axis=0)
+#
+#     # 分别计算 x, y, z 的标准差
+#     std_x, std_y, std_z = points.std(axis=0)
+#
+#     # 输出均值和标准差
+#     print("均值：", mean_x, mean_y, mean_z)
+#     print("标准差：", std_x, std_y, std_z)
+#
+#     # 假设的均值和标准差
+#     mean = [mean_x, mean_y, mean_z]
+#     # 根据标准差创建对角线方差元素
+#     var_x = std_x**2
+#     var_y = std_y**2
+#     var_z = std_z**2
+#     # 创建协方差矩阵
+#     covariance = np.array([
+#         [var_x, 0, 0],
+#         [0, var_y, 0],
+#         [0, 0, var_z]
+#     ])
+#
+#     # 多变量正态分布
+#     rv = multivariate_normal(mean, covariance)
+#
+#     # 对于每一个x和y，计算概率密度函数的值
+#     z = rv.pdf(pos)
+#     ax.plot_surface(x, y, z, cmap=cm.viridis)
+#
+# # 设置图表标题和坐标轴标签
+# ax.set_title('3D Gaussian Distribution')
+# ax.set_xlabel('X')
+# ax.set_ylabel('Y')
+# ax.set_zlabel('Probability Density')
+# # 显示图表
+# plt.show()
+# '''
+#
+# data = np.squeeze(xyz.transpose(0, 2, 1)[0, :, :])
+# # 将Numpy数组转换为字符串表示，并在每个数字之后添加逗号
+# np_str_with_commas = np.array2string(data, separator=', ')[1:-1]
+# # 使用replace去掉最后的逗号并打印结果
+# np_str_with_commas = np_str_with_commas.replace('],', '];')
+# print(np_str_with_commas)
+#
+
+import cv2
+import numpy as np
+import random
+
+# 读取原始图片
+image = cv2.imread('/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/train/images/曹骄阳（张）正颌2/CT.1.3.46.670589.33.1.63778281912594160400001.5551689432045871359.png')
+
+def noisejy(image):
+    # 获取图片的高度和宽度
+    height, width, channels = image.shape
+
+    # 添加噪声的比例（可以根据需要调整）
+    noise_ratio = 0.02
+
+    # 添加椒盐噪声
+    num_noise_pixels = int(noise_ratio * height * width)
+    for _ in range(num_noise_pixels):
+        x = random.randint(0, width-1)
+        y = random.randint(0, height-1)
+        value = random.randint(0, 255)
+        if random.random() < 0.5:
+            image[y, x] = [value, value, value]  # 盐噪声
+        else:
+            image[y, x] = [0, 0, 0]  # 椒噪声
+    return image
+
+def add_gaussian_noise(image, mean, stddev):
+    # 生成随机噪声
+    noise = np.random.randn(*image.shape) * stddev + mean
+    # 将噪声添加到图像像素上
+    noisy_image = np.clip(image + noise, 0, 255).astype(np.uint8)
+    return noisy_image
+
+def hsvchange(image):
+    brightness_factor = 0.5
+    contrast_factor = 0.5
+    darkened_image = np.int16(image)
+    darkened_image = darkened_image * contrast_factor + brightness_factor
+    darkened_image = np.clip(darkened_image, 0, 255).astype(np.uint8)
+    return darkened_image
+
+# image = add_gaussian_noise(image, mean=0, stddev=20)
+# cv2.imshow("srcimg",image)
+# image = hsvchange(image)
+
+# import numpy as np
+#
+# # 输入的一维数组
+# arr = np.array([1, 2, 4])
+#
+# # 将一维数组转换为对角矩阵
+# diag_matrix = np.diag(arr)
+#
+# # 输出对角矩阵
+# print(diag_matrix)
+#
+# cv2.imshow("noise img ",image)
+# cv2.waitKey()
+
+# import torch
+# from torch.distributions.normal import Normal
+#
+# # 假设模型输出是正态分布的均值和标准差
+# model_mu = torch.tensor([1.0, 2.0, 3.0])
+# model_sigma = torch.tensor([0.1, 0.2, 0.3])
+#
+# # 真实标签的正态分布参数
+# true_mu = torch.tensor([1.2, 2.1, 2.8])
+# true_sigma = torch.tensor([0.15, 0.18, 0.25])
+#
+# # 构建正态分布对象
+# model_dist = Normal(loc=model_mu, scale=model_sigma)
+# true_dist = Normal(loc=true_mu, scale=true_sigma)
+#
+# # 计算 KL 散度
+# kl_divergence = torch.distributions.kl.kl_divergence(model_dist, true_dist).sum()
+# print(kl_divergence)

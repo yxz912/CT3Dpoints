@@ -22,11 +22,14 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
     TIP = 0.001
     acc=0.0
     fzd = []
+    mec_train=[]
+    mec_val=[]
     for epoch in range(config.epochs):
         # train
         model.train()
         running_loss = 0.0
         countt = 0
+        tik=0
         freeze = []
         for step, data in enumerate(train_loader, start=0):
             if config.data_mmld:
@@ -64,10 +67,16 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                     outt.append(ot[:].tolist())
                 egt = torch.tensor(outt) ** 2
                 egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))
+                for dt,kg in enumerate(egt):
+                    for jp,dq in enumerate(kg):
+                        if torch.min(labels.float()[dt,jp,:,:]) >= 0 and dq<=config.threshold:
+                            countt += 1
+                        if torch.min(labels.float()[dt,jp,:,:]) < 0:
+                            tik+=1
             else:
                 egt = (out - labels.cuda().float()) ** 2
                 egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))
-            countt += (egt <= config.threshold).sum().item()
+                countt += (egt <= config.threshold).sum().item()
 
             loss.backward()
 
@@ -95,6 +104,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             # logging.info("loss-->%f", loss)
         scheduler.step()
         print()
+        mec_train.append(sum(sum(egt.cpu())) / (config.batch_size * config.num_classes))
         freezed = []
         if config.freeze:
             for char in freeze:
@@ -108,6 +118,7 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
         model.eval()
         with torch.no_grad():
             count=0
+            tikd=0
             loss=0.0
             for i ,val_data in enumerate(validate_loader):
                 if config.data_mmld:
@@ -143,21 +154,27 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                         out.append(ot[:].tolist())
                     eg = torch.tensor(out)**2
                     eg = torch.sqrt(torch.sum(eg,dim=(2,3)))
+                    for dt, kg in enumerate(eg):
+                        for jp, dq in enumerate(kg):
+                            if torch.min(val_labels.float()[dt, jp, :, :]) >= 0 and dq <= config.threshold:
+                                count += 1
+                            if torch.min(val_labels.float()[dt, jp, :, :]) < 0:
+                                tikd += 1
                 else:
                     eg = (outputs - val_labels.cuda().float()) ** 2
                     #eg=torch.sum(eg,dim=(1,2,3))
                     #count += (eg <= config.threshold).sum().item()
                     eg=torch.sqrt(torch.sum(eg,dim=(2,3)))
-
+                    count += (eg <= config.threshold).sum().item()
                 # for k in range(config.val_bs):
                 #     coun = (eg[k] <= config.threshold).sum().item()
                 #     print(coun,eg[k])
                 #     if coun==3:
                 #         count+=1
-                count += (eg <= config.threshold).sum().item()
 
-            train_accurate = countt / (train_size*config.num_classes)
-            val_accurate = count/(val_size*config.num_classes)
+            mec_val.append(sum(sum(eg.cpu())) / (config.batch_size * config.num_classes))
+            train_accurate = countt / (train_size*config.num_classes-tik)
+            val_accurate = count/(val_size*config.num_classes-tikd)
             tv.append(train_accurate)
             vv.append(val_accurate)
             if val_accurate>best_test_acc:
@@ -212,15 +229,11 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
     print("the best test acc==",best_test_acc)
     logging.info("the best test acc===%f",best_test_acc)
 
-    # 使用 matplotlib 绘制迭代图
-    plt.plot(range(len(vv)), vv,  label=config.network)
-    plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
+    vvs = ', '.join(str(item) for item in vv)
+    mec_vals = ', '.join(str(item.item()) for item in mec_val)
+    mec_trains = ', '.join(str(item.item()) for item in mec_train)
+    logging.info("vv===%s",vvs)
+    logging.info("mec_val===%s", mec_vals)
+    logging.info("mec_train===%s", mec_trains)
 
-    # 添加标题和标签
-    plt.title(f"Test Accuracy--{str(config.l2_lambda)+'--'+str(config.freeze)}")
-    plt.xlabel('Iterations')
-    plt.ylabel('Accuracy')
-    os.mkdir(config.work_dir + "plt/")
-    plt.savefig(config.work_dir + "plt/" + config.network + '.png')
-    # 显示图形
-    plt.show()
+    return vv,mec_val,mec_train

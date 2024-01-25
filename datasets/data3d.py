@@ -55,6 +55,10 @@ class Molar3D(Dataset):
             return sample
         else:
             sample = Totensor(sample)
+            for ldx, landmark in enumerate(sample['landmarks']):
+                if min(landmark) < 0:
+                    sample['landmarks'][ldx] = torch.tensor([-1., -1., -1.])
+            sample['landmarks'] = sample['landmarks'].reshape((sample['landmarks'].shape[0], 1, 3))
             return sample
 
     def __str__(self):
@@ -63,16 +67,14 @@ class Molar3D(Dataset):
 def Totensor(sample):
     img = np.array(sample['image']).astype(np.float32)
     img = cv2.resize(img,[setting_config.input_size_h , setting_config.input_size_w])
-    # 抽取比例
-    scale_factor = 128 / 256
-    # 调整图像的通道数目
-    img = img[:, :, ::int(1 / scale_factor)]
-    img /= 255.
-    img = np.transpose(img, (2, 0, 1))
-    imgd = torch.from_numpy(img)
-    #mk = sample[1].astype(np.float32)/10.
-    mark = torch.unsqueeze(torch.from_numpy(sample['landmarks'].astype(np.float32)),2)
-    sample = imgd,mark
+    img_resized = np.zeros((256, 256, 128))
+    for i in range(0, 256, 2):
+        img_resized[:, :, i // 2] = (img[:, :, i] + img[:, :, i + 1]) / 2
+    img_resized /= 255.
+    img_resized = np.transpose(img_resized, (2, 0, 1))
+    imgd = torch.from_numpy(img_resized)
+    mark = torch.from_numpy(sample['landmarks'].astype(np.float32))
+    sample = {'image': imgd, 'landmarks': mark, 'spacing': sample['spacing']}
 
     return sample
 

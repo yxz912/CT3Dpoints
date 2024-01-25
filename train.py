@@ -12,7 +12,7 @@ from configs.config_setting import setting_config
 import logging
 import torch.optim as optim
 from models.resnet import resnet34, resnet101,resnet50,resnet152
-from models.Pointnet_ed import Pointneted_plus,Pointneted_plus_mmld,Pointneted
+from models.Pointnet_ed import Pointneted_plus,Pointneted_plus_mmld,Pointneted,Pointnet_ed,Pointneted_gaus
 from models.unet import UNet
 from models.egeunet import EGEUNet
 from models.Pointnet3d import pointnet3d
@@ -51,21 +51,21 @@ if __name__ == '__main__':
         train_transform = transforms.Compose([
             tr.RandomCrop(),  # zoom and random crop for data augumentation
             #tr.LandmarkProposal(shrink=args.shrink, anchors=args.anchors),  # generate the anchor proposal
-            #tr.Normalize(),
+            tr.Normalize(),
             tr.ToTensor(),
         ])
         val_transform = transforms.Compose([
-            tr.RandomCrop(),  # zoom and random crop for data augumentation
+            tr.CenterCrop(),  # zoom and random crop for data augumentation
             # tr.LandmarkProposal(shrink=args.shrink, anchors=args.anchors),  # generate the anchor proposal
-            #tr.Normalize(),
+            tr.Normalize(),
             tr.ToTensor(),
         ])
-        train_dataset = Molar3D(train_transform,'train','/home/yxz/data/mmld_code/mmld_code/mmld_dataset','all')
+        train_dataset = Molar3D(None,'train','/home/yxz/data/mmld_code/mmld_code/mmld_dataset','all')
         train_loader = DataLoader(train_dataset,
                                  batch_size=config.batch_size,
                                  shuffle=True,
                                  num_workers=config.num_workers)
-        val_dataset = Molar3D(val_transform, 'val', '/home/yxz/data/mmld_code/mmld_code/mmld_dataset', 'all')
+        val_dataset = Molar3D(None, 'val', '/home/yxz/data/mmld_code/mmld_code/mmld_dataset', 'all')
         val_loader = DataLoader(val_dataset,
                                   batch_size=config.batch_size,
                                   shuffle=True,
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         train_dataset.real_input_channels=config.input_channels
         val_dataset.val_size=100
         train_dataset.train_size=458
-        config.num_classes =14
+
     else:
         train_dataset = YXZ_datasets(config.data_path,config.label_path, config, train=True)
         logging.info("train--mean-->%s",np.array(train_dataset.mean))
@@ -128,7 +128,7 @@ if __name__ == '__main__':
                            tailadd = config.tailadd,
                            )
     elif config.network == 'Pointneted_plus_mmld':
-        model = Pointneted_plus(num_classes=config.num_classes,
+        model = Pointneted_plus_mmld(num_classes=config.num_classes,
                                 input_channels=train_dataset.real_input_channels,
                                 cfg=config.cfg,
                                 deep_supervision=config.deep_supervision,
@@ -140,8 +140,23 @@ if __name__ == '__main__':
                                 cfg=config.cfg,
                                 deep_supervision=config.deep_supervision,
                                 tailadd=config.tailadd,
-                                data = config.data_mmld
+
                                 )
+    elif config.network == 'Pointnet_ed':
+        model = Pointnet_ed(num_classes=config.num_classes,
+                           input_channels=train_dataset.real_input_channels,
+                           cfg=config.cfg,
+                           deep_supervision=config.deep_supervision,
+                           tailadd = config.tailadd,
+                           )
+
+    elif config.network == 'Pointneted_gaus':
+        model = Pointneted_gaus(num_classes=config.num_classes,
+                           input_channels=train_dataset.real_input_channels,
+                           cfg=config.cfg,
+                           deep_supervision=config.deep_supervision,
+                           tailadd = config.tailadd,
+                           )
     else:
         raise Exception('network in not right!')
     model = model.cuda()
@@ -151,6 +166,8 @@ if __name__ == '__main__':
         loss_function = Deepeucloss(config)
     else:
         loss_function = EuclideanLoss(config)
+    # if config.data_mmld:
+    #     loss_function = mmld_Loss(config)
     optimizer = get_optimizer(config, model)
     scheduler = get_scheduler(config, optimizer)
     l_dynamic=1.0
@@ -163,5 +180,43 @@ if __name__ == '__main__':
         l_dynamic = checkpoint['l_dynamic']
 
     print('#----------train and test start...----------#')
-    simple_train_val(config,model,train_loader,val_loader,optimizer,loss_function,logging,scheduler,val_dataset.val_size,train_dataset.train_size,l_dynamic)
-
+    for i in range(2):
+        if i==0:
+            vv,mec_val,mec_train= simple_train_val(config, model, train_loader, val_loader, optimizer, loss_function, logging, scheduler,
+                                  val_dataset.val_size, train_dataset.train_size, l_dynamic)
+            # 使用 matplotlib 绘制迭代图
+            plt.subplot(1, 2, 1)
+            plt.legend()
+            plt.plot(range(len(vv)), vv,color='red', label="NO Relevance")
+            plt.subplot(1, 2, 2)
+            plt.plot(range(len(mec_val)), mec_val,color='red', label="NOT Relevance Adjust")
+            plt.legend()
+        if i==1:
+            model = Pointneted(num_classes=config.num_classes,
+                           input_channels=train_dataset.real_input_channels,
+                           cfg=config.cfg,
+                           deep_supervision=config.deep_supervision,
+                           tailadd = config.tailadd,
+                           ).cuda()
+            config.gauss = False
+            l_dynamic = 1.0
+            optimizer = get_optimizer(config, model)
+            scheduler = get_scheduler(config, optimizer)
+            vv,mec_val,mec_train = simple_train_val(config, model, train_loader, val_loader, optimizer, loss_function, logging, scheduler,
+                                  val_dataset.val_size, train_dataset.train_size, l_dynamic)
+            # 使用 matplotlib 绘制迭代图
+            plt.subplot(1, 2, 1)
+            plt.legend()
+            plt.plot(range(len(vv)), vv,color='blue', label="Relevance")
+            plt.subplot(1, 2, 2)
+            plt.plot(range(len(mec_val)), mec_val, color='blue',label="Relevance Adjust")
+            plt.legend()
+    plt.grid(True, linestyle='--', linewidth=0.5, color='gray')
+    # 添加标题和标签
+    plt.title(f"Test Accuracy--{str(config.network) + '--' + str(config.freeze)}")
+    plt.xlabel('Iterations')
+    plt.ylabel('Accuracy')
+    os.mkdir(config.work_dir + "plt/")
+    plt.savefig(config.work_dir + "plt/" + config.network + '.png')
+    # 显示图形
+    plt.show()

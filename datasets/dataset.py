@@ -25,6 +25,8 @@ class YXZ_datasets(Dataset):
         self.horizontal_flip = config.horizontal_flip
         self.label_num=config.label_num
         self.train = train
+        self.noised = config.noised
+        self.nomlize = config.nomlize
 
         if train:
             images_list = sorted(os.listdir(path_Data+'train/images/'))
@@ -82,8 +84,11 @@ class YXZ_datasets(Dataset):
             img = cv2.flip(img, 1)
             msk = self.get_label(msk_path,hf=True)
         img= (img - self.mean) / self.std
-        img = ((img- np.min(img)) / (np.max(img) - np.min(img))) * 255.
-        #img = ((img - np.min(img)) / (np.max(img) - np.min(img)))
+        if self.nomlize:
+            img = ((img - np.min(img)) / (np.max(img) - np.min(img)))
+            msk = msk/4.
+        else:
+            img = ((img- np.min(img)) / (np.max(img) - np.min(img))) * 255.
 
         if self.tensize:
             img = cv2.resize(img,(self.in_w, self.in_h))
@@ -129,6 +134,11 @@ class YXZ_datasets(Dataset):
                         for t in range(common):
                             if i+t < len(img_paths):
                                 img = cv2.imdecode(np.fromfile(img_paths[i+t], dtype=np.uint8), cv2.IMREAD_COLOR)
+                                if self.noised==True and random.random() < 0.5 and self.train:
+                                    if random.random() < 0.4:
+                                        img = self.noise(img)
+                                    else:
+                                        img = self.add_gaussian_noise(img,0,20)
                                 jkm+=1
                             else:
                                 continue
@@ -143,6 +153,11 @@ class YXZ_datasets(Dataset):
                     else:
                         jj=jj+1
                         img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
+                        if self.noised == True and random.random() < 0.5 and self.train:
+                            if random.random() < 0.4:
+                                img = self.noise(img)
+                            else:
+                                img = self.add_gaussian_noise(img, 0, 20)
                         r = img[:,:,0]
                         r = np.stack((r,) * 1, axis=-1)
                         if jj==1:
@@ -153,6 +168,11 @@ class YXZ_datasets(Dataset):
                 elif i == len(img_paths)-1:
                     jj=jj+1
                     img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
+                    if self.noised == True and random.random() < 0.5 and self.train:
+                        if random.random() < 0.4:
+                            img = self.noise(img)
+                        else:
+                            img = self.add_gaussian_noise(img, 0, 20)
                     r = img[:, :, 2]
                     r = np.stack((r,) * 1, axis=-1)
                     r_concat = np.concatenate((r_concat, r), axis=2)
@@ -196,13 +216,13 @@ class YXZ_datasets(Dataset):
             for i,k in enumerate(self.label_num):
                 x_value = self.data_label.loc[row_index + k, 'x']
                 y_value = self.data_label.loc[row_index + k, 'y']
-                z_value = self.data_label.loc[row_index + k, 'z'] + 128
+                z_value = self.data_label.loc[row_index + k, 'z'] + 100
                 if hf:
                     # if i%2==0:
                     #     z_value = self.data_label.loc[row_index + k+1, 'z'] + 128
                     # else:
                     #     z_value = self.data_label.loc[row_index + k-1, 'z'] + 128
-                    z_value = -1*self.data_label.loc[row_index + k, 'z'] +128
+                    z_value = -1*self.data_label.loc[row_index + k, 'z'] + 100
                 array_2d[i] = [x_value, y_value, z_value]
             # else:
             #     for k in range(array_2d.shape[0]):
@@ -351,3 +371,29 @@ class YXZ_datasets(Dataset):
             label_mean.append(np.mean(num0))
             label_std.append(np.std(num0))
         return label_mean,label_std
+
+    def noise(self,image):
+        # 获取图片的高度和宽度
+        height, width, channels = image.shape
+
+        # 添加噪声的比例（可以根据需要调整）
+        noise_ratio = 0.02
+
+        # 添加椒盐噪声
+        num_noise_pixels = int(noise_ratio * height * width)
+        for _ in range(num_noise_pixels):
+            x = random.randint(0, width - 1)
+            y = random.randint(0, height - 1)
+            value = random.randint(0, 255)
+            if random.random() < 0.5:
+                image[y, x] = [value, value, value]  # 盐噪声
+            else:
+                image[y, x] = [0, 0, 0]  # 椒噪声
+        return image
+
+    def add_gaussian_noise(self,image, mean, stddev):
+        # 生成随机噪声
+        noise = np.random.randn(*image.shape) * stddev + mean
+        # 将噪声添加到图像像素上
+        noisy_image = np.clip(image + noise, 0, 255).astype(np.uint8)
+        return noisy_image

@@ -4,18 +4,18 @@ import math
 from datetime import datetime
 
 class setting_config:
-    network ='Pointneted'#'Pointneted_plus' #'pointnet3d' #'Pointneted' #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
-    data_mmld = True
-    pre_net = None#"/home/yxz/progress/CT3Dpoints/results/Pointneted_plus_Wednesday_13_December_2023_17h_07m_39s/checkpoints/best.pth"
+    network = "Pointneted_gaus" #'Pointneted' #'Pointneted_plus'#'Pointnet_ed' # # 'pointnet3d' # #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
+    data_mmld = 1
+    pre_net = None #"/home/yxz/progress/CT3Dpoints/results/Pointneted_plus_Wednesday_13_December_2023_17h_07m_39s/checkpoints/best.pth"
     data_path='/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/'
     label_path="/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
     pretrained_path = './pre_trained/'
-    cfg = [32,64,96,128,256,128,256,128,64,32,16] #[96, 128, 256, 512, 1024, 512, 256, 128, 64, 32,16]  #[64, 96, 128,64,32,256,512,256,128,64,32]
+    cfg = [32,64,96,128,256,128,256,128,64,32,16] #[128, 256, 512,256,512, 1024, 512, 256, 128, 64, 32]
     label_num=[0,1,10,11,14,19]  #[2,3,8,9,15,16,17,18,21,22] #[0,1,2,3,8,9,10,11,14,15,16,17,18,19,21,22]
     num_classes = len(label_num)
     input_size_h = 256
     input_size_w = 256
-    input_channels = 64  ##期望最大输入
+    input_channels = 128  ##期望最大输入
     distributed = False
     local_rank = -1
     num_workers = 4
@@ -23,23 +23,31 @@ class setting_config:
     world_size = None
     rank = None
     amp = False
-    l2_lambda = 0.00 # 设置 L2 局部正则化权重
+    l2_lambda = 0.03 #设置 L2 局部正则化权重
     gpu_id = '0'
     batch_size = 4
     val_bs = 1
-    epochs = 400
+    epochs = 800
     deep_supervision = True
     tailadd = True
-    threshold = 5
+    threshold = 8
     rand_data = False
     mean_common = False
     horizontal_flip = True
-    Dynamic_regularization = False
+    Dynamic_regularization = True
     freeze = True
+    noised = False
+    gauss = 0
+    nomlize = False
+
+    if nomlize:
+        threshold = threshold/4.
 
     if data_mmld:
-        network = 'Pointneted' #'Pointneted_plus_mmld'
+        network = 'Pointneted'
         threshold = 4
+        num_classes = 14
+        cfg = [64, 96, 128,64,32,256,512,256,128,64,32]
 
     if rand_data:
         train_mean=41.68455
