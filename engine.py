@@ -77,7 +77,6 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
                 egt = (out - labels.cuda().float()) ** 2
                 egt = torch.sqrt(torch.sum(egt, dim=(2, 3)))
                 countt += (egt <= config.threshold).sum().item()
-
             loss.backward()
 
             if config.freeze and epoch > int(0.8 * config.epochs) and acc > 0.985:  # 0.8*config.epochs
@@ -177,6 +176,9 @@ def simple_train_val(config=None,model=None,train_loader=None,validate_loader=No
             val_accurate = count/(val_size*config.num_classes-tikd)
             tv.append(train_accurate)
             vv.append(val_accurate)
+
+            if val_accurate>0.6:
+                config.relevant = True
             if val_accurate>best_test_acc:
                 if epoch!=epcv:
                     test_k = (val_accurate-best_test_acc)/(epoch-epcv)

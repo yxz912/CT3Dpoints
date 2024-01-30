@@ -41,7 +41,7 @@ for i,img_path in enumerate(images_list):
     xyz = np.dstack((xyz, msk))
 
 n = xyz.shape[0]
-Xn = xyz.transpose(0, 2, 1)
+Xn = xyz.transpose(0, 2, 1)**2
 
 
 for i,img_path in enumerate(testlist):
@@ -52,7 +52,7 @@ for i,img_path in enumerate(testlist):
         test = np.dstack((test, msk))
 
 nt = test.shape[0]
-testXn = test.transpose(0, 2, 1)
+testXn = test.transpose(0, 2, 1)**2
 
 def f_per_particle(m, Xn):
     """计算每个粒子的误差函数，使用`Xn`列表作为输入矩阵。"""
@@ -112,7 +112,7 @@ bounds = (min_bound, max_bound)
 #     options = {'c1': params[0], 'c2': params[1], 'w': params[2]}
 #
 #     # 初始化优化器并进行优化
-#     optimizer = ps.single.GlobalBestPSO(n_particles=n_particles, dimensions=dimensions, options=options,bounds=(min_bound,max_bound))
+#     optimizer = ps.single.GlobalBestPSO(n_particles=n_particles, dimensions=dimensions, options=options)
 #     #cost, pos = optimizer.optimize(fx.sphere, iters=2000,Xn=Xn)
 #     cost, pos = optimizer.optimize(f, iters=8000, Xn=Xn)
 #
@@ -134,13 +134,14 @@ bounds = (min_bound, max_bound)
 # print('Optimized b:', b_opt)
 
 def testx(n):
-    a1_opt = np.array([-0.01171973, 0.00511874, -0.03102786])
-    a2_opt = np.array([-0.01537341, 0.0074207, 0.00215751])
-    a3_opt = np.array([-0.00891788, 0.00088328, 0.02658808])
-    a4_opt = np.array([0.01766429, -0.00893865, -0.00241741])
-    a5_opt = np.array([0.0211294, 0.00557574, 0.00478809])
-    a6_opt = np.array([-0.00246022, -0.0091335, -0.00135202])
-    b = -0.18116703
+    a1_opt = np.array([-6.21007172e-05, 1.28758479e-06, -2.68045118e-04])
+    a2_opt = np.array([-2.07947256e-04, 4.46834409e-05, 6.14944605e-06])
+    a3_opt = np.array([-2.21353520e-04, 6.30610806e-05, 1.87035802e-04])
+    a4_opt = np.array([2.54301043e-04, -9.25418365e-05, -7.99169087e-06])
+    a5_opt = np.array([2.42138186e-04, 1.33552915e-04, 4.71636951e-05])
+    a6_opt = np.array([4.30034321e-06, -1.38483871e-04, 7.74779972e-05])
+    #b = 3.88585612e-03
+    b=2
 
     # a1_opt = np.array([ 0.00100212 , 0.00093754, -0.0032127 ])
     # a2_opt = np.array([-0.00030611 ,-0.00039637 , 0.00240049])
@@ -150,112 +151,111 @@ def testx(n):
     # a6_opt = np.array([-0.00010426 , 0.00097613 , 0.00064957])
     # b = 0.06308935
     a = np.stack((a1_opt, a2_opt, a3_opt, a4_opt, a5_opt, a6_opt))
-    x = Xn[:,n,:]
+    x = testXn[:,n,:]
 
     # 对于每一组进行每个元素相乘然后求和
-    c = sum(np.sum(a * np.squeeze(x), axis=1))-b
+    c = sum(np.sum(a * (np.squeeze(x)), axis=1))-b
     print("the %d test sample dis===%f"%(n,c))
 
-# for i in range(Xn.shape[1]):
-#     testx(i)
+for i in range(testXn.shape[1]):
+    testx(i)
 
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
-
-class Relevant(nn.Module):
-    def __init__(self,input_size):
-        super().__init__()
-        self.flatten = nn.Flatten()
-        self.linear = nn.Linear(input_size, 128)
-        self.relu = nn.ReLU()
-        self.linear0 = nn.Linear(128, 256)
-        self.linear1 = nn.Linear(256, 128)
-        self.linear2 = nn.Linear(128,9)
-        self.bn = nn.BatchNorm1d(256)
-
-    def forward(self, x):
-        x = self.flatten(x)
-        x = self.linear(x)
-        out = self.relu(x)
-        out = self.linear0(out)
-        out = self.bn(out)
-        out = self.linear1(out)
-
-        out = self.linear2(out)
-        out = out.view(out.shape[0],3,3)
-
-        return out
-
-input_size = 9
-lr_model = Relevant(input_size).cuda()
-X = xyz.transpose(2, 0, 1)[:,:3,:]
-y = xyz.transpose(2, 0, 1)[:,3:,:]
-print(X.shape)
-
-tx = test.transpose(2, 0, 1)[:,:3,:]
-ty = test.transpose(2, 0, 1)[:,3:,:]
-
-# 转换为 PyTorch 的 Tensor
-X_tensor = torch.tensor(X, dtype=torch.float32,requires_grad=True).cuda()
-y_tensor = torch.tensor(y, dtype=torch.float32,requires_grad=True).cuda()
-
-tx_tensor = torch.tensor(tx, dtype=torch.float32,requires_grad=True).cuda()
-ty_tensor = torch.tensor(ty, dtype=torch.float32,requires_grad=True).cuda()
-
-# 将数据包装成 Dataset
-dataset = TensorDataset(X_tensor, y_tensor)
-teda = TensorDataset(tx_tensor,ty_tensor)
-
-# 使用 DataLoader 划分批次
-batch_size = 16
-dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-test_dataloader = DataLoader(teda,batch_size=4,shuffle=True)
-
-# 定义损失函数和优化器
-criterion = nn.MSELoss()
-# optimizer = optim.SGD(lr_model.parameters(), lr=0.001)
-optimizer = optim.AdamW(lr_model.parameters(), lr=0.001,weight_decay=0.01,betas=(0.9, 0.999))
-
-def train():
-    # 训练模型
-    num_epochs = 100000
-    best_loss = 100000
-    for epoch in range(num_epochs):
-        lr_model.train()
-        for batch_X, batch_y in dataloader:
-            # 前向传播
-            outputs = lr_model(batch_X)
-
-            # 计算损失
-            loss = criterion(outputs, batch_y)
-            # 反向传播和优化
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-        lr_model.eval()
-        lossd = 0.
-        for tbatch_X, tbatch_y in test_dataloader:
-            out = lr_model(tbatch_X)
-            lossd += criterion(out, tbatch_y)
-        # 打印训练信息
-        if 0.2*loss.item() + lossd.item()/len(test_dataloader) < best_loss:
-            best_loss = 0.2*loss.item() + lossd.item()/len(test_dataloader)
-            print(f'Epoch [{epoch+1}/{num_epochs}], Train Loss: {loss.item():.4f}')
-            print(f'Epoch [{epoch + 1}/{num_epochs}], Test Loss: {lossd.item()/len(test_dataloader):.4f}')
-            torch.save(lr_model,"relevant_model2.pth")
-
-
-def testre():
-    model = torch.load("relevant_model.pth")
-    model.eval()
-    for tbatch_X, tbatch_y in test_dataloader:
-        out = model(tbatch_X)
-        loss = criterion(out, tbatch_y)
-        # print("out==",out)
-        # print("label==", tbatch_y)
-        print("loss===",loss.item())
-
-# testre()
-train()
+# import torch
+# import torch.nn as nn
+# import torch.optim as optim
+# from torch.utils.data import DataLoader, TensorDataset
+#
+# class Relevant(nn.Module):
+#     def __init__(self,input_size):
+#         super().__init__()
+#         self.flatten = nn.Flatten()
+#         self.linear = nn.Linear(input_size, 128)
+#         self.relu = nn.ReLU()
+#         self.linear0 = nn.Linear(128, 256)
+#         self.linear1 = nn.Linear(256, 128)
+#         self.linear2 = nn.Linear(128,9)
+#         self.bn = nn.BatchNorm1d(256)
+#
+#     def forward(self, x):
+#         x = self.flatten(x)
+#         x = self.linear(x)
+#         out = self.relu(x)
+#         out = self.linear0(out)
+#         out = self.bn(out)
+#         out = self.linear1(out)
+#
+#         out = self.linear2(out)
+#         out = out.view(out.shape[0],3,3)
+#
+#         return out
+#
+# input_size = 9
+# lr_model = Relevant(input_size).cuda()
+# X = xyz.transpose(2, 0, 1)[:,3:,:]
+# y = xyz.transpose(2, 0, 1)[:,:3,:]
+#
+# tx = test.transpose(2, 0, 1)[:,3:,:]
+# ty = test.transpose(2, 0, 1)[:,:3,:]
+#
+# # 转换为 PyTorch 的 Tensor
+# X_tensor = torch.tensor(X, dtype=torch.float32,requires_grad=True).cuda()
+# y_tensor = torch.tensor(y, dtype=torch.float32,requires_grad=True).cuda()
+#
+# tx_tensor = torch.tensor(tx, dtype=torch.float32,requires_grad=True).cuda()
+# ty_tensor = torch.tensor(ty, dtype=torch.float32,requires_grad=True).cuda()
+#
+# # 将数据包装成 Dataset
+# dataset = TensorDataset(X_tensor, y_tensor)
+# teda = TensorDataset(tx_tensor,ty_tensor)
+#
+# # 使用 DataLoader 划分批次
+# batch_size = 16
+# dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+# test_dataloader = DataLoader(teda,batch_size=4,shuffle=True)
+#
+# # 定义损失函数和优化器
+# criterion = nn.MSELoss()
+# # optimizer = optim.SGD(lr_model.parameters(), lr=0.001)
+# optimizer = optim.AdamW(lr_model.parameters(), lr=0.001,weight_decay=0.01,betas=(0.9, 0.999))
+#
+# def train():
+#     # 训练模型
+#     num_epochs = 100000
+#     best_loss = 100000
+#     for epoch in range(num_epochs):
+#         lr_model.train()
+#         for batch_X, batch_y in dataloader:
+#             # 前向传播
+#             outputs = lr_model(batch_X)
+#
+#             # 计算损失
+#             loss = criterion(outputs, batch_y)
+#             # 反向传播和优化
+#             optimizer.zero_grad()
+#             loss.backward()
+#             optimizer.step()
+#         lr_model.eval()
+#         lossd = 0.
+#         for tbatch_X, tbatch_y in test_dataloader:
+#             out = lr_model(tbatch_X)
+#             lossd += criterion(out, tbatch_y)
+#         # 打印训练信息
+#         if 0.2*loss.item() + lossd.item()/len(test_dataloader) < best_loss:
+#             best_loss = 0.2*loss.item() + lossd.item()/len(test_dataloader)
+#             print(f'Epoch [{epoch+1}/{num_epochs}], Train Loss: {loss.item():.4f}')
+#             print(f'Epoch [{epoch + 1}/{num_epochs}], Test Loss: {lossd.item()/len(test_dataloader):.4f}')
+#             torch.save(lr_model,"relevant_model2.pth")
+#
+#
+# def testre():
+#     model = torch.load("relevant_model.pth")
+#     model.eval()
+#     for tbatch_X, tbatch_y in test_dataloader:
+#         out = model(tbatch_X)
+#         loss = criterion(out, tbatch_y)
+#         # print("out==",out)
+#         # print("label==", tbatch_y)
+#         print("loss===",loss.item())
+#
+# # testre()
+# train()

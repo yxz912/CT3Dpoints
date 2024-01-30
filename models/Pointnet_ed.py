@@ -3,6 +3,7 @@ from torch import nn
 import torch.nn.functional as F
 import math
 from timm.models.layers import trunc_normal_
+from configs.config_setting import setting_config
 
 def find_positions(matrix, value):
     positions = []
@@ -1916,19 +1917,19 @@ class Pointneted_gaus(nn.Module):
         l2_reg.append(sum(param.norm(2) ** 2 for param in all_params4) ** 0.5)
         l2_reg.append(sum(param.norm(2) ** 2 for param in all_params5) ** 0.5)
 
-        st16_x = torch.unsqueeze(torch.std(x16[:, :, :, 0:x16.shape[-1] - 2], dim=(-2, -1)),dim=-1)
-        st16_y = torch.unsqueeze(torch.std(x16[:, :, :, 1:x16.shape[-1] - 1], dim=(-2, -1)),dim=-1)
-        st16_z = torch.unsqueeze(torch.std(x16[:, :, :, 2:x16.shape[-1]], dim=(-2, -1)),dim=-1)
-        st21_x = torch.unsqueeze(torch.std(x21[:, :, :, 0:x21.shape[-1] - 2], dim=(-2, -1)),dim=-1)
-        st21_y = torch.unsqueeze(torch.std(x21[:, :, :, 1:x21.shape[-1] - 1], dim=(-2, -1)),dim=-1)
-        st21_z = torch.unsqueeze(torch.std(x21[:, :, :, 2:x21.shape[-1]], dim=(-2, -1)),dim=-1)
-        st26_x = torch.unsqueeze(torch.std(x26[:, :, :, 0:x26.shape[-1] - 2], dim=(-2, -1)),dim=-1)
-        st26_y = torch.unsqueeze(torch.std(x26[:, :, :, 1:x26.shape[-1] - 1], dim=(-2, -1)),dim=-1)
-        st26_z = torch.unsqueeze(torch.std(x26[:, :, :, 2:x26.shape[-1]], dim=(-2, -1)),dim=-1)
-        uncertain16 = torch.unsqueeze(torch.cat((torch.cat([st16_x,st16_y],dim=-1),st16_z),dim=-1),dim=2)
-        uncertain21 = torch.unsqueeze(torch.cat((torch.cat([st21_x,st21_y],dim=-1),st21_z),dim=-1),dim=2)
-        uncertain26 = torch.unsqueeze(torch.cat((torch.cat([st26_x,st26_y],dim=-1),st26_z),dim=-1),dim=2)
-        uncertain =[uncertain16,uncertain21,uncertain26]
+        # st16_x = torch.unsqueeze(torch.std(x16[:, :, :, 0:x16.shape[-1] - 2], dim=(-2, -1)),dim=-1)
+        # st16_y = torch.unsqueeze(torch.std(x16[:, :, :, 1:x16.shape[-1] - 1], dim=(-2, -1)),dim=-1)
+        # st16_z = torch.unsqueeze(torch.std(x16[:, :, :, 2:x16.shape[-1]], dim=(-2, -1)),dim=-1)
+        # st21_x = torch.unsqueeze(torch.std(x21[:, :, :, 0:x21.shape[-1] - 2], dim=(-2, -1)),dim=-1)
+        # st21_y = torch.unsqueeze(torch.std(x21[:, :, :, 1:x21.shape[-1] - 1], dim=(-2, -1)),dim=-1)
+        # st21_z = torch.unsqueeze(torch.std(x21[:, :, :, 2:x21.shape[-1]], dim=(-2, -1)),dim=-1)
+        # st26_x = torch.unsqueeze(torch.std(x26[:, :, :, 0:x26.shape[-1] - 2], dim=(-2, -1)),dim=-1)
+        # st26_y = torch.unsqueeze(torch.std(x26[:, :, :, 1:x26.shape[-1] - 1], dim=(-2, -1)),dim=-1)
+        # st26_z = torch.unsqueeze(torch.std(x26[:, :, :, 2:x26.shape[-1]], dim=(-2, -1)),dim=-1)
+        # uncertain16 = torch.unsqueeze(torch.cat((torch.cat([st16_x,st16_y],dim=-1),st16_z),dim=-1),dim=2)
+        # uncertain21 = torch.unsqueeze(torch.cat((torch.cat([st21_x,st21_y],dim=-1),st21_z),dim=-1),dim=2)
+        # uncertain26 = torch.unsqueeze(torch.cat((torch.cat([st26_x,st26_y],dim=-1),st26_z),dim=-1),dim=2)
+        # uncertain =[uncertain16,uncertain21,uncertain26]
 
         x16 = self.adv(x16)   #view(x16.shape[0],self.num_classes,1,3)
         x21 = self.adv(x21)
@@ -1948,27 +1949,39 @@ class Pointneted_gaus(nn.Module):
         for i in l2_reg:
             l2_loss += (i/sum(l2_reg)) * i
 
+        if setting_config.relevant:
+            xyz1 = torch.squeeze(x16, dim=2)
+            x16T = torch.unsqueeze(self.Relevance_adjustments(xyz1,xnorm), dim=2)
+            xyz2 = torch.squeeze(x21, dim=2)
+            x21T = torch.unsqueeze(self.Relevance_adjustments(xyz2,xnorm), dim=2)
+            xyz = torch.squeeze(x26, dim=2)
+            x26T = torch.unsqueeze(self.Relevance_adjustments(xyz,xnorm), dim=2)
+        else:
+            x16T, x21T, x26T = x16,x21,x26
+        T = [x16,x21,x26]
+
         if self.deepsuper:
-            return [l2_loss,[uncertain, x16], [xnorm, x21]], x26
+            return [l2_loss,[T, x16T], [xnorm, x21T]], x26T
         else:
             return x26
 
-    def Relevance_adjustments(self,xyz):
-        # a1_opt = torch.tensor([[-0.01171973, 0.00511874, -0.03102786]])
-        # a2_opt = torch.tensor([[-0.01537341, 0.0074207, 0.00215751]])
-        # a3_opt = torch.tensor([[-0.00891788, 0.00088328, 0.02658808]])
-        # a4_opt = torch.tensor([[0.01766429, -0.00893865, -0.00241741]])
-        # a5_opt = torch.tensor([[0.0211294, 0.00557574, 0.00478809]])
-        # a6_opt = torch.tensor([[-0.00246022, -0.0091335, -0.00135202]])
-        # b = torch.tensor(-0.18116703).cuda()
+    def Relevance_adjustments(self,xyz,xnorm):
+        # a1_opt=torch.tensor([[3.14234379e-06 , 2.60536160e-06 ,-1.05595981e-05]])
+        # a2_opt=torch.tensor([[5.92477343e-06 ,-2.02061947e-06 ,-6.01353748e-07]])
+        # a3_opt=torch.tensor([[-3.44045876e-08 ,-1.39870307e-06 , 7.20317632e-06]])
+        # a4_opt=torch.tensor([[-4.78598119e-06 , 1.77299450e-06 , 1.66281140e-07]])
+        # a5_opt=torch.tensor([[-4.29633469e-06 ,-4.77312140e-06 , 3.43732168e-06]])
+        # a6_opt=torch.tensor([[-2.52408476e-07 , 3.52046535e-06 , 1.41244982e-06]])
+        # b = torch.tensor(0.00022636).cuda()
 
-        a1_opt=torch.tensor([[-0.00224888, - 0.0024509 ,  0.0031326]])
-        a2_opt=torch.tensor([[0.01155325 , 0.00028369 ,- 0.00083645]])
-        a3_opt=torch.tensor([[-0.00208301 , 0.00097889, - 0.00154358]])
-        a4_opt=torch.tensor([[-0.00660129 , 0.00106194, - 0.0001622]])
-        a5_opt=torch.tensor([[-0.00130171 , 0.00116966, - 0.00068797]])
-        a6_opt=torch.tensor([[0.00042264, - 0.00102405 , 0.00025911]])
-        b = torch.tensor(0.06752735).cuda()
+        a1_opt=torch.tensor([[-6.21007172e-05 , 1.28758479e-06 ,-2.68045118e-04]])
+        a2_opt=torch.tensor([[-2.07947256e-04 ,4.46834409e-05 , 6.14944605e-06]])
+        a3_opt=torch.tensor([[-2.21353520e-04 , 6.30610806e-05 ,1.87035802e-04]])
+        a4_opt=torch.tensor([[2.54301043e-04, -9.25418365e-05 ,-7.99169087e-06]])
+        a5_opt=torch.tensor([[2.42138186e-04  ,1.33552915e-04  ,4.71636951e-05]])
+        a6_opt=torch.tensor([[4.30034321e-06,-1.38483871e-04,  7.74779972e-05]])
+        #b = torch.tensor(3.88585612e-03).cuda()
+        b = torch.tensor(2).cuda()
 
         mean1 = [85.38860869565218, 42.480782608695655 ,100.6086956521739]
         std1 = [19.910707448700823, 9.613875221721361, 8.090462073302508]
@@ -1990,16 +2003,16 @@ class Pointneted_gaus(nn.Module):
         relev_loss = torch.zeros(xyz.shape[0]).cuda()
         new_xyz = torch.zeros(xyz.shape)
         for kd,data in enumerate(xyz):
-            y = torch.sum(torch.sum(a * data, axis=2))-b
-            last_y=100
+            y = torch.sum(torch.sum(a * (data**2), axis=2))-b
+            last_y=100000
             last_data = data.cuda()
-            for i in range(10):
+            for i in range(20):
                 for j,jp in enumerate(a[0]):
-                    dot = y * jp.cuda()*(abs(sum((data[j]-mean[j])*std[j])))
+                    dot = 2 * y * jp.cuda() * xnorm[kd,j,0,:] * data[j]
                     new_data = data[j] - dot
                     new_xyz[kd,j] = new_data
-                new_y = torch.sum(torch.sum(a * new_xyz[kd].cuda(), axis=2)) - b
-                #print("%d,lossdd===%f"%(i,new_y))
+                new_y = torch.sum(torch.sum(a * (new_xyz[kd].cuda()**2), axis=2)) - b
+                # print("%d,lossdd===%f"%(i,new_y))
                 if abs(new_y)>=abs(last_y):
                     new_xyz[kd] = last_data
                     break

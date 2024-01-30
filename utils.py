@@ -349,6 +349,8 @@ class Deepeucloss(nn.Module):
         outloss=self.euc(out,target,leg,l_dynamic)
         kl =0.0
         if self.config.gauss:
+            T1 = self.euc(gt_pre[1][0][2], target, leg, l_dynamic)
+            # print(" ", outloss - T1)
             gt_loss = 0.1 * self.euc(gt_pre[1][1], target, None, 0) + 0.2 * self.euc(gt_pre[2][1], target, None, 0)
             for batch in range(out.shape[0]):
                 for point in range(out.shape[1]):
@@ -357,7 +359,7 @@ class Deepeucloss(nn.Module):
                     meand2 = torch.squeeze(gt_pre[2][1][batch, point, :, :])
                     mean2 = torch.squeeze(target[batch,point,:,:])
                     var1 = torch.squeeze(gt_pre[2][0][batch,point,:,:])
-                    var2 = torch.tensor([2., 2., 2.]).cuda()
+                    var2 = torch.tensor([2.5, 2.5, 2.5]).cuda()
                     #kl += self.calculate_KL_divergence(mean1.cpu().detach().numpy(),diag_matrix1.cpu().detach().numpy(),mean2.cpu().detach().numpy(),diag_matrix2.cpu().detach().numpy())
                     # 构建正态分布对象
                     model_dist = Normal(loc=mean1, scale=var1)
@@ -365,9 +367,9 @@ class Deepeucloss(nn.Module):
                     model_dist2 = Normal(loc=meand2, scale=var1)
                     true_dist = Normal(loc=mean2, scale=var2)
                     # 计算 KL 散度
-                    kl += torch.distributions.kl.kl_divergence(model_dist, true_dist).sum() + 0.2*torch.distributions.kl.kl_divergence(model_dist1, true_dist).sum()+0.2*torch.distributions.kl.kl_divergence(model_dist2, true_dist).sum()
+                    kl += torch.distributions.kl.kl_divergence(model_dist, true_dist).sum() + 0.2*torch.distributions.kl.kl_divergence(model_dist1, true_dist).sum() + 0.3*torch.distributions.kl.kl_divergence(model_dist2, true_dist).sum()
             #print(" ",(1./(self.euc(out,target,None,None)+gt_loss)))
-            return outloss + gt_loss + (gt_pre[0].item() * self.config.l2_lambda * l_dynamic) + (1./(1.2*(self.euc(out,target,None,0)+gt_loss)))*kl
+            return outloss + gt_loss + (gt_pre[0].item() * self.config.l2_lambda * l_dynamic) + (1./(1.*(self.euc(out,target,None,0)+gt_loss)))*kl
         else:
             gt_loss=0.0
             for i,pre in enumerate(gt_pre):

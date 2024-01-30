@@ -5,7 +5,7 @@ from datetime import datetime
 
 class setting_config:
     network = "Pointneted_gaus" #'Pointneted' #'Pointneted_plus'#'Pointnet_ed' # # 'pointnet3d' # #'egeunet' #'resnet101'     # 'UNet'   #    #'resnet50'
-    data_mmld = 1
+    data_mmld = False
     pre_net = None #"/home/yxz/progress/CT3Dpoints/results/Pointneted_plus_Wednesday_13_December_2023_17h_07m_39s/checkpoints/best.pth"
     data_path='/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/'
     label_path="/media/yxz/新加卷/teeth_ct_points/CT3Dpoints/三维坐标表格.xlsx"
@@ -15,7 +15,7 @@ class setting_config:
     num_classes = len(label_num)
     input_size_h = 256
     input_size_w = 256
-    input_channels = 128  ##期望最大输入
+    input_channels = 64  ## 期望最大输入
     distributed = False
     local_rank = -1
     num_workers = 4
@@ -23,22 +23,23 @@ class setting_config:
     world_size = None
     rank = None
     amp = False
-    l2_lambda = 0.03 #设置 L2 局部正则化权重
+    l2_lambda = 0.00 #设置 L2 局部正则化权重
     gpu_id = '0'
     batch_size = 4
     val_bs = 1
-    epochs = 800
+    epochs = 1800
     deep_supervision = True
     tailadd = True
     threshold = 8
     rand_data = False
     mean_common = False
     horizontal_flip = True
-    Dynamic_regularization = True
+    Dynamic_regularization = False
     freeze = True
     noised = False
-    gauss = 0
+    gauss = True
     nomlize = False
+    relevant = False
 
     if nomlize:
         threshold = threshold/4.
